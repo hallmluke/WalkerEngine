@@ -5,6 +5,7 @@
 #include "Shader.h"
 #include "Camera.h"
 #include "Model.h"
+#include "Cube.h"
 
 #include <iostream>
 #include <glm/glm.hpp>
@@ -93,7 +94,7 @@ int main()
     ImGui_ImplOpenGL3_Init(glsl_version);
 
     // tell stb_image.h to flip loaded texture's on the y-axis (before loading model).
-    stbi_set_flip_vertically_on_load(true);
+    //stbi_set_flip_vertically_on_load(true);
 
     // configure global opengl state
     // -----------------------------
@@ -101,14 +102,81 @@ int main()
 
     // build and compile shaders
     // -------------------------
-    Shader ourShader("Shaders/basic_lighting.vert", "Shaders/basic_lighting.frag", "Shaders/geometry_shader.geom");
+    //Shader ourShader("Shaders/basic_lighting.vert", "Shaders/basic_lighting.frag", "Shaders/geometry_shader.geom");
+    Shader ourShader("Shaders/basic_lighting.vert", "Shaders/basic_lighting.frag");
+    Shader lightShader("Shaders/light_cube.vert", "Shaders/light_cube.frag");
 
     // load models
     // -----------
-    Model ourModel("Models/backpack/backpack.obj");
+    Model ourModel("Models/sponza/sponza.obj");
 
     bool my_tool_active = true;
-    float my_color[4];
+    bool drawDebugLights = true;
+    float lightSize = 0.2f;
+
+    vector<float> vertices = Cube::getUnindexedVertices();
+
+    struct CubeVertex {
+        glm::vec3 Position;
+        glm::vec2 TexCoords;
+    };
+    //float* vertexArray = &vertices[0];
+
+    /*float vertexArray[] = {
+        -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+         0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
+         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+        -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+        -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+
+        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+         0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+         0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+         0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+        -0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
+        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+
+        -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+        -0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+        -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+
+         0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+         0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+         0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+         0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+         0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+
+        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+         0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
+         0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+         0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+
+        -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+         0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+         0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+        -0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
+        -0.5f,  0.5f, -0.5f,  0.0f, 1.0f
+    };*/
+
+    unsigned int lightCubeVBO, lightCubeVAO;
+    glGenVertexArrays(1, &lightCubeVAO);
+    glGenBuffers(1, &lightCubeVBO);
+
+    glBindBuffer(GL_ARRAY_BUFFER, lightCubeVBO);
+    glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(CubeVertex), &vertices[0], GL_STATIC_DRAW);
+    glBindVertexArray(lightCubeVAO);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(1);
 
 
     // draw in wireframe
@@ -138,32 +206,52 @@ int main()
         glClearColor(0.05f, 0.05f, 0.05f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        // don't forget to enable shader before setting uniforms
-        ourShader.use();
+
 
         // view/projection transformations
         glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
         glm::mat4 view = camera.GetViewMatrix();
+
+
+
+        if (drawDebugLights) {
+            glBindVertexArray(lightCubeVAO);
+
+            lightShader.use();
+            lightShader.setMat4("projection", projection);
+            lightShader.setMat4("view", view);
+            glm::mat4 model = glm::mat4(1.0f);
+            model = glm::translate(model, lightPos);
+            model = glm::scale(model, glm::vec3(lightSize, lightSize, lightSize));
+            lightShader.setMat4("model", model);
+            glDrawArrays(GL_TRIANGLES, 0, 36);
+        }
+
+        // don't forget to enable shader before setting uniforms
+        ourShader.use();
+
         ourShader.setMat4("projection", projection);
         ourShader.setMat4("view", view);
 
         // render the loaded model
         glm::mat4 model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f)); // translate it down so it's at the center of the scene
-        model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));	// it's a bit too big for our scene, so scale it down
+        model = glm::scale(model, glm::vec3(.01f, .01f, .01f));	// it's a bit too big for our scene, so scale it down
         ourShader.setMat4("model", model);
 
         ourShader.setVec3("pointLight.position", lightPos);
-        ourShader.setVec3("pointLight.ambient", 0.05f, 0.05f, 0.05f);
+        ourShader.setVec3("pointLight.ambient", 0.5f, 0.5f, 0.5f);
         ourShader.setVec3("pointLight.diffuse", 0.8f, 0.8f, 0.8f);
         ourShader.setVec3("pointLight.specular", 1.0f, 1.0f, 1.0f);
         ourShader.setFloat("pointLight.constant", 1.0f);
         ourShader.setFloat("pointLight.linear", 0.09);
         ourShader.setFloat("pointLight.quadratic", 0.032);
-        ourShader.setFloat("time", glfwGetTime());
+        //ourShader.setFloat("time", glfwGetTime());
 
 
         ourModel.Draw(ourShader);
+
+        
 
         // imgui
         ImGui::Begin("My First Tool", &my_tool_active, ImGuiWindowFlags_MenuBar);
@@ -180,7 +268,9 @@ int main()
         }
 
         // Edit a color (stored as ~4 floats)
-        ImGui::ColorEdit4("Color", my_color);
+        ImGui::SliderFloat3("Light position", (float*) &lightPos, -15.0f, 15.0f);
+        ImGui::Checkbox("Draw debug lights", &drawDebugLights);
+        ImGui::SliderFloat("Light scale", &lightSize, 0.01f, 3.0f);
 
         // Plot some values
         const float my_values[] = { 0.2f, 0.1f, 1.0f, 0.5f, 0.9f, 2.2f };

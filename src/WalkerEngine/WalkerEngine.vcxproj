@@ -165,11 +165,14 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="Cube.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="Model.h" />
     <ClInclude Include="Shader.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="light_cube.frag" />
+    <None Include="light_cube.vert" />
     <None Include="Shaders\basic_lighting.frag" />
     <None Include="Shaders\basic_lighting.vert" />
     <None Include="Shaders\geometry_shader.geom" />

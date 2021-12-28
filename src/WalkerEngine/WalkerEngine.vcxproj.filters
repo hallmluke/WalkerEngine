@@ -68,6 +68,9 @@
     <ClInclude Include="Shader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Cube.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Shaders\basic_lighting.frag">
@@ -77,6 +80,12 @@
       <Filter>Source Files\Shaders</Filter>
     </None>
     <None Include="Shaders\geometry_shader.geom">
+      <Filter>Source Files\Shaders</Filter>
+    </None>
+    <None Include="light_cube.vert">
+      <Filter>Source Files\Shaders</Filter>
+    </None>
+    <None Include="light_cube.frag">
       <Filter>Source Files\Shaders</Filter>
     </None>
   </ItemGroup>
