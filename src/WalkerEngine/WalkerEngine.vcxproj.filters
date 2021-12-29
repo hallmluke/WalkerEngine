@@ -60,6 +60,9 @@
     <ClCompile Include="PointLight.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="DirectionalLight.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h">
@@ -83,6 +86,9 @@
     <ClInclude Include="PointLight.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="DirectionalLight.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Shaders\basic_lighting.frag">
@@ -98,6 +104,18 @@
       <Filter>Source Files\Shaders</Filter>
     </None>
     <None Include="light_cube.frag">
+      <Filter>Source Files\Shaders</Filter>
+    </None>
+    <None Include="Shaders\depth_shader.frag">
+      <Filter>Source Files\Shaders</Filter>
+    </None>
+    <None Include="Shaders\depth_shader.vert">
+      <Filter>Source Files\Shaders</Filter>
+    </None>
+    <None Include="Shaders\debug_quad.vert">
+      <Filter>Source Files\Shaders</Filter>
+    </None>
+    <None Include="Shaders\debug_quad.frag">
       <Filter>Source Files\Shaders</Filter>
     </None>
   </ItemGroup>

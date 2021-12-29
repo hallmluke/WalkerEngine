@@ -12,6 +12,7 @@
 #include <glm/gtc/type_ptr.hpp>
 
 class PointLight;
+class DirectionalLight;
 
 class Shader {
 public:
@@ -26,7 +27,8 @@ public:
 	void setMat4(const std::string& name, glm::mat4 value) const;
 	void setVec3(const std::string& name, float x, float y, float z) const;
 	void setVec3(const std::string& name, glm::vec3 value) const;
-	void setLightProperties(PointLight light) const;
+	void setPointLightProperties(PointLight light) const;
+	void setDirectionalLightProperties(DirectionalLight light) const;
 private:
 	void checkCompileErrors(GLuint shader, std::string type);
 };

@@ -7,6 +7,7 @@
 #include "Model.h"
 #include "Cube.h"
 #include "PointLight.h"
+#include "DirectionalLight.h"
 
 #include <iostream>
 #include <glm/glm.hpp>
@@ -24,10 +25,13 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 void processInput(GLFWwindow* window);
+void renderQuad();
 
 // settings
 const unsigned int SCR_WIDTH = 1280;
 const unsigned int SCR_HEIGHT = 720;
+unsigned int currentWidth = 1280;
+unsigned int currentHeight = 720;
 
 // camera
 Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
@@ -41,7 +45,7 @@ float deltaTime = 0.0f;
 float lastFrame = 0.0f;
 
 glm::vec3 lightPos(1.2f, 1.0f, 4.0f);
-
+glm::vec3 directionLight(0.2f, 1.0f, 0.2f);
 
 
 int main()
@@ -93,12 +97,38 @@ int main()
     // -------------------------
     Shader ourShader("Shaders/basic_lighting.vert", "Shaders/basic_lighting.frag");
     Shader lightShader("Shaders/light_cube.vert", "Shaders/light_cube.frag");
+    Shader depthShader("Shaders/depth_shader.vert", "Shaders/depth_shader.frag");
+    Shader debugDepthQuad("Shaders/debug_quad.vert", "Shaders/debug_quad.frag");
 
     // load models
     // -----------
     Model ourModel("Models/sponza/sponza.obj");
 
     PointLight light(lightPos);
+    DirectionalLight dirLight(directionLight);
+
+    /// START SHADOW MAPPING
+    // configure depth map FBO
+    // -----------------------
+    const unsigned int SHADOW_WIDTH = 1024, SHADOW_HEIGHT = 1024;
+    unsigned int depthMapFBO;
+    glGenFramebuffers(1, &depthMapFBO);
+    // create depth texture
+    unsigned int depthMap;
+    glGenTextures(1, &depthMap);
+    glBindTexture(GL_TEXTURE_2D, depthMap);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, SHADOW_WIDTH, SHADOW_HEIGHT, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    // attach depth texture as FBO's depth buffer
+    glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthMap, 0);
+    glDrawBuffer(GL_NONE);
+    glReadBuffer(GL_NONE);
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    // END SHADOW MAPPING
 
     // draw in wireframe
     //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -124,9 +154,45 @@ int main()
 
         imGuiManager.BeginFrame();
 
+        
+
         // view/projection transformations
         glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
         glm::mat4 view = camera.GetViewMatrix();
+
+
+        
+
+        // render the loaded model
+        glm::mat4 model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f)); // translate it down so it's at the center of the scene
+        model = glm::scale(model, glm::vec3(.01f, .01f, .01f));	// it's a bit too big for our scene, so scale it down
+
+        // START SHADOW MAPPING
+        glm::mat4 lightProjection, lightView;
+        glm::mat4 lightSpaceMatrix;
+        float near_plane = 0.1f, far_plane = 70.0f;
+        lightProjection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, near_plane, far_plane);
+        lightView = glm::lookAt(dirLight.direction * -dirLight.debugDistance, glm::vec3(0.0f), glm::vec3(0.0, 1.0, 0.0));
+        lightSpaceMatrix = lightProjection * lightView;
+        // render scene from light's point of view
+        depthShader.use();
+        depthShader.setMat4("lightSpaceMatrix", lightSpaceMatrix);
+
+        glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
+        glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
+        glClear(GL_DEPTH_BUFFER_BIT);
+        glActiveTexture(GL_TEXTURE0);
+        //glBindTexture(GL_TEXTURE_2D, woodTexture);
+        //renderScene(simpleDepthShader);
+        depthShader.setMat4("model", model);
+        ourModel.Draw(depthShader);
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+        glViewport(0, 0, currentWidth, currentHeight);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        // END SHADOW MAPPING
+
 
         if (light.drawDebugEnabled) {
             lightShader.use();
@@ -135,64 +201,44 @@ int main()
             light.DrawDebug(lightShader);
         }
 
+        if (dirLight.drawDebugEnabled) {
+            lightShader.use();
+            lightShader.setMat4("projection", projection);
+            lightShader.setMat4("view", view);
+            dirLight.DrawDebug(lightShader);
+        }
+
         // don't forget to enable shader before setting uniforms
         ourShader.use();
 
         ourShader.setMat4("projection", projection);
         ourShader.setMat4("view", view);
 
-        // render the loaded model
-        glm::mat4 model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f)); // translate it down so it's at the center of the scene
-        model = glm::scale(model, glm::vec3(.01f, .01f, .01f));	// it's a bit too big for our scene, so scale it down
         ourShader.setMat4("model", model);
         ourShader.setVec3("viewPos", camera.Position);
-        ourShader.setLightProperties(light);
-        /*ourShader.setVec3("pointLight.position", lightPos);
-        ourShader.setVec3("pointLight.ambient", 0.5f, 0.5f, 0.5f);
-        ourShader.setVec3("pointLight.diffuse", 0.8f, 0.8f, 0.8f);
-        ourShader.setVec3("pointLight.specular", 1.0f, 1.0f, 1.0f);
-        ourShader.setFloat("pointLight.constant", 1.0f);
-        ourShader.setFloat("pointLight.linear", 0.09);
-        ourShader.setFloat("pointLight.quadratic", 0.032);*/
-        //ourShader.setFloat("time", glfwGetTime());
+        ourShader.setMat4("lightSpaceMatrix", lightSpaceMatrix);
+        ourShader.setPointLightProperties(light);
+        ourShader.setDirectionalLightProperties(dirLight);
 
-
+        glActiveTexture(GL_TEXTURE3);
+        glBindTexture(GL_TEXTURE_2D, depthMap);
+        ourShader.setInt("shadowMap", 3);
         ourModel.Draw(ourShader);
 
-        
+        //DEBUG QUAD
+        // render Depth map to quad for visual debugging
+        // ---------------------------------------------
+        /*debugDepthQuad.use();
+        debugDepthQuad.setFloat("near_plane", near_plane);
+        debugDepthQuad.setFloat("far_plane", far_plane);
+        glActiveTexture(GL_TEXTURE);
+        glBindTexture(GL_TEXTURE_2D, depthMap);
+        renderQuad();*/
+        //END DEBUG QUAD
+
+
         light.ControlWindow();
-        // imgui
-        /*ImGui::Begin("My First Tool", &my_tool_active, ImGuiWindowFlags_MenuBar);
-        if (ImGui::BeginMenuBar())
-        {
-            if (ImGui::BeginMenu("File"))
-            {
-                if (ImGui::MenuItem("Open..", "Ctrl+O")) {  }
-                if (ImGui::MenuItem("Save", "Ctrl+S")) {  }
-                if (ImGui::MenuItem("Close", "Ctrl+W")) { my_tool_active = false; }
-                ImGui::EndMenu();
-            }
-            ImGui::EndMenuBar();
-        }
-
-        // Edit a color (stored as ~4 floats)
-        ImGui::SliderFloat3("Light position", (float*) &lightPos, -15.0f, 15.0f);
-        ImGui::Checkbox("Draw debug lights", &drawDebugLights);
-        ImGui::SliderFloat("Light scale", &lightSize, 0.01f, 3.0f);
-
-        // Plot some values
-        const float my_values[] = { 0.2f, 0.1f, 1.0f, 0.5f, 0.9f, 2.2f };
-        ImGui::PlotLines("Frame Times", my_values, sizeof(my_values));
-
-        // Display contents in a scrolling region
-        ImGui::TextColored(ImVec4(1, 1, 0, 1), "Important Stuff");
-        ImGui::BeginChild("Scrolling");
-        for (int n = 0; n < 50; n++)
-            ImGui::Text("%04d: Some text", n);
-        ImGui::EndChild();
-        ImGui::End();*/
-
+        dirLight.ControlWindow();
         imGuiManager.EndFrame();
 
 
@@ -209,6 +255,35 @@ int main()
     // ------------------------------------------------------------------
     glfwTerminate();
     return 0;
+}
+
+unsigned int quadVAO = 0;
+unsigned int quadVBO;
+void renderQuad()
+{
+    if (quadVAO == 0)
+    {
+        float quadVertices[] = {
+            // positions        // texture Coords
+            -1.0f,  1.0f, 0.0f, 0.0f, 1.0f,
+            -1.0f, 0.0f, 0.0f, 0.0f, 0.0f,
+             0.0f,  1.0f, 0.0f, 1.0f, 1.0f,
+             0.0f, 0.0f, 0.0f, 1.0f, 0.0f,
+        };
+        // setup plane VAO
+        glGenVertexArrays(1, &quadVAO);
+        glGenBuffers(1, &quadVBO);
+        glBindVertexArray(quadVAO);
+        glBindBuffer(GL_ARRAY_BUFFER, quadVBO);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), &quadVertices, GL_STATIC_DRAW);
+        glEnableVertexAttribArray(0);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+        glEnableVertexAttribArray(1);
+        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+    }
+    glBindVertexArray(quadVAO);
+    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+    glBindVertexArray(0);
 }
 
 // process all input: query GLFW whether relevant keys are pressed/released this frame and react accordingly
@@ -244,6 +319,8 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
     // make sure the viewport matches the new window dimensions; note that width and 
     // height will be significantly larger than specified on retina displays.
+    currentWidth = width;
+    currentHeight = height;
     glViewport(0, 0, width, height);
 }
 

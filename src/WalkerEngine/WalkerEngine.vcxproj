@@ -155,6 +155,7 @@ robocopy /s "$(ProjectDir)Shaders" "$(OutDir)Shaders"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="DirectionalLight.cpp" />
     <ClCompile Include="glad.c" />
     <ClCompile Include="ImGuiManager.cpp" />
     <ClCompile Include="imgui\imgui.cpp" />
@@ -172,6 +173,7 @@ robocopy /s "$(ProjectDir)Shaders" "$(OutDir)Shaders"</Command>
   <ItemGroup>
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Cube.h" />
+    <ClInclude Include="DirectionalLight.h" />
     <ClInclude Include="ImGuiManager.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="Model.h" />
@@ -183,6 +185,10 @@ robocopy /s "$(ProjectDir)Shaders" "$(OutDir)Shaders"</Command>
     <None Include="light_cube.vert" />
     <None Include="Shaders\basic_lighting.frag" />
     <None Include="Shaders\basic_lighting.vert" />
+    <None Include="Shaders\debug_quad.frag" />
+    <None Include="Shaders\debug_quad.vert" />
+    <None Include="Shaders\depth_shader.frag" />
+    <None Include="Shaders\depth_shader.vert" />
     <None Include="Shaders\geometry_shader.geom" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -1,5 +1,6 @@
 #include "Shader.h"
 #include "PointLight.h"
+#include "DirectionalLight.h"
 
 Shader::Shader(const char* vertexPath, const char* fragmentPath, const char* geometryPath)
 {
@@ -42,6 +43,8 @@ Shader::Shader(const char* vertexPath, const char* fragmentPath, const char* geo
     catch (std::ifstream::failure& e)
     {
         std::cout << "ERROR::SHADER::FILE_NOT_SUCCESFULLY_READ" << std::endl;
+        std::cout << "Vert: " << vertexPath << std::endl;
+        std::cout << "Frag: " << fragmentPath << std::endl;
     }
     const char* vShaderCode = vertexCode.c_str();
     const char* fShaderCode = fragmentCode.c_str();
@@ -120,7 +123,7 @@ void Shader::setVec3(const std::string& name, glm::vec3 value) const
 	glUniform3f(glGetUniformLocation(ID, name.c_str()), value.x, value.y, value.z);
 }
 
-void Shader::setLightProperties(PointLight light) const
+void Shader::setPointLightProperties(PointLight light) const
 {
     setVec3("pointLight.position", light.position);
     setVec3("pointLight.ambient", glm::vec3(light.ambientIntensity));
@@ -129,6 +132,14 @@ void Shader::setLightProperties(PointLight light) const
     setFloat("pointLight.constant", light.constantAttenuation);
     setFloat("pointLight.linear", light.linearAttenuation);
     setFloat("pointLight.quadratic", light.quadraticAttenuation);
+}
+
+void Shader::setDirectionalLightProperties(DirectionalLight light) const
+{
+    setVec3("dirLight.direction", light.direction);
+    setVec3("dirLight.ambient", glm::vec3(light.ambientIntensity));
+    setVec3("dirLight.diffuse", glm::vec3(light.diffuseIntensity));
+    setVec3("dirLight.specular", glm::vec3(light.specularIntensity));
 }
 
 void Shader::checkCompileErrors(GLuint shader, std::string type)
