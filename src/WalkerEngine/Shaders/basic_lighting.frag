@@ -76,10 +76,10 @@ void main()
     // this fragment's final color.
     // == =====================================================
     // phase 1: directional lighting
-    vec3 result = CalcDirLight(dirLight, norm, viewDir);
+    //vec3 result = CalcDirLight(dirLight, norm, viewDir);
     // phase 2: point lights
     //for(int i = 0; i < NR_POINT_LIGHTS; i++)
-    result += CalcPointLight(pointLight, norm, FragPos, viewDir);    
+    vec3 result = CalcPointLight(pointLight, norm, FragPos, viewDir);    
     // phase 3: spot light
     //result += CalcSpotLight(spotLight, norm, FragPos, viewDir);    
     
@@ -98,7 +98,7 @@ vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir)
     // combine results
     vec3 ambient = light.ambient * vec3(texture(texture_diffuse1, TexCoords));
     vec3 diffuse = light.diffuse * diff * vec3(texture(texture_diffuse1, TexCoords));
-    vec3 specular = light.specular * spec * vec3(texture(texture_specular1, TexCoords));
+    vec3 specular = light.specular * spec * vec3(texture(texture_specular1, TexCoords).r);
     return (ambient + diffuse + specular);
 }
 

@@ -1,4 +1,5 @@
 #include "Shader.h"
+#include "PointLight.h"
 
 Shader::Shader(const char* vertexPath, const char* fragmentPath, const char* geometryPath)
 {
@@ -117,6 +118,17 @@ void Shader::setVec3(const std::string& name, float x, float y, float z) const
 void Shader::setVec3(const std::string& name, glm::vec3 value) const
 {
 	glUniform3f(glGetUniformLocation(ID, name.c_str()), value.x, value.y, value.z);
+}
+
+void Shader::setLightProperties(PointLight light) const
+{
+    setVec3("pointLight.position", light.position);
+    setVec3("pointLight.ambient", glm::vec3(light.ambientIntensity));
+    setVec3("pointLight.diffuse", glm::vec3(light.diffuseIntensity));
+    setVec3("pointLight.specular", glm::vec3(light.specularIntensity));
+    setFloat("pointLight.constant", light.constantAttenuation);
+    setFloat("pointLight.linear", light.linearAttenuation);
+    setFloat("pointLight.quadratic", light.quadraticAttenuation);
 }
 
 void Shader::checkCompileErrors(GLuint shader, std::string type)

@@ -11,6 +11,8 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+class PointLight;
+
 class Shader {
 public:
 	unsigned int ID;
@@ -24,7 +26,7 @@ public:
 	void setMat4(const std::string& name, glm::mat4 value) const;
 	void setVec3(const std::string& name, float x, float y, float z) const;
 	void setVec3(const std::string& name, glm::vec3 value) const;
-
+	void setLightProperties(PointLight light) const;
 private:
 	void checkCompileErrors(GLuint shader, std::string type);
 };

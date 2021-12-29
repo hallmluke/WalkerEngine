@@ -6,6 +6,7 @@
 #include "Camera.h"
 #include "Model.h"
 #include "Cube.h"
+#include "PointLight.h"
 
 #include <iostream>
 #include <glm/glm.hpp>
@@ -16,9 +17,8 @@
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 
-#include "imgui/imgui.h"
-#include "imgui/imgui_impl_glfw.h"
-#include "imgui/imgui_impl_opengl3.h"
+#include "ImGuiManager.h"
+
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
@@ -42,6 +42,8 @@ float lastFrame = 0.0f;
 
 glm::vec3 lightPos(1.2f, 1.0f, 4.0f);
 
+
+
 int main()
 {
     // glfw: initialize and configure
@@ -57,7 +59,7 @@ int main()
 
     // glfw window creation
     // --------------------
-    GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "LearnOpenGL", NULL, NULL);
+    GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "Walker Engine", NULL, NULL);
     if (window == NULL)
     {
         std::cout << "Failed to create GLFW window" << std::endl;
@@ -68,6 +70,7 @@ int main()
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
     glfwSetCursorPosCallback(window, mouse_callback);
     glfwSetScrollCallback(window, scroll_callback);
+    ImGuiManager imGuiManager(window);
 
     // glad: load all OpenGL function pointers
     // ---------------------------------------
@@ -77,21 +80,7 @@ int main()
         return -1;
     }
 
-    // Setup Dear ImGui context
-    IMGUI_CHECKVERSION();
-    ImGui::CreateContext();
-    ImGuiIO& io = ImGui::GetIO(); (void)io;
-    //io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
-    //io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
 
-    // Setup Dear ImGui style
-    ImGui::StyleColorsDark();
-    //ImGui::StyleColorsClassic();
-
-    // Setup Platform/Renderer backends
-    ImGui_ImplGlfw_InitForOpenGL(window, true);
-    const char* glsl_version = "#version 130";
-    ImGui_ImplOpenGL3_Init(glsl_version);
 
     // tell stb_image.h to flip loaded texture's on the y-axis (before loading model).
     //stbi_set_flip_vertically_on_load(true);
@@ -102,7 +91,6 @@ int main()
 
     // build and compile shaders
     // -------------------------
-    //Shader ourShader("Shaders/basic_lighting.vert", "Shaders/basic_lighting.frag", "Shaders/geometry_shader.geom");
     Shader ourShader("Shaders/basic_lighting.vert", "Shaders/basic_lighting.frag");
     Shader lightShader("Shaders/light_cube.vert", "Shaders/light_cube.frag");
 
@@ -110,74 +98,7 @@ int main()
     // -----------
     Model ourModel("Models/sponza/sponza.obj");
 
-    bool my_tool_active = true;
-    bool drawDebugLights = true;
-    float lightSize = 0.2f;
-
-    vector<float> vertices = Cube::getUnindexedVertices();
-
-    struct CubeVertex {
-        glm::vec3 Position;
-        glm::vec2 TexCoords;
-    };
-    //float* vertexArray = &vertices[0];
-
-    /*float vertexArray[] = {
-        -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
-         0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
-         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-        -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-        -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
-
-        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-         0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-         0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
-         0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
-        -0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
-        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-
-        -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-        -0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-        -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-
-         0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-         0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-         0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-         0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-         0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-
-        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-         0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
-         0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-         0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-
-        -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-         0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-         0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-        -0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
-        -0.5f,  0.5f, -0.5f,  0.0f, 1.0f
-    };*/
-
-    unsigned int lightCubeVBO, lightCubeVAO;
-    glGenVertexArrays(1, &lightCubeVAO);
-    glGenBuffers(1, &lightCubeVBO);
-
-    glBindBuffer(GL_ARRAY_BUFFER, lightCubeVBO);
-    glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(CubeVertex), &vertices[0], GL_STATIC_DRAW);
-    glBindVertexArray(lightCubeVAO);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(1);
-
+    PointLight light(lightPos);
 
     // draw in wireframe
     //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -196,35 +117,22 @@ int main()
         // -----
         processInput(window);
 
-        // Start the Dear ImGui frame
-        ImGui_ImplOpenGL3_NewFrame();
-        ImGui_ImplGlfw_NewFrame();
-        ImGui::NewFrame();
-
         // render
         // ------
         glClearColor(0.05f, 0.05f, 0.05f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-
+        imGuiManager.BeginFrame();
 
         // view/projection transformations
         glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
         glm::mat4 view = camera.GetViewMatrix();
 
-
-
-        if (drawDebugLights) {
-            glBindVertexArray(lightCubeVAO);
-
+        if (light.drawDebugEnabled) {
             lightShader.use();
             lightShader.setMat4("projection", projection);
             lightShader.setMat4("view", view);
-            glm::mat4 model = glm::mat4(1.0f);
-            model = glm::translate(model, lightPos);
-            model = glm::scale(model, glm::vec3(lightSize, lightSize, lightSize));
-            lightShader.setMat4("model", model);
-            glDrawArrays(GL_TRIANGLES, 0, 36);
+            light.DrawDebug(lightShader);
         }
 
         // don't forget to enable shader before setting uniforms
@@ -238,29 +146,30 @@ int main()
         model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f)); // translate it down so it's at the center of the scene
         model = glm::scale(model, glm::vec3(.01f, .01f, .01f));	// it's a bit too big for our scene, so scale it down
         ourShader.setMat4("model", model);
-
-        ourShader.setVec3("pointLight.position", lightPos);
+        ourShader.setVec3("viewPos", camera.Position);
+        ourShader.setLightProperties(light);
+        /*ourShader.setVec3("pointLight.position", lightPos);
         ourShader.setVec3("pointLight.ambient", 0.5f, 0.5f, 0.5f);
         ourShader.setVec3("pointLight.diffuse", 0.8f, 0.8f, 0.8f);
         ourShader.setVec3("pointLight.specular", 1.0f, 1.0f, 1.0f);
         ourShader.setFloat("pointLight.constant", 1.0f);
         ourShader.setFloat("pointLight.linear", 0.09);
-        ourShader.setFloat("pointLight.quadratic", 0.032);
+        ourShader.setFloat("pointLight.quadratic", 0.032);*/
         //ourShader.setFloat("time", glfwGetTime());
 
 
         ourModel.Draw(ourShader);
 
         
-
+        light.ControlWindow();
         // imgui
-        ImGui::Begin("My First Tool", &my_tool_active, ImGuiWindowFlags_MenuBar);
+        /*ImGui::Begin("My First Tool", &my_tool_active, ImGuiWindowFlags_MenuBar);
         if (ImGui::BeginMenuBar())
         {
             if (ImGui::BeginMenu("File"))
             {
-                if (ImGui::MenuItem("Open..", "Ctrl+O")) { /* Do stuff */ }
-                if (ImGui::MenuItem("Save", "Ctrl+S")) { /* Do stuff */ }
+                if (ImGui::MenuItem("Open..", "Ctrl+O")) {  }
+                if (ImGui::MenuItem("Save", "Ctrl+S")) {  }
                 if (ImGui::MenuItem("Close", "Ctrl+W")) { my_tool_active = false; }
                 ImGui::EndMenu();
             }
@@ -282,22 +191,19 @@ int main()
         for (int n = 0; n < 50; n++)
             ImGui::Text("%04d: Some text", n);
         ImGui::EndChild();
-        ImGui::End();
+        ImGui::End();*/
+
+        imGuiManager.EndFrame();
 
 
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
         // -------------------------------------------------------------------------------
-        ImGui::Render();
-        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
         glfwSwapBuffers(window);
         glfwPollEvents();
 
     }
 
-    // Cleanup
-    ImGui_ImplOpenGL3_Shutdown();
-    ImGui_ImplGlfw_Shutdown();
-    ImGui::DestroyContext();
 
     // glfw: terminate, clearing all previously allocated GLFW resources.
     // ------------------------------------------------------------------
