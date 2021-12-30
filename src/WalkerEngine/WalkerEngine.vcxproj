@@ -128,8 +128,8 @@
     </Link>
     <PostBuildEvent>
       <Command>xcopy /y /d "$(ProjectDir)dlls\assimp-vc140-mt.dll" "$(OutDir)assimp-vc140-mt.dll"
-robocopy /s "$(ProjectDir)Models" "$(OutDir)Models"
-robocopy /s "$(ProjectDir)Shaders" "$(OutDir)Shaders"</Command>
+(robocopy /s "$(ProjectDir)Models" "$(OutDir)Models") ^&amp; IF %ERRORLEVEL% LSS 8 SET ERRORLEVEL = 0
+(robocopy /s "$(ProjectDir)Shaders" "$(OutDir)Shaders") ^&amp; IF %ERRORLEVEL% LSS 8 SET ERRORLEVEL = 0</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -150,8 +150,8 @@ robocopy /s "$(ProjectDir)Shaders" "$(OutDir)Shaders"</Command>
     </Link>
     <PostBuildEvent>
       <Command>xcopy /y /d "$(ProjectDir)dlls\assimp-vc140-mt.dll" "$(OutDir)assimp-vc140-mt.dll"
-robocopy /s "$(ProjectDir)Models" "$(OutDir)Models"
-robocopy /s "$(ProjectDir)Shaders" "$(OutDir)Shaders"</Command>
+(robocopy /s "$(ProjectDir)Models" "$(OutDir)Models") ^&amp; IF %ERRORLEVEL% LSS 8 SET ERRORLEVEL = 0
+(robocopy /s "$(ProjectDir)Shaders" "$(OutDir)Shaders") ^&amp; IF %ERRORLEVEL% LSS 8 SET ERRORLEVEL = 0</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>

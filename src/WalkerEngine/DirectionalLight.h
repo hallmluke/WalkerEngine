@@ -22,7 +22,7 @@ public:
 
 	float debugDrawSize = 0.2f;
 	bool drawDebugEnabled = true;
-	float debugDistance = 10.0f;
+	float debugDistance = 20.0f;
 
 	unsigned int VBO, VAO;
 

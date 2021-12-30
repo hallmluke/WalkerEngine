@@ -45,7 +45,8 @@ float deltaTime = 0.0f;
 float lastFrame = 0.0f;
 
 glm::vec3 lightPos(1.2f, 1.0f, 4.0f);
-glm::vec3 directionLight(0.2f, 1.0f, 0.2f);
+glm::vec3 directionLight(0.2f, -1.0f, 0.2f);
+float shadowBias = 0.002f;
 
 
 int main()
@@ -110,7 +111,7 @@ int main()
     /// START SHADOW MAPPING
     // configure depth map FBO
     // -----------------------
-    const unsigned int SHADOW_WIDTH = 1024, SHADOW_HEIGHT = 1024;
+    const unsigned int SHADOW_WIDTH = 2048, SHADOW_HEIGHT = 2048;
     unsigned int depthMapFBO;
     glGenFramebuffers(1, &depthMapFBO);
     // create depth texture
@@ -217,6 +218,7 @@ int main()
         ourShader.setMat4("model", model);
         ourShader.setVec3("viewPos", camera.Position);
         ourShader.setMat4("lightSpaceMatrix", lightSpaceMatrix);
+        ourShader.setFloat("shadowBias", shadowBias);
         ourShader.setPointLightProperties(light);
         ourShader.setDirectionalLightProperties(dirLight);
 
@@ -235,6 +237,12 @@ int main()
         glBindTexture(GL_TEXTURE_2D, depthMap);
         renderQuad();*/
         //END DEBUG QUAD
+
+        if (ImGui::Begin("Shadow Mapping")) {
+            ImGui::Text("Bias");
+            ImGui::SliderFloat("Bias", &shadowBias, 0.0001, 0.025);
+        }
+        ImGui::End();
 
 
         light.ControlWindow();
