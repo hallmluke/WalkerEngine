@@ -46,7 +46,6 @@ float lastFrame = 0.0f;
 
 glm::vec3 lightPos(1.2f, 1.0f, 4.0f);
 glm::vec3 directionLight(0.2f, -1.0f, 0.2f);
-float shadowBias = 0.002f;
 
 
 int main()
@@ -103,33 +102,14 @@ int main()
 
     // load models
     // -----------
-    Model ourModel("Models/sponza/sponza.obj");
+    // render the loaded model
+    glm::mat4 model = glm::mat4(1.0f);
+    model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f)); // translate it down so it's at the center of the scene
+    model = glm::scale(model, glm::vec3(.01f, .01f, .01f));	// it's a bit too big for our scene, so scale it down
+    Model ourModel("Models/sponza/sponza.obj", model);
 
     PointLight light(lightPos);
     DirectionalLight dirLight(directionLight);
-
-    /// START SHADOW MAPPING
-    // configure depth map FBO
-    // -----------------------
-    const unsigned int SHADOW_WIDTH = 2048, SHADOW_HEIGHT = 2048;
-    unsigned int depthMapFBO;
-    glGenFramebuffers(1, &depthMapFBO);
-    // create depth texture
-    unsigned int depthMap;
-    glGenTextures(1, &depthMap);
-    glBindTexture(GL_TEXTURE_2D, depthMap);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, SHADOW_WIDTH, SHADOW_HEIGHT, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    // attach depth texture as FBO's depth buffer
-    glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthMap, 0);
-    glDrawBuffer(GL_NONE);
-    glReadBuffer(GL_NONE);
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
-    // END SHADOW MAPPING
 
     // draw in wireframe
     //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -155,44 +135,9 @@ int main()
 
         imGuiManager.BeginFrame();
 
-        
-
         // view/projection transformations
-        glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
+        glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float) currentWidth / (float) currentHeight, 0.1f, 100.0f);
         glm::mat4 view = camera.GetViewMatrix();
-
-
-        
-
-        // render the loaded model
-        glm::mat4 model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f)); // translate it down so it's at the center of the scene
-        model = glm::scale(model, glm::vec3(.01f, .01f, .01f));	// it's a bit too big for our scene, so scale it down
-
-        // START SHADOW MAPPING
-        glm::mat4 lightProjection, lightView;
-        glm::mat4 lightSpaceMatrix;
-        float near_plane = 0.1f, far_plane = 70.0f;
-        lightProjection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, near_plane, far_plane);
-        lightView = glm::lookAt(dirLight.direction * -dirLight.debugDistance, glm::vec3(0.0f), glm::vec3(0.0, 1.0, 0.0));
-        lightSpaceMatrix = lightProjection * lightView;
-        // render scene from light's point of view
-        depthShader.use();
-        depthShader.setMat4("lightSpaceMatrix", lightSpaceMatrix);
-
-        glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
-        glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
-        glClear(GL_DEPTH_BUFFER_BIT);
-        glActiveTexture(GL_TEXTURE0);
-        //glBindTexture(GL_TEXTURE_2D, woodTexture);
-        //renderScene(simpleDepthShader);
-        depthShader.setMat4("model", model);
-        ourModel.Draw(depthShader);
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
-        glViewport(0, 0, currentWidth, currentHeight);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        // END SHADOW MAPPING
 
 
         if (light.drawDebugEnabled) {
@@ -209,6 +154,10 @@ int main()
             dirLight.DrawDebug(lightShader);
         }
 
+        if (dirLight.shadowMapEnabled) {
+            dirLight.GenerateShadowMap(depthShader, ourModel);
+        }
+
         // don't forget to enable shader before setting uniforms
         ourShader.use();
 
@@ -217,14 +166,8 @@ int main()
 
         ourShader.setMat4("model", model);
         ourShader.setVec3("viewPos", camera.Position);
-        ourShader.setMat4("lightSpaceMatrix", lightSpaceMatrix);
-        ourShader.setFloat("shadowBias", shadowBias);
         ourShader.setPointLightProperties(light);
         ourShader.setDirectionalLightProperties(dirLight);
-
-        glActiveTexture(GL_TEXTURE3);
-        glBindTexture(GL_TEXTURE_2D, depthMap);
-        ourShader.setInt("shadowMap", 3);
         ourModel.Draw(ourShader);
 
         //DEBUG QUAD
@@ -237,12 +180,6 @@ int main()
         glBindTexture(GL_TEXTURE_2D, depthMap);
         renderQuad();*/
         //END DEBUG QUAD
-
-        if (ImGui::Begin("Shadow Mapping")) {
-            ImGui::Text("Bias");
-            ImGui::SliderFloat("Bias", &shadowBias, 0.0001, 0.025);
-        }
-        ImGui::End();
 
 
         light.ControlWindow();

@@ -140,6 +140,15 @@ void Shader::setDirectionalLightProperties(DirectionalLight light) const
     setVec3("dirLight.ambient", glm::vec3(light.ambientIntensity));
     setVec3("dirLight.diffuse", glm::vec3(light.diffuseIntensity));
     setVec3("dirLight.specular", glm::vec3(light.specularIntensity));
+
+    if (light.shadowMapEnabled) {
+        setMat4("lightSpaceMatrix", light.GetLightSpaceMatrix());
+        setFloat("shadowBias", light.minimumShadowBias);
+
+        glActiveTexture(GL_TEXTURE3);
+        glBindTexture(GL_TEXTURE_2D, light.depthMap);
+        setInt("shadowMap", 3);
+    }
 }
 
 void Shader::checkCompileErrors(GLuint shader, std::string type)
