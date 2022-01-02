@@ -76,6 +76,22 @@ int main()
     glfwSetScrollCallback(window, scroll_callback);
     ImGuiManager imGuiManager(window);
 
+    int width, height, nrComponents;
+    unsigned char* data = stbi_load("skywalker_icon.png", &width, &height, &nrComponents, 0);
+    if (data) {
+        GLFWimage icons[1];
+        icons[0].pixels = data;
+        icons[0].width = width;
+        icons[0].height = height;
+        glfwSetWindowIcon(window, 1, icons);
+        stbi_image_free(data);
+    }
+    else
+    {
+        std::cout << "Failed to load icon skywalker_icon.png" << std::endl;
+        stbi_image_free(data);
+    }
+
     // glad: load all OpenGL function pointers
     // ---------------------------------------
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))

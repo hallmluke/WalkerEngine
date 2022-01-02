@@ -26,7 +26,7 @@ public:
 
 	float debugDrawSize = 0.2f;
 	bool drawDebugEnabled = true;
-	bool debugShadow = true;
+	bool debugShadow = false;
 
 	unsigned int VBO, VAO;
 
