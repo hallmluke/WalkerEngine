@@ -39,15 +39,15 @@ void DirectionalLight::ControlWindow()
 		ImGui::SliderFloat("Z", &direction.z, -1.0f, 1.0f);
 
 		ImGui::Text("Intensity");
-		ImGui::SliderFloat("Ambient Intensity", &ambientIntensity, 0.01f, 0.5f);
-		ImGui::SliderFloat("Diffuse Intensity", &diffuseIntensity, 0.4f, 1.0f);
-		ImGui::SliderFloat("Specular Intensity", &specularIntensity, 0.8f, 1.2f);
+		ImGui::SliderFloat("Ambient Intensity", &ambientIntensity, 0.0f, 0.5f);
+		ImGui::SliderFloat("Diffuse Intensity", &diffuseIntensity, 0.0f, 1.0f);
+		ImGui::SliderFloat("Specular Intensity", &specularIntensity, 0.0f, 1.2f);
 
 		ImGui::Text("Shadow Mapping");
-		ImGui::Checkbox("Enabled", &shadowMapEnabled);
-		ImGui::Text("Bias");
+		//ImGui::Checkbox("Enabled", &shadowMapEnabled);
+		//ImGui::Text("Bias");
 		ImGui::SliderFloat("Minimum Shadow Bias", &minimumShadowBias, 0.0001, 0.025);
-		ImGui::SliderFloat("Shadow bias factor", &shadowBiasFactor, 0.001, 0.05);
+		//ImGui::SliderFloat("Shadow bias factor", &shadowBiasFactor, 0.001, 0.05);
 
 		ImGui::Text("Debug");
 		ImGui::Checkbox("Draw", &drawDebugEnabled);

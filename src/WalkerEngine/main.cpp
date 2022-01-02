@@ -98,6 +98,7 @@ int main()
     Shader ourShader("Shaders/basic_lighting.vert", "Shaders/basic_lighting.frag");
     Shader lightShader("Shaders/light_cube.vert", "Shaders/light_cube.frag");
     Shader depthShader("Shaders/depth_shader.vert", "Shaders/depth_shader.frag");
+    Shader depthCubeShader("Shaders/depth_shader_cube.vert", "Shaders/depth_shader_cube.frag", "Shaders/depth_shader_cube.geom");
     Shader debugDepthQuad("Shaders/debug_quad.vert", "Shaders/debug_quad.frag");
 
     // load models
@@ -109,7 +110,7 @@ int main()
     Model ourModel("Models/sponza/sponza.obj", model);
 
     PointLight light(lightPos);
-    DirectionalLight dirLight(directionLight);
+    DirectionalLight dirLight(directionLight, true);
 
     // draw in wireframe
     //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -139,6 +140,25 @@ int main()
         glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float) currentWidth / (float) currentHeight, 0.1f, 100.0f);
         glm::mat4 view = camera.GetViewMatrix();
 
+        if (dirLight.shadowMapEnabled) {
+            dirLight.GenerateShadowMap(depthShader, ourModel);
+        }
+
+        if (light.shadowMapEnabled) {
+            light.GenerateShadowMap(depthCubeShader, ourModel);
+        }
+
+        // don't forget to enable shader before setting uniforms
+        ourShader.use();
+
+        ourShader.setMat4("projection", projection);
+        ourShader.setMat4("view", view);
+
+        ourShader.setMat4("model", model);
+        ourShader.setVec3("viewPos", camera.Position);
+        ourShader.setPointLightProperties(light);
+        ourShader.setDirectionalLightProperties(dirLight);
+        ourModel.Draw(ourShader);
 
         if (light.drawDebugEnabled) {
             lightShader.use();
@@ -153,22 +173,6 @@ int main()
             lightShader.setMat4("view", view);
             dirLight.DrawDebug(lightShader);
         }
-
-        if (dirLight.shadowMapEnabled) {
-            dirLight.GenerateShadowMap(depthShader, ourModel);
-        }
-
-        // don't forget to enable shader before setting uniforms
-        ourShader.use();
-
-        ourShader.setMat4("projection", projection);
-        ourShader.setMat4("view", view);
-
-        ourShader.setMat4("model", model);
-        ourShader.setVec3("viewPos", camera.Position);
-        ourShader.setPointLightProperties(light);
-        ourShader.setDirectionalLightProperties(dirLight);
-        ourModel.Draw(ourShader);
 
         //DEBUG QUAD
         // render Depth map to quad for visual debugging

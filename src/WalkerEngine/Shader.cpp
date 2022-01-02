@@ -132,6 +132,16 @@ void Shader::setPointLightProperties(PointLight light) const
     setFloat("pointLight.constant", light.constantAttenuation);
     setFloat("pointLight.linear", light.linearAttenuation);
     setFloat("pointLight.quadratic", light.quadraticAttenuation);
+
+    if (light.shadowMapEnabled) {
+        glActiveTexture(GL_TEXTURE4);
+        glBindTexture(GL_TEXTURE_CUBE_MAP, light.depthCubeMap);
+        setInt("pointLight.depthMap", 4);
+        setFloat("pointLight.far_plane", light.far);
+        setFloat("pointLight.bias", light.bias);
+    }
+
+    setBool("debugShadow", light.debugShadow);
 }
 
 void Shader::setDirectionalLightProperties(DirectionalLight light) const

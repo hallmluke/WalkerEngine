@@ -121,5 +121,14 @@
     <None Include="Shaders\debug_quad.frag">
       <Filter>Source Files\Shaders</Filter>
     </None>
+    <None Include="Shaders\depth_shader_cube.vert">
+      <Filter>Source Files\Shaders</Filter>
+    </None>
+    <None Include="Shaders\depth_shader_cube.geom">
+      <Filter>Source Files\Shaders</Filter>
+    </None>
+    <None Include="Shaders\depth_shader_cube.frag">
+      <Filter>Source Files\Shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>

@@ -190,6 +190,9 @@
     <None Include="Shaders\debug_quad.vert" />
     <None Include="Shaders\depth_shader.frag" />
     <None Include="Shaders\depth_shader.vert" />
+    <None Include="Shaders\depth_shader_cube.frag" />
+    <None Include="Shaders\depth_shader_cube.geom" />
+    <None Include="Shaders\depth_shader_cube.vert" />
     <None Include="Shaders\geometry_shader.geom" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
