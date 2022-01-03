@@ -55,6 +55,7 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene)
     vector<Vertex> vertices;
     vector<unsigned int> indices;
     vector<Texture> textures;
+    bool transparency = false;
 
     // walk through each of the mesh's vertices
     for (unsigned int i = 0; i < mesh->mNumVertices; i++)
@@ -129,8 +130,16 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene)
     std::vector<Texture> heightMaps = loadMaterialTextures(material, aiTextureType_AMBIENT, "texture_height");
     textures.insert(textures.end(), heightMaps.begin(), heightMaps.end());
 
+
+    // Transparency check
+    for (int i = 0; i < diffuseMaps.size(); ++i) {
+        if (diffuseMaps[i].transparency) {
+            transparency = true;
+        }
+    }
+
     // return a mesh object created from the extracted mesh data
-    return Mesh(vertices, indices, textures);
+    return Mesh(vertices, indices, textures, transparency);
 }
 
 vector<Texture> Model::loadMaterialTextures(aiMaterial* mat, aiTextureType type, string typeName)
@@ -154,9 +163,11 @@ vector<Texture> Model::loadMaterialTextures(aiMaterial* mat, aiTextureType type,
         if (!skip)
         {   // if texture hasn't been loaded already, load it
             Texture texture;
-            texture.id = TextureFromFile(str.C_Str(), this->directory);
+            bool transparency = false;
+            texture.id = TextureFromFile(str.C_Str(), this->directory, transparency, gammaCorrection);
             texture.type = typeName;
             texture.path = str.C_Str();
+            texture.transparency = transparency;
             textures.push_back(texture);
             textures_loaded.push_back(texture);  // store it as texture loaded for entire model, to ensure we won't unnecesery load duplicate textures.
         }
@@ -164,7 +175,7 @@ vector<Texture> Model::loadMaterialTextures(aiMaterial* mat, aiTextureType type,
     return textures;
 }
 
-unsigned int TextureFromFile(const char* path, const string& directory, bool gamma)
+unsigned int TextureFromFile(const char* path, const string& directory, bool& transparency, bool gamma)
 {
     string filename = string(path);
     filename = directory + '/' + filename;
@@ -177,12 +188,16 @@ unsigned int TextureFromFile(const char* path, const string& directory, bool gam
     if (data)
     {
         GLenum format;
-        if (nrComponents == 1)
+        if (nrComponents == 1) {
             format = GL_RED;
-        else if (nrComponents == 3)
+        }
+        else if (nrComponents == 3) {
             format = GL_RGB;
-        else if (nrComponents == 4)
+        }
+        else if (nrComponents == 4) {
             format = GL_RGBA;
+            transparency = true;
+        }
 
         glBindTexture(GL_TEXTURE_2D, textureID);
         glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);

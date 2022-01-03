@@ -149,7 +149,11 @@ float ShadowCalculationPoint(PointLight light, vec3 fragPos)
 
 void main()
 {   
-    
+    if(diffuse_tex) {
+        if(texture(texture_diffuse1, TexCoords).a < 0.05) {
+            discard;
+        }
+    }
     // properties
     //vec3 norm = normalize(Normal);
     vec3 norm;

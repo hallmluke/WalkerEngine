@@ -33,7 +33,7 @@ public:
 	unsigned int depthMap;
 	float nearPlane = 0.1f;
 	float farPlane = 70.0f;
-	float projectionSize = 10.0f;
+	float projectionSize = 20.0f;
 	glm::mat4 GetLightSpaceMatrix();
 	float minimumShadowBias = 0.001f;
 	float shadowBiasFactor = 0.005f;

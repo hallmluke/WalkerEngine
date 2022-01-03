@@ -22,7 +22,7 @@
 #include <vector>
 using namespace std;
 
-unsigned int TextureFromFile(const char* path, const string& directory, bool gamma = false);
+unsigned int TextureFromFile(const char* path, const string& directory, bool& transparency, bool gamma = false);
 
 class Model
 {

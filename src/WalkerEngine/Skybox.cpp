@@ -11,6 +11,9 @@ Skybox::Skybox(std::string directory)
 void Skybox::Draw(glm::mat4 view, glm::mat4 projection)
 {
 	glDepthFunc(GL_LEQUAL);  // change depth function so depth test passes when values are equal to depth buffer's content
+	
+	// Disable face culling as we render inside face
+	glDisable(GL_CULL_FACE);
 	skyboxShader.use();
 	view = glm::mat4(glm::mat3(view)); // remove translation from the view matrix
 	skyboxShader.setMat4("view", view);
@@ -23,6 +26,7 @@ void Skybox::Draw(glm::mat4 view, glm::mat4 projection)
 	glDrawArrays(GL_TRIANGLES, 0, 36);
 	glBindVertexArray(0);
 	glDepthFunc(GL_LESS); // set depth function back to default
+	glEnable(GL_CULL_FACE); // re-enable face culling
 }
 
 void Skybox::InitBuffers()

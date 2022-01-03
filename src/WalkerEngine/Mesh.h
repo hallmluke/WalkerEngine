@@ -35,6 +35,7 @@ struct Texture {
     unsigned int id;
     string type;
     string path;
+    bool transparency;
 };
 
 class Mesh {
@@ -43,14 +44,16 @@ public:
     vector<Vertex>       vertices;
     vector<unsigned int> indices;
     vector<Texture>      textures;
+    bool transparency;
     unsigned int VAO;
 
     // constructor
-    Mesh(vector<Vertex> vertices, vector<unsigned int> indices, vector<Texture> textures)
+    Mesh(vector<Vertex> vertices, vector<unsigned int> indices, vector<Texture> textures, bool transparency = false)
     {
         this->vertices = vertices;
         this->indices = indices;
         this->textures = textures;
+        this->transparency = transparency;
 
         // now that we have all the required data, set the vertex buffers and its attribute pointers.
         setupMesh();
@@ -99,11 +102,19 @@ public:
 
         // draw mesh
         glBindVertexArray(VAO);
+
+        if (transparency) {
+            glDisable(GL_CULL_FACE);
+        }
+
         glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
         glBindVertexArray(0);
 
         // always good practice to set everything back to defaults once configured.
         glActiveTexture(GL_TEXTURE0);
+        if (transparency) {
+            glEnable(GL_CULL_FACE);
+        }
     }
 
 private:
