@@ -34,7 +34,7 @@ public:
 	bool shadowMapEnabled = true;
 	unsigned int depthCubeMap;
 	unsigned int depthMapFBO;
-	float near = 1.0f;
+	float near = 0.1f;
 	float far = 25.0f;
 	float aspect = 1.0f;
 	float bias = 0.05f;

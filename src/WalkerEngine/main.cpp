@@ -8,6 +8,7 @@
 #include "Cube.h"
 #include "PointLight.h"
 #include "DirectionalLight.h"
+#include "Skybox.h"
 
 #include <iostream>
 #include <glm/glm.hpp>
@@ -127,6 +128,7 @@ int main()
 
     PointLight light(lightPos);
     DirectionalLight dirLight(directionLight, true);
+    Skybox skybox("Skybox/default");
 
     // draw in wireframe
     //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -189,6 +191,8 @@ int main()
             lightShader.setMat4("view", view);
             dirLight.DrawDebug(lightShader);
         }
+
+        skybox.Draw(view, projection);
 
         //DEBUG QUAD
         // render Depth map to quad for visual debugging
