@@ -3,6 +3,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <glad/glad.h>
+#include <vector>
 
 class Shader;
 class Model;
@@ -29,6 +30,7 @@ public:
 	bool debugShadow = false;
 
 	unsigned int VBO, VAO;
+	std::vector<float> vertices;
 
 	// Shadow mapping
 	bool shadowMapEnabled = true;

@@ -109,6 +109,7 @@ int main()
     // configure global opengl state
     // -----------------------------
     glEnable(GL_DEPTH_TEST);
+    glEnable(GL_CULL_FACE);
 
     // build and compile shaders
     // -------------------------
@@ -121,10 +122,31 @@ int main()
     // load models
     // -----------
     // render the loaded model
-    glm::mat4 model = glm::mat4(1.0f);
-    model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f)); // translate it down so it's at the center of the scene
-    model = glm::scale(model, glm::vec3(.01f, .01f, .01f));	// it's a bit too big for our scene, so scale it down
-    Model ourModel("Models/sponza/sponza.obj", model);
+    //glm::mat4 model = glm::mat4(1.0f);
+    //model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f)); // translate it down so it's at the center of the scene
+    //model = glm::scale(model, glm::vec3(.01f, .01f, .01f));	// it's a bit too big for our scene, so scale it down
+
+    /*Transform transform;
+    transform.m_scale = glm::vec3(0.01f, 0.01f, 0.01f);
+    transform.m_pos = glm::vec3(0.0f, -1.0f, 0.0f);
+    transform.setAppliedTransform();
+
+    Transform transform2;
+    transform2.m_scale = glm::vec3(0.25f, 0.25f, 0.25f);
+    transform2.setAppliedTransform();
+
+    Transform transform3;
+    //transform3.m_scale = glm::vec3(0.25f, 0.25f, 0.25f);
+    //transform3.m_pos = glm::vec3(0.0f, 3.0f, 0.0f);
+    transform3.setAppliedTransform();*/
+
+    glm::mat4 transform3 = glm::mat4(1.0f);
+    transform3 = glm::translate(transform3, glm::vec3(0.0f, 3.0f, 0.0f));
+    transform3 = glm::scale(transform3, glm::vec3(0.25f, 0.25f, 0.25f));
+
+    //Model ourModel("Sponza", "Models/sponza/sponza.obj", transform);
+    //Model backpack("Backpack", "Models/backpack/backpack.obj", transform2);
+    Model nano("Nano", "Models/nano/nano_hierarchy.gltf", transform3);
 
     PointLight light(lightPos);
     DirectionalLight dirLight(directionLight, true);
@@ -151,7 +173,7 @@ int main()
         // ------
         glClearColor(0.05f, 0.05f, 0.05f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        glEnable(GL_CULL_FACE);
+        //
 
         imGuiManager.BeginFrame();
 
@@ -160,11 +182,11 @@ int main()
         glm::mat4 view = camera.GetViewMatrix();
 
         if (dirLight.shadowMapEnabled) {
-            dirLight.GenerateShadowMap(depthShader, ourModel);
+            //dirLight.GenerateShadowMap(depthShader, ourModel);
         }
 
         if (light.shadowMapEnabled) {
-            light.GenerateShadowMap(depthCubeShader, ourModel);
+            //light.GenerateShadowMap(depthCubeShader, ourModel);
         }
 
         // don't forget to enable shader before setting uniforms
@@ -173,11 +195,13 @@ int main()
         ourShader.setMat4("projection", projection);
         ourShader.setMat4("view", view);
 
-        ourShader.setMat4("model", model);
+        //ourShader.setMat4("model", model);
         ourShader.setVec3("viewPos", camera.Position);
         ourShader.setPointLightProperties(light);
         ourShader.setDirectionalLightProperties(dirLight);
-        ourModel.Draw(ourShader);
+        //ourModel.Draw(ourShader);
+        //backpack.Draw(ourShader);
+        nano.Draw(ourShader);
 
         if (light.drawDebugEnabled) {
             lightShader.use();
@@ -209,6 +233,9 @@ int main()
 
         light.ControlWindow();
         dirLight.ControlWindow();
+        //ourModel.ControlWindow();
+        //backpack.ControlWindow();
+        nano.ControlWindow();
         imGuiManager.EndFrame();
 
 

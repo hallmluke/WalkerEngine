@@ -13,6 +13,8 @@
 
 #include "Mesh.h""
 #include "Shader.h"
+#include "Transform.h"
+#include "ModelNode.h"
 
 #include <string>
 #include <fstream>
@@ -20,6 +22,9 @@
 #include <iostream>
 #include <map>
 #include <vector>
+
+class Transform;
+
 using namespace std;
 
 unsigned int TextureFromFile(const char* path, const string& directory, bool& transparency, bool gamma = false);
@@ -27,27 +32,32 @@ unsigned int TextureFromFile(const char* path, const string& directory, bool& tr
 class Model
 {
 public:
-    glm::mat4 transform;
+    std::string name;
+    //Transform transform;
     // model data 
     vector<Texture> textures_loaded;	// stores all the textures loaded so far, optimization to make sure textures aren't loaded more than once.
-    vector<Mesh>    meshes;
+    //vector<Mesh>    meshes;
     string directory;
     bool gammaCorrection;
 
     // constructor, expects a filepath to a 3D model.
-    Model(string const& path, glm::mat4 initialTransform = glm::mat4(), bool gamma = false);
+    Model(const std::string name, string const& path, glm::mat4 initialTransform, bool gamma = false);
 
     // draws the model, and thus all its meshes
     void Draw(Shader& shader);
 
+    void ControlWindow();
+
 private:
+    std::unique_ptr<ModelNode> rootNode;
+    glm::mat4 baseTransform;
     // loads a model with supported ASSIMP extensions from file and stores the resulting meshes in the meshes vector.
     void loadModel(string const& path);
 
     // processes a node in a recursive fashion. Processes each individual mesh located at the node and repeats this process on its children nodes (if any).
-    void processNode(aiNode* node, const aiScene* scene);
+    std::unique_ptr<ModelNode> processNode(aiNode* node, const aiScene* scene);
 
-    Mesh processMesh(aiMesh* mesh, const aiScene* scene);
+    std::unique_ptr<Mesh> processMesh(aiMesh* mesh, const aiScene* scene);
 
     // checks all material textures of a given type and loads the textures if they're not loaded yet.
     // the required info is returned as a Texture struct.

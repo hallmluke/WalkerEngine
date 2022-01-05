@@ -83,7 +83,7 @@ void DirectionalLight::GenerateShadowMap(Shader& shader, Model& model)
 	glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
 	glClear(GL_DEPTH_BUFFER_BIT);
 	glActiveTexture(GL_TEXTURE0);
-	shader.setMat4("model", model.transform);
+	//shader.setMat4("model", model.transform);
 	model.Draw(shader);
 
 	// Reset framebuffer, viewport

@@ -5,8 +5,10 @@
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include "imgui/imgui.h";
 
 #include "Shader.h"
+#include "Transform.h"
 
 #include <string>
 #include <vector>
@@ -40,6 +42,7 @@ struct Texture {
 
 class Mesh {
 public:
+    std::string name;
     // mesh Data
     vector<Vertex>       vertices;
     vector<unsigned int> indices;
@@ -48,8 +51,9 @@ public:
     unsigned int VAO;
 
     // constructor
-    Mesh(vector<Vertex> vertices, vector<unsigned int> indices, vector<Texture> textures, bool transparency = false)
+    Mesh(const std::string name, vector<Vertex> vertices, vector<unsigned int> indices, vector<Texture> textures, bool transparency = false)
     {
+        this->name = name;
         this->vertices = vertices;
         this->indices = indices;
         this->textures = textures;
@@ -60,7 +64,7 @@ public:
     }
 
     // render the mesh
-    void Draw(Shader& shader)
+    void Draw(Shader& shader, glm::mat4 transform)
     {
         // bind appropriate textures
         unsigned int diffuseNr = 1;
@@ -68,6 +72,9 @@ public:
         unsigned int normalNr = 1;
         unsigned int heightNr = 1;
 
+        //glm::mat4 transposed = glm::transpose(transform.m_transform);
+
+        shader.setMat4("model", transform);
         shader.setBool("diffuse_tex", false);
         shader.setBool("specular_tex", false);
         shader.setBool("normal_tex", false);
@@ -113,7 +120,13 @@ public:
         // always good practice to set everything back to defaults once configured.
         glActiveTexture(GL_TEXTURE0);
         if (transparency) {
-            glEnable(GL_CULL_FACE);
+            //glEnable(GL_CULL_FACE);
+        }
+    }
+
+    void ControlWindow() {
+        if (ImGui::TreeNode(name.c_str())) {
+            ImGui::TreePop();
         }
     }
 

@@ -102,7 +102,7 @@ void PointLight::GenerateShadowMap(Shader& shader, Model& model)
 	}
 	shader.setFloat("far_plane", far);
 	shader.setVec3("lightPos", position);
-	shader.setMat4("model", model.transform);
+	//shader.setMat4("model", model.transform);
 
 	model.Draw(shader);
 
@@ -114,7 +114,7 @@ void PointLight::GenerateShadowMap(Shader& shader, Model& model)
 
 void PointLight::InitBuffers()
 {
-	vector<float> vertices = Cube::getUnindexedVertices();
+	vertices = Cube::getUnindexedVertices();
 
 	glGenVertexArrays(1, &VAO);
 	glGenBuffers(1, &VBO);

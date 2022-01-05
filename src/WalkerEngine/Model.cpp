@@ -1,16 +1,32 @@
 #pragma once
 #include "Model.h"
+#include "Transform.h"
+#include "imgui/imgui.h"
 
 
-Model::Model(string const& path, glm::mat4 initialTransform, bool gamma) : gammaCorrection(gamma), transform(initialTransform)
+Model::Model(const std::string name, string const& path, glm::mat4 initialTransform, bool gamma) : name(name), gammaCorrection(gamma)
 {
     loadModel(path);
+    baseTransform = initialTransform;
 }
 
 void Model::Draw(Shader& shader)
 {
-    for (unsigned int i = 0; i < meshes.size(); i++)
-        meshes[i].Draw(shader);
+    Transform transform;
+    rootNode->Draw(shader, baseTransform);
+}
+
+void Model::ControlWindow()
+{
+    if (ImGui::Begin(name.c_str())) {
+        ImGui::Columns(2, nullptr, true);
+
+        rootNode->ShowTree();
+
+        ImGui::NextColumn();
+        ImGui::Text("Transform");
+    }
+    ImGui::End();
 }
 
 void Model::loadModel(string const& path)
@@ -28,28 +44,38 @@ void Model::loadModel(string const& path)
     directory = path.substr(0, path.find_last_of('/'));
 
     // process ASSIMP's root node recursively
-    processNode(scene->mRootNode, scene);
+    rootNode = processNode(scene->mRootNode, scene);
 }
 
-void Model::processNode(aiNode* node, const aiScene* scene)
+std::unique_ptr<ModelNode> Model::processNode(aiNode* node, const aiScene* scene)
 {
+    std::vector<std::unique_ptr<Mesh>> curMeshPtrs;
+    curMeshPtrs.reserve(node->mNumMeshes);
     // process each mesh located at the current node
     for (unsigned int i = 0; i < node->mNumMeshes; i++)
     {
         // the node object only contains indices to index the actual objects in the scene. 
         // the scene contains all the data, node is just to keep stuff organized (like relations between nodes).
+        
         aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
-        meshes.push_back(processMesh(mesh, scene));
+        //meshes.push_back(processMesh(mesh, scene));
+        curMeshPtrs.push_back(std::move(processMesh(mesh, scene)));
     }
+
+    Transform transform;
+    transform.aiMatrix4x4ToGlm(node->mTransformation);
+
+    std::unique_ptr<ModelNode> pNode = std::make_unique<ModelNode>(node->mName.C_Str(), std::move(curMeshPtrs), transform.m_transform);
     // after we've processed all of the meshes (if any) we then recursively process each of the children nodes
     for (unsigned int i = 0; i < node->mNumChildren; i++)
     {
-        processNode(node->mChildren[i], scene);
+        pNode->AddChild(processNode(node->mChildren[i], scene));
     }
 
+    return pNode;
 }
 
-Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene)
+std::unique_ptr<Mesh> Model::processMesh(aiMesh* mesh, const aiScene* scene)
 {
     // data to fill
     vector<Vertex> vertices;
@@ -139,7 +165,7 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene)
     }
 
     // return a mesh object created from the extracted mesh data
-    return Mesh(vertices, indices, textures, transparency);
+    return std::make_unique<Mesh>(mesh->mName.C_Str(), vertices, indices, textures, transparency);
 }
 
 vector<Texture> Model::loadMaterialTextures(aiMaterial* mat, aiTextureType type, string typeName)
