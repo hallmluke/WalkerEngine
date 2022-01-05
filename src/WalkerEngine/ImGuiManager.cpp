@@ -31,7 +31,7 @@ void ImGuiManager::BeginFrame()
     ImGui_ImplGlfw_NewFrame();
     ImGui::NewFrame();
 
-    ImGui::ShowDemoWindow();
+    //ImGui::ShowDemoWindow();
     ImGui::ShowMetricsWindow();
 }
 

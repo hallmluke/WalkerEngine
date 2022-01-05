@@ -8,17 +8,17 @@ ModelNode::ModelNode(const std::string name, std::vector<std::unique_ptr<Mesh>> 
 	SetInitialTransform(initialTransform);
 }
 
-void ModelNode::Draw(Shader& shader, glm::mat4 accumulatedTransform)
+void ModelNode::Draw(Shader& shader)//, glm::mat4 accumulatedTransform)
 {
-	std::cout << name << std::endl;
+	//std::cout << name << std::endl;
 	//glm::mat4 builtTransform = appliedTransform.m_transform * initialTransform * accumulatedTransform;
-	glm::mat4 builtTransform = accumulatedTransform * initialTransform * appliedTransform.m_transform;
+	//glm::mat4 builtTransform = accumulatedTransform * initialTransform * appliedTransform.m_transform;
 
 	for (const auto& meshPtr : meshPtrs) {
-		meshPtr->Draw(shader, builtTransform);
+		meshPtr->Draw(shader, globalTransform);
 	}
 	for (const auto& childPtr : childNodePtrs) {
-		childPtr->Draw(shader, builtTransform);
+		childPtr->Draw(shader);
 	}
 }
 
@@ -56,9 +56,19 @@ void ModelNode::SetInitialTransform(glm::mat4 transform)
 	//ApplyTransform();
 }
 
+void ModelNode::UpdateGlobalTransform(glm::mat4 parentGlobalTransform)
+{
+	globalTransform = parentGlobalTransform * initialTransform * appliedTransform.m_transform;
+
+	for (const auto& childPtr : childNodePtrs) {
+		childPtr->UpdateGlobalTransform(globalTransform);
+	}
+}
+
 void ModelNode::ApplyTransform()
 {
 	appliedTransform.setAppliedTransform();
+	UpdateGlobalTransform(parent->globalTransform);
 
 	/*for (unsigned int i = 0; i < childNodePtrs.size(); i++) {
 		childNodePtrs[i]->ApplyTransform(appliedTransform);

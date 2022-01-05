@@ -126,25 +126,17 @@ int main()
     //model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f)); // translate it down so it's at the center of the scene
     //model = glm::scale(model, glm::vec3(.01f, .01f, .01f));	// it's a bit too big for our scene, so scale it down
 
-    /*Transform transform;
-    transform.m_scale = glm::vec3(0.01f, 0.01f, 0.01f);
-    transform.m_pos = glm::vec3(0.0f, -1.0f, 0.0f);
-    transform.setAppliedTransform();
+    glm::mat4 transform = glm::mat4(1.0f);
+    transform = glm::scale(transform, glm::vec3(0.01f, 0.01f, 0.01f));
 
-    Transform transform2;
-    transform2.m_scale = glm::vec3(0.25f, 0.25f, 0.25f);
-    transform2.setAppliedTransform();
-
-    Transform transform3;
-    //transform3.m_scale = glm::vec3(0.25f, 0.25f, 0.25f);
-    //transform3.m_pos = glm::vec3(0.0f, 3.0f, 0.0f);
-    transform3.setAppliedTransform();*/
+    glm::mat4 transform2 = glm::mat4(1.0f);
+    transform2 = glm::translate(transform2, glm::vec3(1.0f, 1.0f, 3.0f));
 
     glm::mat4 transform3 = glm::mat4(1.0f);
     transform3 = glm::translate(transform3, glm::vec3(0.0f, 3.0f, 0.0f));
     transform3 = glm::scale(transform3, glm::vec3(0.25f, 0.25f, 0.25f));
 
-    //Model ourModel("Sponza", "Models/sponza/sponza.obj", transform);
+    Model sponza("Sponza", "Models/sponza/sponza.obj", transform);
     //Model backpack("Backpack", "Models/backpack/backpack.obj", transform2);
     Model nano("Nano", "Models/nano/nano_hierarchy.gltf", transform3);
 
@@ -182,11 +174,11 @@ int main()
         glm::mat4 view = camera.GetViewMatrix();
 
         if (dirLight.shadowMapEnabled) {
-            //dirLight.GenerateShadowMap(depthShader, ourModel);
+            dirLight.GenerateShadowMap(depthShader, sponza);
         }
 
         if (light.shadowMapEnabled) {
-            //light.GenerateShadowMap(depthCubeShader, ourModel);
+            light.GenerateShadowMap(depthCubeShader, sponza);
         }
 
         // don't forget to enable shader before setting uniforms
@@ -199,7 +191,7 @@ int main()
         ourShader.setVec3("viewPos", camera.Position);
         ourShader.setPointLightProperties(light);
         ourShader.setDirectionalLightProperties(dirLight);
-        //ourModel.Draw(ourShader);
+        sponza.Draw(ourShader);
         //backpack.Draw(ourShader);
         nano.Draw(ourShader);
 
@@ -233,7 +225,7 @@ int main()
 
         light.ControlWindow();
         dirLight.ControlWindow();
-        //ourModel.ControlWindow();
+        sponza.ControlWindow();
         //backpack.ControlWindow();
         nano.ControlWindow();
         imGuiManager.EndFrame();

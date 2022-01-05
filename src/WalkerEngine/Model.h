@@ -47,6 +47,7 @@ public:
     void Draw(Shader& shader);
 
     void ControlWindow();
+    void SetGlobalTransformOnNodes();
 
 private:
     std::unique_ptr<ModelNode> rootNode;
