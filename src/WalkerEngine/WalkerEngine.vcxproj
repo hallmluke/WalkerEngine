@@ -156,6 +156,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="DirectionalLight.cpp" />
+    <ClCompile Include="GBuffer.cpp" />
     <ClCompile Include="glad.c" />
     <ClCompile Include="ImGuiManager.cpp" />
     <ClCompile Include="imgui\imgui.cpp" />
@@ -169,6 +170,7 @@
     <ClCompile Include="Model.cpp" />
     <ClCompile Include="ModelNode.cpp" />
     <ClCompile Include="PointLight.cpp" />
+    <ClCompile Include="Quad.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="Skybox.cpp" />
     <ClCompile Include="stb_image.cpp" />
@@ -178,11 +180,13 @@
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Cube.h" />
     <ClInclude Include="DirectionalLight.h" />
+    <ClInclude Include="GBuffer.h" />
     <ClInclude Include="ImGuiManager.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="Model.h" />
     <ClInclude Include="ModelNode.h" />
     <ClInclude Include="PointLight.h" />
+    <ClInclude Include="Quad.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="Skybox.h" />
     <ClInclude Include="Transform.h" />
@@ -194,12 +198,16 @@
     <None Include="Shaders\basic_lighting.vert" />
     <None Include="Shaders\debug_quad.frag" />
     <None Include="Shaders\debug_quad.vert" />
+    <None Include="Shaders\deferred_shading.frag" />
+    <None Include="Shaders\deferred_shading.vert" />
     <None Include="Shaders\depth_shader.frag" />
     <None Include="Shaders\depth_shader.vert" />
     <None Include="Shaders\depth_shader_cube.frag" />
     <None Include="Shaders\depth_shader_cube.geom" />
     <None Include="Shaders\depth_shader_cube.vert" />
     <None Include="Shaders\geometry_shader.geom" />
+    <None Include="Shaders\g_buffer.frag" />
+    <None Include="Shaders\g_buffer.vert" />
     <None Include="Shaders\skybox.frag" />
     <None Include="Shaders\skybox.vert" />
   </ItemGroup>

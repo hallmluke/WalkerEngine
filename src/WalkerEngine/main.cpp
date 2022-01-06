@@ -9,6 +9,8 @@
 #include "PointLight.h"
 #include "DirectionalLight.h"
 #include "Skybox.h"
+#include "GBuffer.h"
+#include "Quad.h"
 
 #include <iostream>
 #include <glm/glm.hpp>
@@ -20,7 +22,6 @@
 #include <assimp/postprocess.h>
 
 #include "ImGuiManager.h"
-
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
@@ -120,6 +121,7 @@ int main()
     Shader depthShader("Shaders/depth_shader.vert", "Shaders/depth_shader.frag");
     Shader depthCubeShader("Shaders/depth_shader_cube.vert", "Shaders/depth_shader_cube.frag", "Shaders/depth_shader_cube.geom");
     Shader debugDepthQuad("Shaders/debug_quad.vert", "Shaders/debug_quad.frag");
+    Shader deferredShader("Shaders/deferred_shading.vert", "Shaders/deferred_shading.frag");
 
     // load models
     // -----------
@@ -145,6 +147,9 @@ int main()
     PointLight light(lightPos);
     DirectionalLight dirLight(directionLight, true);
     Skybox skybox("Skybox/default");
+
+    GBuffer gBuffer(currentWidth, currentHeight);
+    Quad quad;
 
     // draw in wireframe
     //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -175,16 +180,31 @@ int main()
         glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float) currentWidth / (float) currentHeight, 0.1f, 100.0f);
         glm::mat4 view = camera.GetViewMatrix();
 
-        if (dirLight.shadowMapEnabled) {
+        gBuffer.BindFramebuffer();
+        gBuffer.DrawModel(sponza, view, projection);
+
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        deferredShader.use();
+        gBuffer.BindTextures();
+        deferredShader.setInt("gPosition", 0);
+        deferredShader.setInt("gNormal", 1);
+        deferredShader.setInt("gAlbedoSpec", 2);
+        deferredShader.setInt("debugPass", gBuffer.debugPass);
+        quad.Draw();
+
+
+
+        /*if (dirLight.shadowMapEnabled) {
             dirLight.GenerateShadowMap(depthShader, sponza);
         }
 
         if (light.shadowMapEnabled) {
             light.GenerateShadowMap(depthCubeShader, sponza);
-        }
+        }*/
 
         // don't forget to enable shader before setting uniforms
-        ourShader.use();
+        /*ourShader.use();
 
         ourShader.setMat4("projection", projection);
         ourShader.setMat4("view", view);
@@ -211,7 +231,7 @@ int main()
             dirLight.DrawDebug(lightShader);
         }
 
-        skybox.Draw(view, projection);
+        skybox.Draw(view, projection);*/
 
         //DEBUG QUAD
         // render Depth map to quad for visual debugging
@@ -225,11 +245,12 @@ int main()
         //END DEBUG QUAD
 
 
-        light.ControlWindow();
-        dirLight.ControlWindow();
-        sponza.ControlWindow();
+        //light.ControlWindow();
+        //dirLight.ControlWindow();
+        //sponza.ControlWindow();
         //backpack.ControlWindow();
-        nano.ControlWindow();
+        //nano.ControlWindow();
+        gBuffer.ControlWindow();
         imGuiManager.EndFrame();
 
 
@@ -246,35 +267,6 @@ int main()
     // ------------------------------------------------------------------
     glfwTerminate();
     return 0;
-}
-
-unsigned int quadVAO = 0;
-unsigned int quadVBO;
-void renderQuad()
-{
-    if (quadVAO == 0)
-    {
-        float quadVertices[] = {
-            // positions        // texture Coords
-            -1.0f,  1.0f, 0.0f, 0.0f, 1.0f,
-            -1.0f, 0.0f, 0.0f, 0.0f, 0.0f,
-             0.0f,  1.0f, 0.0f, 1.0f, 1.0f,
-             0.0f, 0.0f, 0.0f, 1.0f, 0.0f,
-        };
-        // setup plane VAO
-        glGenVertexArrays(1, &quadVAO);
-        glGenBuffers(1, &quadVBO);
-        glBindVertexArray(quadVAO);
-        glBindBuffer(GL_ARRAY_BUFFER, quadVBO);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), &quadVertices, GL_STATIC_DRAW);
-        glEnableVertexAttribArray(0);
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
-        glEnableVertexAttribArray(1);
-        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
-    }
-    glBindVertexArray(quadVAO);
-    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-    glBindVertexArray(0);
 }
 
 // process all input: query GLFW whether relevant keys are pressed/released this frame and react accordingly
