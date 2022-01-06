@@ -52,6 +52,7 @@ public:
 private:
     std::unique_ptr<ModelNode> rootNode;
     glm::mat4 baseTransform;
+    ModelNode* selectedNode;
     // loads a model with supported ASSIMP extensions from file and stores the resulting meshes in the meshes vector.
     void loadModel(string const& path);
 

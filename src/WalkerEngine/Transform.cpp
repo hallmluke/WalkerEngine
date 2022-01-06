@@ -2,8 +2,6 @@
 
 glm::mat4 Transform::getLocalModelMatrix() {
 
-    return glm::mat4(1.0f);
-
     const glm::mat4 transformX = glm::rotate(glm::mat4(1.0f),
         glm::radians(m_eulerRotation.x),
         glm::vec3(1.0f, 0.0f, 0.0f));

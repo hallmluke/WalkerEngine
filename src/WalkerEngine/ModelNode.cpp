@@ -10,10 +10,6 @@ ModelNode::ModelNode(const std::string name, std::vector<std::unique_ptr<Mesh>> 
 
 void ModelNode::Draw(Shader& shader)//, glm::mat4 accumulatedTransform)
 {
-	//std::cout << name << std::endl;
-	//glm::mat4 builtTransform = appliedTransform.m_transform * initialTransform * accumulatedTransform;
-	//glm::mat4 builtTransform = accumulatedTransform * initialTransform * appliedTransform.m_transform;
-
 	for (const auto& meshPtr : meshPtrs) {
 		meshPtr->Draw(shader, globalTransform);
 	}
@@ -22,11 +18,20 @@ void ModelNode::Draw(Shader& shader)//, glm::mat4 accumulatedTransform)
 	}
 }
 
-void ModelNode::ShowTree()
+void ModelNode::ShowTree(ModelNode*& selectedNode)
 {
-	if (ImGui::TreeNodeEx(name.c_str())) {
+	int flags = ImGuiTreeNodeFlags_OpenOnArrow | (childNodePtrs.size() == 0 ? ImGuiTreeNodeFlags_Leaf : 0);
+	flags = flags | (selectedNode == this ? ImGuiTreeNodeFlags_Selected : 0);
+
+	bool expanded = ImGui::TreeNodeEx(name.c_str(), flags);
+
+	if (ImGui::IsItemClicked()) {
+		selectedNode = this;
+	}
+
+	if (expanded) {
 		for (const auto& child : childNodePtrs) {
-			child->ShowTree();
+			child->ShowTree(selectedNode);
 		}
 
 		ImGui::TreePop();
@@ -44,16 +49,19 @@ void ModelNode::AddChild(std::unique_ptr<ModelNode> modelNode)
 void ModelNode::SetInitialTransform(glm::mat4 transform)
 {
 	initialTransform = transform;
+}
 
-	/*if (parent) {
-		glm::mat4 applied = parent->appliedTransform.m_transform * transform.m_transform;
-		appliedTransform.m_transform = applied;
+void ModelNode::SetRootTransform(glm::mat4 transform) {
+	rootTransform = transform;
+}
+
+void ModelNode::UpdateGlobalTransform()
+{
+	globalTransform = rootTransform * initialTransform * appliedTransform.m_transform;
+
+	for (const auto& childPtr : childNodePtrs) {
+		childPtr->UpdateGlobalTransform(globalTransform);
 	}
-	else {
-		appliedTransform = transform;
-	}*/
-
-	//ApplyTransform();
 }
 
 void ModelNode::UpdateGlobalTransform(glm::mat4 parentGlobalTransform)
@@ -68,11 +76,13 @@ void ModelNode::UpdateGlobalTransform(glm::mat4 parentGlobalTransform)
 void ModelNode::ApplyTransform()
 {
 	appliedTransform.setAppliedTransform();
-	UpdateGlobalTransform(parent->globalTransform);
 
-	/*for (unsigned int i = 0; i < childNodePtrs.size(); i++) {
-		childNodePtrs[i]->ApplyTransform(appliedTransform);
-	}*/
+	if (parent) {
+		UpdateGlobalTransform(parent->globalTransform);
+	}
+	else {
+		UpdateGlobalTransform();
+	}
 }
 
 void ModelNode::ApplyTransform(Transform parentTransform)

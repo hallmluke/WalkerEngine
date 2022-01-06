@@ -21,17 +21,55 @@ void Model::ControlWindow()
     if (ImGui::Begin(name.c_str())) {
         ImGui::Columns(2, nullptr, true);
 
-        rootNode->ShowTree();
+        rootNode->ShowTree(selectedNode);
 
         ImGui::NextColumn();
         ImGui::Text("Transform");
+
+        if (selectedNode) {
+            ImGui::Text("Orientation");
+            if (ImGui::SliderFloat("Roll", &selectedNode->appliedTransform.m_eulerRotation.x, -180.0f, 180.0f)) {
+                selectedNode->ApplyTransform();
+            }
+
+            if (ImGui::SliderFloat("Pitch", &selectedNode->appliedTransform.m_eulerRotation.y, -180.0f, 180.0f)) {
+                selectedNode->ApplyTransform();
+            }
+
+            if (ImGui::SliderFloat("Yaw", &selectedNode->appliedTransform.m_eulerRotation.z, -180.0f, 180.0f)) {
+                selectedNode->ApplyTransform();
+            }
+            ImGui::Text("Position");
+
+            if (ImGui::SliderFloat("X", &selectedNode->appliedTransform.m_pos.x, -20.0f, 20.0f)) {
+                selectedNode->ApplyTransform();
+            }
+            if (ImGui::SliderFloat("Y", &selectedNode->appliedTransform.m_pos.y, -20.0f, 20.0f)) {
+                selectedNode->ApplyTransform();
+            }
+            if (ImGui::SliderFloat("Z", &selectedNode->appliedTransform.m_pos.z, -20.0f, 20.0f)) {
+                selectedNode->ApplyTransform();
+            }
+
+            ImGui::Text("Scale");
+            if (ImGui::SliderFloat("Scale X", &selectedNode->appliedTransform.m_scale.x, 0.01f, 20.0f)) {
+                selectedNode->ApplyTransform();
+            }
+            if (ImGui::SliderFloat("Scale Y", &selectedNode->appliedTransform.m_scale.y, 0.01f, 20.0f)) {
+                selectedNode->ApplyTransform();
+            }
+            if (ImGui::SliderFloat("Scale Z", &selectedNode->appliedTransform.m_scale.z, 0.01f, 20.0f)) {
+                selectedNode->ApplyTransform();
+            }
+        }
     }
     ImGui::End();
 }
 
 void Model::SetGlobalTransformOnNodes()
 {
-    rootNode->UpdateGlobalTransform(baseTransform);
+    rootNode->SetRootTransform(baseTransform);
+    rootNode->UpdateGlobalTransform();
 }
 
 void Model::loadModel(string const& path)
