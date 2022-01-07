@@ -144,6 +144,40 @@ void Shader::setPointLightProperties(PointLight light) const
     setBool("debugShadow", light.debugShadow);
 }
 
+void Shader::setPointLightProperties(std::vector<PointLight*> lights) const
+{
+    int maxedLights = 0;
+    int maxLights = 64;
+
+    if (lights.size() < maxLights) {
+        maxedLights = lights.size();
+    }
+    else {
+        maxedLights = maxLights;
+    }
+
+    for (int i = 0; i < maxedLights; i++) {
+        std::string lightPrefix = "lights[" + std::to_string(i) + "]";
+        setVec3(lightPrefix + ".position", lights[i]->position);
+        setVec3(lightPrefix + ".ambient", glm::vec3(lights[i]->ambientIntensity));
+        setVec3(lightPrefix + ".diffuse", glm::vec3(lights[i]->diffuseIntensity));
+        setVec3(lightPrefix + ".specular", glm::vec3(lights[i]->specularIntensity));
+        setFloat(lightPrefix + ".constant", lights[i]->constantAttenuation);
+        setFloat(lightPrefix + ".linear", lights[i]->linearAttenuation);
+        setFloat(lightPrefix + ".quadratic", lights[i]->quadraticAttenuation);
+
+        if (lights[i]->shadowMapEnabled) {
+            glActiveTexture(GL_TEXTURE4);
+            glBindTexture(GL_TEXTURE_CUBE_MAP, lights[i]->depthCubeMap);
+            setInt(lightPrefix + ".depthMap", 4);
+            setFloat(lightPrefix + ".far_plane", lights[i]->far);
+            setFloat(lightPrefix + ".bias", lights[i]->bias);
+        }
+    }
+    
+    setInt("numberOfLights", maxedLights);
+}
+
 void Shader::setDirectionalLightProperties(DirectionalLight light) const
 {
     setVec3("dirLight.direction", light.direction);
@@ -152,12 +186,12 @@ void Shader::setDirectionalLightProperties(DirectionalLight light) const
     setVec3("dirLight.specular", glm::vec3(light.specularIntensity));
 
     if (light.shadowMapEnabled) {
-        setMat4("lightSpaceMatrix", light.GetLightSpaceMatrix());
-        setFloat("shadowBias", light.minimumShadowBias);
+        setMat4("dirLight.lightSpaceMatrix", light.GetLightSpaceMatrix());
+        setFloat("dirLight.shadowBias", light.minimumShadowBias);
 
         glActiveTexture(GL_TEXTURE3);
         glBindTexture(GL_TEXTURE_2D, light.depthMap);
-        setInt("shadowMap", 3);
+        setInt("dirLight.shadowMap", 3);
     }
 }
 

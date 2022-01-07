@@ -27,7 +27,6 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 void processInput(GLFWwindow* window);
-void renderQuad();
 
 // settings
 const unsigned int SCR_WIDTH = 1280;
@@ -145,6 +144,7 @@ int main()
     Model nano("Nano", "Models/nano/nano_hierarchy.gltf", transform3);
 
     PointLight light(lightPos);
+    std::vector<PointLight*> lights = { &light };
     DirectionalLight dirLight(directionLight, true);
     Skybox skybox("Skybox/default");
 
@@ -180,6 +180,14 @@ int main()
         glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float) currentWidth / (float) currentHeight, 0.1f, 100.0f);
         glm::mat4 view = camera.GetViewMatrix();
 
+        if (dirLight.shadowMapEnabled) {
+            dirLight.GenerateShadowMap(depthShader, sponza);
+        }
+
+        if (light.shadowMapEnabled) {
+            light.GenerateShadowMap(depthCubeShader, sponza);
+        }
+
         gBuffer.BindFramebuffer();
         gBuffer.DrawModel(sponza, view, projection);
 
@@ -191,17 +199,12 @@ int main()
         deferredShader.setInt("gNormal", 1);
         deferredShader.setInt("gAlbedoSpec", 2);
         deferredShader.setInt("debugPass", gBuffer.debugPass);
+
+        deferredShader.setVec3("viewPos", camera.Position);
+        deferredShader.setPointLightProperties(lights);
+        deferredShader.setDirectionalLightProperties(dirLight);
         quad.Draw();
-
-
-
-        /*if (dirLight.shadowMapEnabled) {
-            dirLight.GenerateShadowMap(depthShader, sponza);
-        }
-
-        if (light.shadowMapEnabled) {
-            light.GenerateShadowMap(depthCubeShader, sponza);
-        }*/
+        
 
         // don't forget to enable shader before setting uniforms
         /*ourShader.use();
@@ -216,6 +219,13 @@ int main()
         sponza.Draw(ourShader);
         //backpack.Draw(ourShader);
         nano.Draw(ourShader);
+        */
+
+        glBindFramebuffer(GL_READ_FRAMEBUFFER, gBuffer.GetGBuffer());
+        glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0); // write to default framebuffer
+        glBlitFramebuffer(0, 0, SCR_WIDTH, SCR_HEIGHT, 0, 0, SCR_WIDTH, SCR_HEIGHT,
+            GL_DEPTH_BUFFER_BIT, GL_NEAREST);
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
         if (light.drawDebugEnabled) {
             lightShader.use();
@@ -231,7 +241,7 @@ int main()
             dirLight.DrawDebug(lightShader);
         }
 
-        skybox.Draw(view, projection);*/
+        skybox.Draw(view, projection);
 
         //DEBUG QUAD
         // render Depth map to quad for visual debugging
@@ -245,8 +255,8 @@ int main()
         //END DEBUG QUAD
 
 
-        //light.ControlWindow();
-        //dirLight.ControlWindow();
+        light.ControlWindow();
+        dirLight.ControlWindow();
         //sponza.ControlWindow();
         //backpack.ControlWindow();
         //nano.ControlWindow();

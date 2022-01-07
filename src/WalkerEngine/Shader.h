@@ -7,6 +7,7 @@
 #include <fstream>
 #include <sstream>
 #include <iostream>
+#include <vector>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -28,6 +29,7 @@ public:
 	void setVec3(const std::string& name, float x, float y, float z) const;
 	void setVec3(const std::string& name, glm::vec3 value) const;
 	void setPointLightProperties(PointLight light) const;
+	void setPointLightProperties(std::vector<PointLight*> lights) const;
 	void setDirectionalLightProperties(DirectionalLight light) const;
 private:
 	void checkCompileErrors(GLuint shader, std::string type);

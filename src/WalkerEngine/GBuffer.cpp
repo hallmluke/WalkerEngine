@@ -75,7 +75,12 @@ void GBuffer::BindFramebuffer()
 void GBuffer::ControlWindow()
 {
     if (ImGui::Begin("G Buffer")) {
-        ImGui::SliderInt("Debug Pass", &debugPass, 0, 3);
+        ImGui::SliderInt("Debug Pass", &debugPass, 0, 4);
     }
     ImGui::End();
+}
+
+unsigned int GBuffer::GetGBuffer()
+{
+    return gBuffer;
 }

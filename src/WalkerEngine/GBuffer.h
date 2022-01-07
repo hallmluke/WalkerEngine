@@ -11,6 +11,7 @@ public:
 	void DrawModel(Model& model, glm::mat4 view, glm::mat4 projection);
 	void BindFramebuffer();
 	void ControlWindow();
+	unsigned int GetGBuffer();
 	int debugPass = 0;
 
 private:

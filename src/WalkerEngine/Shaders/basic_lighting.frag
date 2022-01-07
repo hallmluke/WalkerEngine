@@ -58,7 +58,7 @@ uniform DirLight dirLight;
 //uniform PointLight pointLights[NR_POINT_LIGHTS];
 uniform PointLight pointLight;
 //uniform SpotLight spotLight;
-uniform Material material;
+//uniform Material material;
 uniform bool debugShadow;
 
 vec3 sampleOffsetDirections[20] = vec3[]
