@@ -11,6 +11,7 @@
 #include "Skybox.h"
 #include "GBuffer.h"
 #include "Quad.h"
+#include "SSAOPass.h"
 
 #include <iostream>
 #include <glm/glm.hpp>
@@ -57,7 +58,7 @@ int main()
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-    glfwWindowHint(GLFW_SAMPLES, 4);
+    //glfwWindowHint(GLFW_SAMPLES, 4);
 
 #ifdef __APPLE__
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
@@ -110,7 +111,7 @@ int main()
     // configure global opengl state
     // -----------------------------
     glEnable(GL_DEPTH_TEST);
-    glEnable(GL_MULTISAMPLE);
+    //glEnable(GL_MULTISAMPLE);
     glEnable(GL_CULL_FACE);
 
     // build and compile shaders
@@ -149,6 +150,7 @@ int main()
     Skybox skybox("Skybox/default");
 
     GBuffer gBuffer(currentWidth, currentHeight);
+    SSAOPass ssaoPass(currentWidth, currentHeight);
     Quad quad;
 
     // draw in wireframe
@@ -190,15 +192,24 @@ int main()
 
         gBuffer.BindFramebuffer();
         gBuffer.DrawModel(sponza, view, projection);
+        gBuffer.DrawModel(nano, view, projection);
+
+        ssaoPass.BindFramebuffer();
+        gBuffer.BindTextures();
+        ssaoPass.Draw(projection, view);
+
 
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         deferredShader.use();
         gBuffer.BindTextures();
+        ssaoPass.BindTextures();
         deferredShader.setInt("gPosition", 0);
         deferredShader.setInt("gNormal", 1);
         deferredShader.setInt("gAlbedoSpec", 2);
+        deferredShader.setInt("ssaoColor", 3);
         deferredShader.setInt("debugPass", gBuffer.debugPass);
+        deferredShader.setBool("useAmbientOcclusion", gBuffer.ambientOcclusionEnabled);
 
         deferredShader.setVec3("viewPos", camera.Position);
         deferredShader.setPointLightProperties(lights);
@@ -243,23 +254,12 @@ int main()
 
         skybox.Draw(view, projection);
 
-        //DEBUG QUAD
-        // render Depth map to quad for visual debugging
-        // ---------------------------------------------
-        /*debugDepthQuad.use();
-        debugDepthQuad.setFloat("near_plane", near_plane);
-        debugDepthQuad.setFloat("far_plane", far_plane);
-        glActiveTexture(GL_TEXTURE);
-        glBindTexture(GL_TEXTURE_2D, depthMap);
-        renderQuad();*/
-        //END DEBUG QUAD
-
 
         light.ControlWindow();
         dirLight.ControlWindow();
-        //sponza.ControlWindow();
+        sponza.ControlWindow();
         //backpack.ControlWindow();
-        //nano.ControlWindow();
+        nano.ControlWindow();
         gBuffer.ControlWindow();
         imGuiManager.EndFrame();
 

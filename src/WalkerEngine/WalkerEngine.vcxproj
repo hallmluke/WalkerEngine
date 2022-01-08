@@ -173,6 +173,7 @@
     <ClCompile Include="Quad.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="Skybox.cpp" />
+    <ClCompile Include="SSAOPass.cpp" />
     <ClCompile Include="stb_image.cpp" />
     <ClCompile Include="Transform.cpp" />
   </ItemGroup>
@@ -189,6 +190,7 @@
     <ClInclude Include="Quad.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="Skybox.h" />
+    <ClInclude Include="SSAOPass.h" />
     <ClInclude Include="Transform.h" />
   </ItemGroup>
   <ItemGroup>
@@ -210,6 +212,8 @@
     <None Include="Shaders\g_buffer.vert" />
     <None Include="Shaders\skybox.frag" />
     <None Include="Shaders\skybox.vert" />
+    <None Include="Shaders\ssao_pass.frag" />
+    <None Include="Shaders\ssao_pass.vert" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

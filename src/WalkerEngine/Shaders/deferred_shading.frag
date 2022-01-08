@@ -6,7 +6,9 @@ in vec2 TexCoords;
 uniform sampler2D gPosition;
 uniform sampler2D gNormal;
 uniform sampler2D gAlbedoSpec;
+uniform sampler2D ssaoColor;
 uniform int debugPass;
+uniform bool useAmbientOcclusion;
 
 //struct Light {
 //   vec3 Position;
@@ -52,8 +54,8 @@ uniform DirLight dirLight;
 
 //vec4 FragPosDirLightSpace;
 
-vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir, vec3 diffuseInput, float specularInput, vec4 fragPositionLightSpace);
-vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir, vec3 diffuseInput, float specularInput);
+vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir, vec3 diffuseInput, float specularInput, vec4 fragPositionLightSpace, float ambientOcclusion);
+vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir, vec3 diffuseInput, float specularInput, float ambientOcclusion);
 //vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 fragPos, vec3 viewDir);
 
 float ShadowCalculationDir(vec4 fragPosLightSpace, vec3 normal, vec3 lightDir);
@@ -67,6 +69,8 @@ void main()
     vec3 Normal = texture(gNormal, TexCoords).rgb;
     vec3 Diffuse = texture(gAlbedoSpec, TexCoords).rgb;
     float Specular = texture(gAlbedoSpec, TexCoords).a;
+    float SSAO = texture(ssaoColor, TexCoords).r;
+
 
     vec4 FragPosDirLightSpace = dirLight.lightSpaceMatrix * vec4(FragPos, 1.0);
     vec3 viewDir = normalize(viewPos - FragPos);
@@ -81,10 +85,13 @@ void main()
         FragColor = vec4(Specular);
         FragColor.a = 1.0;
     } else if (debugPass == 4) {
+        FragColor = vec4(SSAO);
+        FragColor.a = 1.0;
+    } else if (debugPass == 5) {
         // Actually render
-        vec3 result = CalcDirLight(dirLight, Normal, viewDir, Diffuse, Specular, FragPosDirLightSpace);
+        vec3 result = CalcDirLight(dirLight, Normal, viewDir, Diffuse, Specular, FragPosDirLightSpace, SSAO);
         for(int i = 0; i < numberOfLights; i++) {
-            result += CalcPointLight(lights[i], Normal, FragPos, viewDir, Diffuse, Specular); 
+            result += CalcPointLight(lights[i], Normal, FragPos, viewDir, Diffuse, Specular, SSAO); 
             //FragColor = vec4(normalize(vec3(lights[i].position)), 1.0);
         }
 
@@ -122,7 +129,7 @@ void main()
 }
 
 // calculates the color when using a directional light.
-vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir, vec3 diffuseInput, float specularInput, vec4 fragPositionLightSpace)
+vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir, vec3 diffuseInput, float specularInput, vec4 fragPositionLightSpace, float ambientOcclusion)
 {
     vec3 lightDir = normalize(-light.direction);
     // diffuse shading
@@ -131,7 +138,13 @@ vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir, vec3 diffuseInput, 
     vec3 reflectDir = reflect(-lightDir, normal);
     float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32);
     // combine results
-    vec3 ambient = light.ambient * diffuseInput;
+
+    float AO = 1.0;
+
+    if(useAmbientOcclusion) {
+        AO = ambientOcclusion;
+    }
+    vec3 ambient = light.ambient * diffuseInput * AO;
     vec3 diffuse = light.diffuse * diff * diffuseInput;
     vec3 specular = light.specular * spec * vec3(specularInput);
 
@@ -141,7 +154,7 @@ vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir, vec3 diffuseInput, 
     //return (ambient + diffuse + specular);
 }
 
-vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir, vec3 diffuseInput, float specularInput)
+vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir, vec3 diffuseInput, float specularInput, float ambientOcclusion)
 {
     vec3 lightDir = normalize(light.position - fragPos);
     // diffuse shading
@@ -153,7 +166,12 @@ vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir, v
     float distance = length(light.position - fragPos);
     float attenuation = 1.0 / (light.constant + light.linear * distance + light.quadratic * (distance * distance));    
     // combine results
-    vec3 ambient = light.ambient * diffuseInput;
+    float AO = 1.0;
+
+    if(useAmbientOcclusion) {
+        AO = ambientOcclusion;
+    }
+    vec3 ambient = light.ambient * diffuseInput * AO;
     vec3 diffuse = light.diffuse * diff * diffuseInput;
     vec3 specColor = vec3(specularInput);
 

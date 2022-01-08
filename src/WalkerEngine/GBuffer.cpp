@@ -75,7 +75,8 @@ void GBuffer::BindFramebuffer()
 void GBuffer::ControlWindow()
 {
     if (ImGui::Begin("G Buffer")) {
-        ImGui::SliderInt("Debug Pass", &debugPass, 0, 4);
+        ImGui::SliderInt("Debug Pass", &debugPass, 0, 5);
+        ImGui::Checkbox("Ambient Occlusion", &ambientOcclusionEnabled);
     }
     ImGui::End();
 }

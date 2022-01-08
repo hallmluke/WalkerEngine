@@ -13,6 +13,7 @@ public:
 	void ControlWindow();
 	unsigned int GetGBuffer();
 	int debugPass = 0;
+	bool ambientOcclusionEnabled = true;
 
 private:
 	unsigned int gBuffer, gPosition, gNormal, gAlbedoSpec;

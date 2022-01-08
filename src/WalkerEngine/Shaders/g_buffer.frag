@@ -18,6 +18,11 @@ uniform sampler2D texture_normal1;
 
 void main()
 {    
+    if(diffuse_tex) {
+        if(texture(texture_diffuse1, TexCoords).a < 0.05) {
+            discard;
+        }
+    }
     // store the fragment position vector in the first gbuffer texture
     gPosition = FragPos;
     // also store the per-fragment normals into the gbuffer
