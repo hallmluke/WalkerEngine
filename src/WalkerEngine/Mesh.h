@@ -71,6 +71,7 @@ public:
         unsigned int specularNr = 1;
         unsigned int normalNr = 1;
         unsigned int heightNr = 1;
+        unsigned int roughnessNr = 1;
 
         //glm::mat4 transposed = glm::transpose(transform.m_transform);
 
@@ -100,6 +101,10 @@ public:
             else if (name == "texture_height") {
                 number = std::to_string(heightNr++); // transfer unsigned int to string
             }
+            else if (name == "texture_roughness") {
+                number = std::to_string(roughnessNr++);
+                shader.setBool("roughness_tex", true);
+            }
 
             // now set the sampler to the correct texture unit
             glUniform1i(glGetUniformLocation(shader.ID, (name + number).c_str()), i);
@@ -120,7 +125,7 @@ public:
         // always good practice to set everything back to defaults once configured.
         glActiveTexture(GL_TEXTURE0);
         if (transparency) {
-            //glEnable(GL_CULL_FACE);
+            glEnable(GL_CULL_FACE);
         }
     }
 

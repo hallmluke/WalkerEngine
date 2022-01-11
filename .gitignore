@@ -14,3 +14,6 @@ bld/
 
 # Visual Studio cache/options directory
 .vs/
+
+src/WalkerEngine/Models/Cerberus/
+src/WalkerEngine/Models/bathroom/

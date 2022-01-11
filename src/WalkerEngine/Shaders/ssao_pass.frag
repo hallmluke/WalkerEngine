@@ -12,13 +12,14 @@ uniform mat4 projection;
 uniform mat4 view;
 
 // tile noise texture over screen, based on screen dimensions / noise size
-const vec2 noiseScale = vec2(800.0/4.0, 600.0/4.0); // screen = 800x600
+const vec2 noiseScale = vec2(1280/4.0, 720/4.0); // screen = 800x600
 
 void main()
 {
+
 	vec3 fragPos = texture(gPosition, TexCoords).xyz;
 	vec3 normal = texture(gNormal, TexCoords).rgb;
-	vec3 randomVec = texture(texNoise, TexCoords * noiseScale).xyz;
+	vec3 randomVec = texture(texNoise, TexCoords * noiseScale * 2).xyz;
 
 	vec4 fragPosViewSpace = (view * vec4(texture(gPosition, TexCoords).xyz, 1.0));
 	vec4 normalViewSpace = (view * vec4(texture(gNormal, TexCoords).rgb, 0.0));
@@ -28,8 +29,8 @@ void main()
 	mat3 TBN = mat3(tangent, bitangent, normalViewSpace.xyz);
 
 
-	int kernelSize = 64;
-	float radius = 0.5;
+	int kernelSize = 16;
+	float radius = 2;
 	float occlusion = 0.0;
 	float bias = 0.025;
 

@@ -201,6 +201,9 @@ std::unique_ptr<Mesh> Model::processMesh(aiMesh* mesh, const aiScene* scene)
     std::vector<Texture> heightMaps = loadMaterialTextures(material, aiTextureType_AMBIENT, "texture_height");
     textures.insert(textures.end(), heightMaps.begin(), heightMaps.end());
 
+    std::vector<Texture> shininessMaps = loadMaterialTextures(material, aiTextureType_SHININESS, "texture_roughness");
+    textures.insert(textures.end(), shininessMaps.begin(), shininessMaps.end());
+
 
     // Transparency check
     for (int i = 0; i < diffuseMaps.size(); ++i) {

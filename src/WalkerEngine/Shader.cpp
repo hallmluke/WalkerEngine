@@ -167,9 +167,9 @@ void Shader::setPointLightProperties(std::vector<PointLight*> lights) const
         setFloat(lightPrefix + ".quadratic", lights[i]->quadraticAttenuation);
 
         if (lights[i]->shadowMapEnabled) {
-            glActiveTexture(GL_TEXTURE5);
+            glActiveTexture(GL_TEXTURE6);
             glBindTexture(GL_TEXTURE_CUBE_MAP, lights[i]->depthCubeMap);
-            setInt(lightPrefix + ".depthMap", 5);
+            setInt(lightPrefix + ".depthMap", 6);
             setFloat(lightPrefix + ".far_plane", lights[i]->far);
             setFloat(lightPrefix + ".bias", lights[i]->bias);
         }
@@ -189,9 +189,9 @@ void Shader::setDirectionalLightProperties(DirectionalLight light) const
         setMat4("dirLight.lightSpaceMatrix", light.GetLightSpaceMatrix());
         setFloat("dirLight.shadowBias", light.minimumShadowBias);
 
-        glActiveTexture(GL_TEXTURE4);
+        glActiveTexture(GL_TEXTURE5);
         glBindTexture(GL_TEXTURE_2D, light.depthMap);
-        setInt("dirLight.shadowMap", 4);
+        setInt("dirLight.shadowMap", 5);
     }
 }
 

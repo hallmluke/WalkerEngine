@@ -157,6 +157,7 @@
   <ItemGroup>
     <ClCompile Include="DirectionalLight.cpp" />
     <ClCompile Include="GBuffer.cpp" />
+    <ClCompile Include="GBufferPBR.cpp" />
     <ClCompile Include="glad.c" />
     <ClCompile Include="ImGuiManager.cpp" />
     <ClCompile Include="imgui\imgui.cpp" />
@@ -173,6 +174,7 @@
     <ClCompile Include="Quad.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="Skybox.cpp" />
+    <ClCompile Include="SSAOBlurPass.cpp" />
     <ClCompile Include="SSAOPass.cpp" />
     <ClCompile Include="stb_image.cpp" />
     <ClCompile Include="Transform.cpp" />
@@ -182,6 +184,7 @@
     <ClInclude Include="Cube.h" />
     <ClInclude Include="DirectionalLight.h" />
     <ClInclude Include="GBuffer.h" />
+    <ClInclude Include="GBufferPBR.h" />
     <ClInclude Include="ImGuiManager.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="Model.h" />
@@ -190,6 +193,7 @@
     <ClInclude Include="Quad.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="Skybox.h" />
+    <ClInclude Include="SSAOBlurPass.h" />
     <ClInclude Include="SSAOPass.h" />
     <ClInclude Include="Transform.h" />
   </ItemGroup>
@@ -210,8 +214,11 @@
     <None Include="Shaders\geometry_shader.geom" />
     <None Include="Shaders\g_buffer.frag" />
     <None Include="Shaders\g_buffer.vert" />
+    <None Include="Shaders\g_buffer_pbr.frag" />
+    <None Include="Shaders\pbr_deferred.frag" />
     <None Include="Shaders\skybox.frag" />
     <None Include="Shaders\skybox.vert" />
+    <None Include="Shaders\ssao_blur_pass.frag" />
     <None Include="Shaders\ssao_pass.frag" />
     <None Include="Shaders\ssao_pass.vert" />
   </ItemGroup>

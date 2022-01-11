@@ -10,8 +10,10 @@
 #include "DirectionalLight.h"
 #include "Skybox.h"
 #include "GBuffer.h"
+#include "GBufferPBR.h"
 #include "Quad.h"
 #include "SSAOPass.h"
+#include "SSAOBlurPass.h"
 
 #include <iostream>
 #include <glm/glm.hpp>
@@ -30,10 +32,10 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 void processInput(GLFWwindow* window);
 
 // settings
-const unsigned int SCR_WIDTH = 1280;
-const unsigned int SCR_HEIGHT = 720;
-unsigned int currentWidth = 1280;
-unsigned int currentHeight = 720;
+const unsigned int SCR_WIDTH = 1600; // 1600;
+const unsigned int SCR_HEIGHT = 900; // 900;
+unsigned int currentWidth = 1600;
+unsigned int currentHeight = 900;
 
 // camera
 Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
@@ -66,6 +68,7 @@ int main()
 
     // glfw window creation
     // --------------------
+    //GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "Walker Engine", glfwGetPrimaryMonitor(), NULL);
     GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "Walker Engine", NULL, NULL);
     if (window == NULL)
     {
@@ -121,7 +124,8 @@ int main()
     Shader depthShader("Shaders/depth_shader.vert", "Shaders/depth_shader.frag");
     Shader depthCubeShader("Shaders/depth_shader_cube.vert", "Shaders/depth_shader_cube.frag", "Shaders/depth_shader_cube.geom");
     Shader debugDepthQuad("Shaders/debug_quad.vert", "Shaders/debug_quad.frag");
-    Shader deferredShader("Shaders/deferred_shading.vert", "Shaders/deferred_shading.frag");
+    //Shader deferredShader("Shaders/deferred_shading.vert", "Shaders/deferred_shading.frag");
+    Shader deferredShaderPBR("Shaders/deferred_shading.vert", "Shaders/pbr_deferred.frag");
 
     // load models
     // -----------
@@ -140,17 +144,21 @@ int main()
     transform3 = glm::translate(transform3, glm::vec3(0.0f, 3.0f, 0.0f));
     transform3 = glm::scale(transform3, glm::vec3(0.25f, 0.25f, 0.25f));
 
-    Model sponza("Sponza", "Models/sponza/sponza.obj", transform);
+    //Model sponza("Sponza", "Models/sponza/sponza.obj", transform);
     //Model backpack("Backpack", "Models/backpack/backpack.obj", transform2);
-    Model nano("Nano", "Models/nano/nano_hierarchy.gltf", transform3);
+    //Model nano("Nano", "Models/nano/nano_hierarchy.gltf", transform3);
+    //Model cerberus("Cerberus", "Models/Cerberus/Cerberus_Textured2.fbx", transform3);
+    Model bathroom("Bathroom", "Models/bathroom/textures/bathroom.fbx", transform);
 
     PointLight light(lightPos);
     std::vector<PointLight*> lights = { &light };
     DirectionalLight dirLight(directionLight, true);
-    Skybox skybox("Skybox/default");
+    //Skybox skybox("Skybox/default");
 
-    GBuffer gBuffer(currentWidth, currentHeight);
-    SSAOPass ssaoPass(currentWidth, currentHeight);
+    //GBuffer gBuffer(SCR_WIDTH, SCR_HEIGHT);
+    GBufferPBR gBufferPBR(SCR_WIDTH, SCR_HEIGHT);
+    SSAOPass ssaoPass(SCR_WIDTH, SCR_HEIGHT);
+    SSAOBlurPass ssaoBlurPass(SCR_WIDTH, SCR_HEIGHT);
     Quad quad;
 
     // draw in wireframe
@@ -179,32 +187,54 @@ int main()
         imGuiManager.BeginFrame();
 
         // view/projection transformations
-        glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float) currentWidth / (float) currentHeight, 0.1f, 100.0f);
+        glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float) SCR_WIDTH / (float) SCR_HEIGHT, 0.1f, 100.0f);
         glm::mat4 view = camera.GetViewMatrix();
 
         if (dirLight.shadowMapEnabled) {
-            dirLight.GenerateShadowMap(depthShader, sponza);
+            //dirLight.GenerateShadowMap(depthShader, bathroom);
         }
 
         if (light.shadowMapEnabled) {
-            light.GenerateShadowMap(depthCubeShader, sponza);
+            light.GenerateShadowMap(depthCubeShader, bathroom);
         }
 
-        gBuffer.BindFramebuffer();
-        gBuffer.DrawModel(sponza, view, projection);
-        gBuffer.DrawModel(nano, view, projection);
+        //gBuffer.BindFramebuffer();
+        //gBuffer.DrawModel(sponza, view, projection);
+        //gBuffer.DrawModel(nano, view, projection);
+        //gBuffer.DrawModel(cerberus, view, projection);
+        gBufferPBR.BindFramebuffer();
+        gBufferPBR.DrawModel(bathroom, view, projection);
 
         ssaoPass.BindFramebuffer();
-        gBuffer.BindTextures();
+        //gBuffer.BindTextures();
+        gBufferPBR.BindTextures();
         ssaoPass.Draw(projection, view);
+
+        ssaoBlurPass.BindFrameBuffer();
+        ssaoPass.BindTextures();
+        ssaoBlurPass.Draw();
 
 
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        deferredShader.use();
-        gBuffer.BindTextures();
-        ssaoPass.BindTextures();
-        deferredShader.setInt("gPosition", 0);
+        deferredShaderPBR.use();
+        gBufferPBR.BindTextures();
+        //gBuffer.BindTextures();
+        //ssaoPass.BindTextures();
+        ssaoBlurPass.BindTextures();
+
+        deferredShaderPBR.setInt("gPosition", 0);
+        deferredShaderPBR.setInt("gNormal", 1);
+        deferredShaderPBR.setInt("gAlbedo", 2);
+        deferredShaderPBR.setInt("gMetRoughAO", 3);
+        deferredShaderPBR.setInt("ssaoColor", 4);
+        deferredShaderPBR.setInt("debugPass", gBufferPBR.debugPass);
+        deferredShaderPBR.setBool("useAmbientOcclusion", gBufferPBR.ambientOcclusionEnabled);
+
+        deferredShaderPBR.setVec3("camPos", camera.Position);
+        deferredShaderPBR.setPointLightProperties(lights);
+        deferredShaderPBR.setDirectionalLightProperties(dirLight);
+        /*deferredShader.setInt("gPosition", 0);
         deferredShader.setInt("gNormal", 1);
         deferredShader.setInt("gAlbedoSpec", 2);
         deferredShader.setInt("ssaoColor", 3);
@@ -213,7 +243,7 @@ int main()
 
         deferredShader.setVec3("viewPos", camera.Position);
         deferredShader.setPointLightProperties(lights);
-        deferredShader.setDirectionalLightProperties(dirLight);
+        deferredShader.setDirectionalLightProperties(dirLight);*/
         quad.Draw();
         
 
@@ -232,7 +262,7 @@ int main()
         nano.Draw(ourShader);
         */
 
-        glBindFramebuffer(GL_READ_FRAMEBUFFER, gBuffer.GetGBuffer());
+        glBindFramebuffer(GL_READ_FRAMEBUFFER, gBufferPBR.GetGBuffer());
         glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0); // write to default framebuffer
         glBlitFramebuffer(0, 0, SCR_WIDTH, SCR_HEIGHT, 0, 0, SCR_WIDTH, SCR_HEIGHT,
             GL_DEPTH_BUFFER_BIT, GL_NEAREST);
@@ -252,15 +282,16 @@ int main()
             dirLight.DrawDebug(lightShader);
         }
 
-        skybox.Draw(view, projection);
+        //skybox.Draw(view, projection);
 
 
         light.ControlWindow();
         dirLight.ControlWindow();
-        sponza.ControlWindow();
+        //sponza.ControlWindow();
         //backpack.ControlWindow();
-        nano.ControlWindow();
-        gBuffer.ControlWindow();
+        //nano.ControlWindow();
+        //bathroom.ControlWindow();
+        gBufferPBR.ControlWindow();
         imGuiManager.EndFrame();
 
 
