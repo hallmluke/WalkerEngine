@@ -14,6 +14,7 @@
 #include "Quad.h"
 #include "SSAOPass.h"
 #include "SSAOBlurPass.h"
+#include "Volume.h"
 
 #include <iostream>
 #include <glm/glm.hpp>
@@ -117,6 +118,7 @@ int main()
     //glEnable(GL_MULTISAMPLE);
     glEnable(GL_CULL_FACE);
 
+
     // build and compile shaders
     // -------------------------
     Shader ourShader("Shaders/basic_lighting.vert", "Shaders/basic_lighting.frag");
@@ -154,6 +156,7 @@ int main()
     std::vector<PointLight*> lights = { &light };
     DirectionalLight dirLight(directionLight, true);
     //Skybox skybox("Skybox/default");
+    //PointLight light(lightPos);
 
     //GBuffer gBuffer(SCR_WIDTH, SCR_HEIGHT);
     GBufferPBR gBufferPBR(SCR_WIDTH, SCR_HEIGHT);
@@ -163,6 +166,8 @@ int main()
 
     // draw in wireframe
     //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    //Volume volume = Volume();
+    
 
     // render loop
     // -----------
@@ -190,9 +195,18 @@ int main()
         glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float) SCR_WIDTH / (float) SCR_HEIGHT, 0.1f, 100.0f);
         glm::mat4 view = camera.GetViewMatrix();
 
-        if (dirLight.shadowMapEnabled) {
-            //dirLight.GenerateShadowMap(depthShader, bathroom);
+        //volume.Draw(view, projection, camera.Position);
+
+        if (light.drawDebugEnabled) {
+            lightShader.use();
+            lightShader.setMat4("projection", projection);
+            lightShader.setMat4("view", view);
+            light.DrawDebug(lightShader);
         }
+
+        /*if (dirLight.shadowMapEnabled) {
+            //dirLight.GenerateShadowMap(depthShader, bathroom);
+        }*/
 
         if (light.shadowMapEnabled) {
             light.GenerateShadowMap(depthCubeShader, bathroom);
@@ -234,33 +248,8 @@ int main()
         deferredShaderPBR.setVec3("camPos", camera.Position);
         deferredShaderPBR.setPointLightProperties(lights);
         deferredShaderPBR.setDirectionalLightProperties(dirLight);
-        /*deferredShader.setInt("gPosition", 0);
-        deferredShader.setInt("gNormal", 1);
-        deferredShader.setInt("gAlbedoSpec", 2);
-        deferredShader.setInt("ssaoColor", 3);
-        deferredShader.setInt("debugPass", gBuffer.debugPass);
-        deferredShader.setBool("useAmbientOcclusion", gBuffer.ambientOcclusionEnabled);
-
-        deferredShader.setVec3("viewPos", camera.Position);
-        deferredShader.setPointLightProperties(lights);
-        deferredShader.setDirectionalLightProperties(dirLight);*/
         quad.Draw();
-        
 
-        // don't forget to enable shader before setting uniforms
-        /*ourShader.use();
-
-        ourShader.setMat4("projection", projection);
-        ourShader.setMat4("view", view);
-
-        //ourShader.setMat4("model", model);
-        ourShader.setVec3("viewPos", camera.Position);
-        ourShader.setPointLightProperties(light);
-        ourShader.setDirectionalLightProperties(dirLight);
-        sponza.Draw(ourShader);
-        //backpack.Draw(ourShader);
-        nano.Draw(ourShader);
-        */
 
         glBindFramebuffer(GL_READ_FRAMEBUFFER, gBufferPBR.GetGBuffer());
         glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0); // write to default framebuffer
@@ -286,12 +275,14 @@ int main()
 
 
         light.ControlWindow();
-        dirLight.ControlWindow();
+        //dirLight.ControlWindow();
         //sponza.ControlWindow();
         //backpack.ControlWindow();
         //nano.ControlWindow();
         //bathroom.ControlWindow();
         gBufferPBR.ControlWindow();
+
+        //volume.ControlWindow();
         imGuiManager.EndFrame();
 
 

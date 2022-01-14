@@ -90,6 +90,9 @@
     <ClCompile Include="GBufferPBR.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Volume.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h">
@@ -138,6 +141,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="GBufferPBR.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Volume.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -209,6 +215,12 @@
       <Filter>Source Files\Shaders</Filter>
     </None>
     <None Include="Shaders\g_buffer_pbr.frag">
+      <Filter>Source Files\Shaders</Filter>
+    </None>
+    <None Include="Shaders\raymarch.vert">
+      <Filter>Source Files\Shaders</Filter>
+    </None>
+    <None Include="Shaders\raymarch.frag">
       <Filter>Source Files\Shaders</Filter>
     </None>
   </ItemGroup>

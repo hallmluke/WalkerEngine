@@ -178,6 +178,7 @@
     <ClCompile Include="SSAOPass.cpp" />
     <ClCompile Include="stb_image.cpp" />
     <ClCompile Include="Transform.cpp" />
+    <ClCompile Include="Volume.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h" />
@@ -196,6 +197,7 @@
     <ClInclude Include="SSAOBlurPass.h" />
     <ClInclude Include="SSAOPass.h" />
     <ClInclude Include="Transform.h" />
+    <ClInclude Include="Volume.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="light_cube.frag" />
@@ -216,6 +218,8 @@
     <None Include="Shaders\g_buffer.vert" />
     <None Include="Shaders\g_buffer_pbr.frag" />
     <None Include="Shaders\pbr_deferred.frag" />
+    <None Include="Shaders\raymarch.frag" />
+    <None Include="Shaders\raymarch.vert" />
     <None Include="Shaders\skybox.frag" />
     <None Include="Shaders\skybox.vert" />
     <None Include="Shaders\ssao_blur_pass.frag" />
