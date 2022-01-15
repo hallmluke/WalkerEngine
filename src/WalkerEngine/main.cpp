@@ -84,7 +84,7 @@ int main()
     ImGuiManager imGuiManager(window);
 
     int width, height, nrComponents;
-    unsigned char* data = stbi_load("skywalker_icon.png", &width, &height, &nrComponents, 0);
+    unsigned char* data = stbi_load("Icons/skywalker_icon.png", &width, &height, &nrComponents, 0);
     if (data) {
         GLFWimage icons[1];
         icons[0].pixels = data;
@@ -146,11 +146,14 @@ int main()
     transform3 = glm::translate(transform3, glm::vec3(0.0f, 3.0f, 0.0f));
     transform3 = glm::scale(transform3, glm::vec3(0.25f, 0.25f, 0.25f));
 
+    glm::mat4 transform4 = glm::mat4(1.0f);
+
     //Model sponza("Sponza", "Models/sponza/sponza.obj", transform);
     //Model backpack("Backpack", "Models/backpack/backpack.obj", transform2);
     //Model nano("Nano", "Models/nano/nano_hierarchy.gltf", transform3);
     //Model cerberus("Cerberus", "Models/Cerberus/Cerberus_Textured2.fbx", transform3);
-    Model bathroom("Bathroom", "Models/bathroom/textures/bathroom.fbx", transform);
+    //Model bathroom("Bathroom", "Models/bathroom/textures/bathroom.fbx", transform);
+    Model sponzaPBR("SponzaPBR", "Models/SponzaPBR/Sponza.gltf", transform4);
 
     PointLight light(lightPos);
     std::vector<PointLight*> lights = { &light };
@@ -204,12 +207,12 @@ int main()
             light.DrawDebug(lightShader);
         }
 
-        /*if (dirLight.shadowMapEnabled) {
-            //dirLight.GenerateShadowMap(depthShader, bathroom);
-        }*/
+        if (dirLight.shadowMapEnabled) {
+            dirLight.GenerateShadowMap(depthShader, sponzaPBR);
+        }
 
         if (light.shadowMapEnabled) {
-            light.GenerateShadowMap(depthCubeShader, bathroom);
+            light.GenerateShadowMap(depthCubeShader, sponzaPBR);
         }
 
         //gBuffer.BindFramebuffer();
@@ -217,7 +220,7 @@ int main()
         //gBuffer.DrawModel(nano, view, projection);
         //gBuffer.DrawModel(cerberus, view, projection);
         gBufferPBR.BindFramebuffer();
-        gBufferPBR.DrawModel(bathroom, view, projection);
+        gBufferPBR.DrawModel(sponzaPBR, view, projection);
 
         ssaoPass.BindFramebuffer();
         //gBuffer.BindTextures();

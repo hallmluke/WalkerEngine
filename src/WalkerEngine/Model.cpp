@@ -2,6 +2,7 @@
 #include "Model.h"
 #include "Transform.h"
 #include "imgui/imgui.h"
+#include <assimp/pbrmaterial.h>
 
 
 Model::Model(const std::string name, string const& path, glm::mat4 initialTransform, bool gamma) : name(name), gammaCorrection(gamma)
@@ -201,8 +202,11 @@ std::unique_ptr<Mesh> Model::processMesh(aiMesh* mesh, const aiScene* scene)
     std::vector<Texture> heightMaps = loadMaterialTextures(material, aiTextureType_AMBIENT, "texture_height");
     textures.insert(textures.end(), heightMaps.begin(), heightMaps.end());
 
-    std::vector<Texture> shininessMaps = loadMaterialTextures(material, aiTextureType_SHININESS, "texture_roughness");
-    textures.insert(textures.end(), shininessMaps.begin(), shininessMaps.end());
+    /*std::vector<Texture> shininessMaps = loadMaterialTextures(material, aiTextureType_SHININESS, "texture_roughness");
+    textures.insert(textures.end(), shininessMaps.begin(), shininessMaps.end());*/
+    std::vector<Texture> metallicRoughnessMaps = loadMaterialTextures(material, aiTextureType_UNKNOWN, "texture_metallicRoughness");
+    textures.insert(textures.end(), metallicRoughnessMaps.begin(), metallicRoughnessMaps.end());
+
 
 
     // Transparency check

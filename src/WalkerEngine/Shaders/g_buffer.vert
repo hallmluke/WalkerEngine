@@ -18,10 +18,24 @@ uniform mat4 lightSpaceMatrix;
 
 void main()
 {
+    
+    // View Space
+    //vec4 viewPos = view * model * vec4(aPos, 1.0);
+    //FragPos = viewPos.xyz;
+    //vec3 T = normalize(vec3(view * model * vec4(aTangent, 0.0)));
+    //vec3 B = normalize(vec3(view * model * vec4(aBitangent, 0.0)));
+    // vec3 N = normalize(vec3(view * model * vec4(aNormal, 0.0)));
+    // gl_Position = projection * viewPos;
+
+
+    // Global Position
     FragPos = vec3(model * vec4(aPos, 1.0));
     vec3 T = normalize(vec3(model * vec4(aTangent, 0.0)));
+    
     vec3 B = normalize(vec3(model * vec4(aBitangent, 0.0)));
+    
     vec3 N = normalize(vec3(model * vec4(aNormal, 0.0)));
+    
     TBN = mat3(T, B, N);
 
     //Normal = mat3(transpose(inverse(model))) * aNormal;  
@@ -29,4 +43,5 @@ void main()
     FragPosLightSpace = lightSpaceMatrix * vec4(FragPos, 1.0);
     
     gl_Position = projection * view * vec4(FragPos, 1.0);
+    
 }

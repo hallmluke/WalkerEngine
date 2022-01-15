@@ -54,6 +54,7 @@ vec3 fresnelSchlick(float cosTheta, vec3 F0);
 uniform int debugPass;
 uniform bool useAmbientOcclusion;
 
+vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir, vec3 albedo, float roughness, float metallic, vec3 F0, vec4 fragPosLightSpace);
 float ShadowCalculationDir(vec4 fragPosLightSpace, vec3 normal, vec3 lightDir);
 float ShadowCalculationPoint(PointLight light, vec3 fragPos);
 
@@ -68,6 +69,8 @@ void main()
     float Roughness = texture(gMetRoughAO, TexCoords).g;
     float AO = texture(gMetRoughAO, TexCoords).b;
     float SSAO = texture(ssaoColor, TexCoords).r;
+
+    vec4 FragPosDirLightSpace = dirLight.lightSpaceMatrix * vec4(FragPos, 1.0);
 
     if(debugPass == 0) {
         FragColor = vec4(FragPos, 1.0);
@@ -104,7 +107,8 @@ void main()
         vec3 H = normalize(V + L);
 
         float distance = length(lights[i].position - FragPos);
-        float attenuation = 1.0 / (distance * distance);
+        //float attenuation = 1.0 / (distance * distance);
+        float attenuation = 1.0 / (lights[i].constant + lights[i].linear * distance + lights[i].quadratic * (distance * distance));
         vec3 radiance = lights[i].diffuse * attenuation;
 
         // cook-torrance brdf
@@ -124,14 +128,43 @@ void main()
         Lo += final;
     }
 
-    float averageAO = (AO + SSAO) / 2;
-    vec3 ambient = vec3(0.03) * Albedo * averageAO;
+    Lo += CalcDirLight(dirLight, N, V, Albedo, Roughness, Metallic, F0, FragPosDirLightSpace);
+
+    //float averageAO = (AO + SSAO) / 2;
+    vec3 ambient = vec3(0.03) * Albedo;
+    if(useAmbientOcclusion) {
+        ambient = ambient * SSAO;
+    }
+    //vec3 ambient = vec3(0.03) * Albedo * averageAO;
     vec3 color = ambient + Lo;
 
     color = color / (color + vec3(1.0)); // Tone map (HDR)
     color = pow(color, vec3(1.0/2.2)); // Gamma correct
     FragColor = vec4(color, 1.0);
     }
+}
+
+vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir, vec3 albedo, float roughness, float metallic, vec3 F0, vec4 fragPosLightSpace) {
+    vec3 L = normalize(-light.direction);
+    vec3 H = normalize(viewDir + L);
+
+    vec3 radiance = light.diffuse;
+
+    // cook-torrance brdf
+    float NDF = DistributionGGX(normal, H, roughness);
+    float G = GeometrySmith(normal, viewDir, L, roughness);
+    vec3 F = fresnelSchlick(max(dot(H, viewDir), 0.0), F0);
+    vec3 kS = F;
+    vec3 kD = vec3(1.0) - kS;
+    kD *= 1.0 - metallic;
+    vec3 numerator = NDF * G * F;
+    float denominator = 4.0 * max(dot(normal, viewDir), 0.0) * max(dot(normal, L), 0.0);
+    vec3 specular = numerator / max(denominator, 0.001);
+    float NdotL = max(dot(normal, L), 0.0);
+    float shadow = ShadowCalculationDir(fragPosLightSpace, normal, L);
+    vec3 final = (1 - shadow) * (kD * albedo / PI + specular) * radiance * NdotL;
+
+    return final;
 }
 
 

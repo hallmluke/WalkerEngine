@@ -17,6 +17,8 @@ uniform bool normal_tex;
 uniform sampler2D texture_normal1;
 uniform bool roughness_tex;
 uniform sampler2D texture_roughness1;
+uniform bool metallicRoughness_tex;
+uniform sampler2D texture_metallicRoughness1;
 
 void main()
 {    
@@ -38,14 +40,24 @@ void main()
     gNormal = normalize(TBN * normal);
     // and the diffuse per-fragment color
     gAlbedo = texture(texture_diffuse1, TexCoords).rgb;
-    // metallic sampled from specular
+
+
+    // metallic
     if(specular_tex) {
         gMetRoughAO.r = texture(texture_specular1, TexCoords).r;
+    } else if (metallicRoughness_tex) {
+        gMetRoughAO.r = texture(texture_metallicRoughness1, TexCoords).b;
     } else {
         gMetRoughAO.r = 0.0;
     }
     // roughness
-    gMetRoughAO.g = texture(texture_roughness1, TexCoords).g;
+    if(roughness_tex) {
+        gMetRoughAO.g = texture(texture_roughness1, TexCoords).g;
+    } else if (metallicRoughness_tex) {
+        gMetRoughAO.g = texture(texture_metallicRoughness1, TexCoords).g;
+    } else {
+        gMetRoughAO.g = 1.0;
+    }
     // set AO to 0 for now
     gMetRoughAO.b = 0.0;
 }

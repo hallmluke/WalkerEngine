@@ -72,6 +72,7 @@ public:
         unsigned int normalNr = 1;
         unsigned int heightNr = 1;
         unsigned int roughnessNr = 1;
+        unsigned int metallicRoughnessNr = 1;
 
         //glm::mat4 transposed = glm::transpose(transform.m_transform);
 
@@ -104,6 +105,10 @@ public:
             else if (name == "texture_roughness") {
                 number = std::to_string(roughnessNr++);
                 shader.setBool("roughness_tex", true);
+            }
+            else if (name == "texture_metallicRoughness") {
+                number = std::to_string(metallicRoughnessNr++);
+                shader.setBool("metallicRoughness_tex", true);
             }
 
             // now set the sampler to the correct texture unit
