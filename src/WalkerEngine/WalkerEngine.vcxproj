@@ -163,6 +163,7 @@
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Camera.cpp" />
     <ClCompile Include="DirectionalLight.cpp" />
     <ClCompile Include="GBuffer.cpp" />
     <ClCompile Include="GBufferPBR.cpp" />
@@ -218,6 +219,8 @@
     <None Include="Shaders\deferred_shading.vert" />
     <None Include="Shaders\depth_shader.frag" />
     <None Include="Shaders\depth_shader.vert" />
+    <None Include="Shaders\depth_shader_cascades.geom" />
+    <None Include="Shaders\depth_shader_cascades.vert" />
     <None Include="Shaders\depth_shader_cube.frag" />
     <None Include="Shaders\depth_shader_cube.geom" />
     <None Include="Shaders\depth_shader_cube.vert" />

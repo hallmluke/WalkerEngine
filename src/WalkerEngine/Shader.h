@@ -14,6 +14,7 @@
 
 class PointLight;
 class DirectionalLight;
+class Camera;
 
 class Shader {
 public:
@@ -30,7 +31,7 @@ public:
 	void setVec3(const std::string& name, glm::vec3 value) const;
 	void setPointLightProperties(PointLight light) const;
 	void setPointLightProperties(std::vector<PointLight*> lights) const;
-	void setDirectionalLightProperties(DirectionalLight light) const;
+	void setDirectionalLightProperties(DirectionalLight light, Camera camera) const;
 private:
 	void checkCompileErrors(GLuint shader, std::string type);
 };

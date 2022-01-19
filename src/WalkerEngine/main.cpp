@@ -158,7 +158,7 @@ int main()
     PointLight light(lightPos);
     std::vector<PointLight*> lights = { &light };
     DirectionalLight dirLight(directionLight, true);
-    //Skybox skybox("Skybox/default");
+    Skybox skybox("Skybox/default");
     //PointLight light(lightPos);
 
     //GBuffer gBuffer(SCR_WIDTH, SCR_HEIGHT);
@@ -195,7 +195,8 @@ int main()
         imGuiManager.BeginFrame();
 
         // view/projection transformations
-        glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float) SCR_WIDTH / (float) SCR_HEIGHT, 0.1f, 100.0f);
+        //glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float) SCR_WIDTH / (float) SCR_HEIGHT, 0.1f, 100.0f);
+        glm::mat4 projection = camera.GetProjectionMatrix((float)SCR_WIDTH / (float)SCR_HEIGHT);
         glm::mat4 view = camera.GetViewMatrix();
 
         //volume.Draw(view, projection, camera.Position);
@@ -208,7 +209,8 @@ int main()
         }
 
         if (dirLight.shadowMapEnabled) {
-            dirLight.GenerateShadowMap(depthShader, sponzaPBR);
+            //dirLight.GenerateShadowMap(depthShader, sponzaPBR);
+            dirLight.GenerateCascadedShadowMap(sponzaPBR, camera);
         }
 
         if (light.shadowMapEnabled) {
@@ -249,8 +251,9 @@ int main()
         deferredShaderPBR.setBool("useAmbientOcclusion", gBufferPBR.ambientOcclusionEnabled);
 
         deferredShaderPBR.setVec3("camPos", camera.Position);
+        //deferredShaderPBR.setInt("cascadeCount", 4);
         deferredShaderPBR.setPointLightProperties(lights);
-        deferredShaderPBR.setDirectionalLightProperties(dirLight);
+        deferredShaderPBR.setDirectionalLightProperties(dirLight, camera);
         quad.Draw();
 
 
@@ -274,15 +277,16 @@ int main()
             dirLight.DrawDebug(lightShader);
         }
 
-        //skybox.Draw(view, projection);
+        skybox.Draw(view, projection);
 
 
         light.ControlWindow();
-        //dirLight.ControlWindow();
+        dirLight.ControlWindow();
         //sponza.ControlWindow();
         //backpack.ControlWindow();
         //nano.ControlWindow();
         //bathroom.ControlWindow();
+        sponzaPBR.ControlWindow();
         gBufferPBR.ControlWindow();
 
         //volume.ControlWindow();

@@ -1,7 +1,14 @@
-#version 330 core
+#version 460 core
 out vec4 FragColor;
 
 in vec2 TexCoords;
+
+layout (std140, binding = 0) uniform LightSpaceMatrices
+{
+    mat4 lightSpaceMatrices[16];
+};
+
+
 
 uniform sampler2D gPosition;
 uniform sampler2D gNormal;
@@ -13,6 +20,7 @@ uniform vec3 camPos;
 
 struct DirLight {
     vec3 direction;
+    vec3 color;
 
     vec3 ambient;
     vec3 diffuse;
@@ -45,6 +53,13 @@ uniform int numberOfLights;
 uniform PointLight lights[MAX_LIGHTS];
 uniform DirLight dirLight;
 
+uniform mat4 view;
+uniform sampler2DArray shadowMap;
+
+uniform float cascadePlaneDistances[16];
+uniform int cascadeCount;   // number of frusta - 1
+uniform float farPlane;
+
 const float PI = 3.14159265359;
 float DistributionGGX(vec3 N, vec3 H, float roughness);
 float GeometrySchlickGGX(float NdotV, float roughness);
@@ -54,8 +69,9 @@ vec3 fresnelSchlick(float cosTheta, vec3 F0);
 uniform int debugPass;
 uniform bool useAmbientOcclusion;
 
-vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir, vec3 albedo, float roughness, float metallic, vec3 F0, vec4 fragPosLightSpace);
+vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir, vec3 albedo, float roughness, float metallic, vec3 F0, vec4 fragPosWorldSpace);
 float ShadowCalculationDir(vec4 fragPosLightSpace, vec3 normal, vec3 lightDir);
+float ShadowCalculationDirCascades(vec4 fragPosWorldSpace, vec3 normal, vec3 lightDir);
 float ShadowCalculationPoint(PointLight light, vec3 fragPos);
 
 void main()
@@ -63,14 +79,13 @@ void main()
     
 	vec3 FragPos = texture(gPosition, TexCoords).rgb;
     vec3 Normal = texture(gNormal, TexCoords).rgb;
-    vec3 Albedo = texture(gAlbedo, TexCoords).rgb;
-    //vec3 Albedo = pow(texture(gAlbedo, TexCoords).rgb, 2.2);
+    vec3 Albedo = pow(texture(gAlbedo, TexCoords).rgb, vec3(2.2));
     float Metallic = texture(gMetRoughAO, TexCoords).r;
     float Roughness = texture(gMetRoughAO, TexCoords).g;
     float AO = texture(gMetRoughAO, TexCoords).b;
     float SSAO = texture(ssaoColor, TexCoords).r;
 
-    vec4 FragPosDirLightSpace = dirLight.lightSpaceMatrix * vec4(FragPos, 1.0);
+    //vec4 FragPosDirLightSpace = dirLight.lightSpaceMatrix * vec4(FragPos, 1.0);
 
     if(debugPass == 0) {
         FragColor = vec4(FragPos, 1.0);
@@ -128,7 +143,7 @@ void main()
         Lo += final;
     }
 
-    Lo += CalcDirLight(dirLight, N, V, Albedo, Roughness, Metallic, F0, FragPosDirLightSpace);
+    Lo += CalcDirLight(dirLight, N, V, Albedo, Roughness, Metallic, F0, vec4(FragPos, 1.0));
 
     //float averageAO = (AO + SSAO) / 2;
     vec3 ambient = vec3(0.03) * Albedo;
@@ -140,15 +155,16 @@ void main()
 
     color = color / (color + vec3(1.0)); // Tone map (HDR)
     color = pow(color, vec3(1.0/2.2)); // Gamma correct
+    color = clamp(color, 0.0, 1.0);
     FragColor = vec4(color, 1.0);
     }
 }
 
-vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir, vec3 albedo, float roughness, float metallic, vec3 F0, vec4 fragPosLightSpace) {
+vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir, vec3 albedo, float roughness, float metallic, vec3 F0, vec4 fragPosWorldSpace) {
     vec3 L = normalize(-light.direction);
     vec3 H = normalize(viewDir + L);
 
-    vec3 radiance = light.diffuse;
+    vec3 radiance = light.color * light.diffuse;
 
     // cook-torrance brdf
     float NDF = DistributionGGX(normal, H, roughness);
@@ -161,7 +177,8 @@ vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir, vec3 albedo, float 
     float denominator = 4.0 * max(dot(normal, viewDir), 0.0) * max(dot(normal, L), 0.0);
     vec3 specular = numerator / max(denominator, 0.001);
     float NdotL = max(dot(normal, L), 0.0);
-    float shadow = ShadowCalculationDir(fragPosLightSpace, normal, L);
+    //float shadow = ShadowCalculationDir(fragPosLightSpace, normal, L);
+    float shadow = ShadowCalculationDirCascades(fragPosWorldSpace, normal, L);
     vec3 final = (1 - shadow) * (kD * albedo / PI + specular) * radiance * NdotL;
 
     return final;
@@ -231,6 +248,70 @@ float ShadowCalculationDir(vec4 fragPosLightSpace, vec3 normal, vec3 lightDir) {
 
     return shadow;
 
+}
+
+float ShadowCalculationDirCascades(vec4 fragPosWorldSpace, vec3 normal, vec3 lightDir) {
+    // select cascade layer
+    vec4 fragPosViewSpace = view * fragPosWorldSpace;
+    float depthValue = abs(fragPosViewSpace.z);
+
+    int layer = -1;
+    for (int i = 0; i < cascadeCount; ++i)
+    {
+        if (depthValue < cascadePlaneDistances[i])
+        {
+            layer = i;
+            break;
+        }
+    }
+    if (layer == -1)
+    {
+        layer = cascadeCount;
+    }
+
+    vec4 fragPosLightSpace = lightSpaceMatrices[layer] * fragPosWorldSpace;
+    // perform perspective divide
+    vec3 projCoords = fragPosLightSpace.xyz / fragPosLightSpace.w;
+    // transform to [0,1] range
+    projCoords = projCoords * 0.5 + 0.5;
+
+    // get depth of current fragment from light's perspective
+    float currentDepth = projCoords.z;
+    if (currentDepth  > 1.0)
+    {
+        return 0.0;
+    }
+    // calculate bias (based on depth map resolution and slope)
+    float bias = max(0.005 * (1.0 - dot(normal, lightDir)), 0.005);
+    if (layer == cascadeCount)
+    {
+        bias *= 1 / (farPlane * 0.5f);
+    }
+    else
+    {
+        bias *= 1 / (cascadePlaneDistances[layer] * 0.5f);
+    }
+
+    // PCF
+    float shadow = 0.0;
+    vec2 texelSize = 1.0 / vec2(textureSize(shadowMap, 0));
+    for(int x = -1; x <= 1; ++x)
+    {
+        for(int y = -1; y <= 1; ++y)
+        {
+            float pcfDepth = texture(shadowMap, vec3(projCoords.xy + vec2(x, y) * texelSize, layer)).r; 
+            shadow += (currentDepth - bias) > pcfDepth ? 1.0 : 0.0;        
+        }    
+    }
+    shadow /= 9.0;
+    
+    // keep the shadow at 0.0 when outside the far_plane region of the light's frustum.
+    if(projCoords.z > 1.0)
+    {
+        shadow = 0.0;
+    }
+        
+    return shadow;
 }
 
 vec3 sampleOffsetDirections[20] = vec3[]

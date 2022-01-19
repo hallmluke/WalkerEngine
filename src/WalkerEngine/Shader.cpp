@@ -1,6 +1,7 @@
 #include "Shader.h"
 #include "PointLight.h"
 #include "DirectionalLight.h"
+#include "Camera.h"
 
 Shader::Shader(const char* vertexPath, const char* fragmentPath, const char* geometryPath)
 {
@@ -178,20 +179,38 @@ void Shader::setPointLightProperties(std::vector<PointLight*> lights) const
     setInt("numberOfLights", maxedLights);
 }
 
-void Shader::setDirectionalLightProperties(DirectionalLight light) const
+void Shader::setDirectionalLightProperties(DirectionalLight light, Camera camera) const
 {
     setVec3("dirLight.direction", light.direction);
+    setVec3("dirLight.color", light.color);
     setVec3("dirLight.ambient", glm::vec3(light.ambientIntensity));
     setVec3("dirLight.diffuse", glm::vec3(light.diffuseIntensity));
     setVec3("dirLight.specular", glm::vec3(light.specularIntensity));
 
     if (light.shadowMapEnabled) {
-        setMat4("dirLight.lightSpaceMatrix", light.GetLightSpaceMatrix());
-        setFloat("dirLight.shadowBias", light.minimumShadowBias);
+        if (light.cascadedShadowMapping) {
+            //setMat4("dirLight.lightSpaceMatrix", light.GetLightSpaceMatrix(camera));
+            //setFloat("dirLight.shadowBias", light.minimumShadowBias);
+            std::vector<float> cascadeDistances = light.GetShadowCascadeLevels(camera.farPlane);
+            setMat4("view", camera.GetViewMatrix());
+            setFloat("farPlane", camera.farPlane);
+            setInt("cascadeCount", cascadeDistances.size());
+            for (size_t i = 0; i < cascadeDistances.size(); ++i)
+            {
+                setFloat("cascadePlaneDistances[" + std::to_string(i) + "]", cascadeDistances[i]);
+            }
+            glActiveTexture(GL_TEXTURE5);
+            glBindTexture(GL_TEXTURE_2D_ARRAY, light.depthMap);
+            setInt("shadowMap", 5);
+        }
+        else {
+            setMat4("dirLight.lightSpaceMatrix", light.GetLightSpaceMatrix());
+            setFloat("dirLight.shadowBias", light.minimumShadowBias);
 
-        glActiveTexture(GL_TEXTURE5);
-        glBindTexture(GL_TEXTURE_2D, light.depthMap);
-        setInt("dirLight.shadowMap", 5);
+            glActiveTexture(GL_TEXTURE5);
+            glBindTexture(GL_TEXTURE_2D, light.depthMap);
+            setInt("dirLight.shadowMap", 5);
+        }
     }
 }
 
