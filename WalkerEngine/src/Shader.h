@@ -8,6 +8,7 @@
 #include <sstream>
 #include <iostream>
 #include <vector>
+#include <unordered_map>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -21,6 +22,8 @@ public:
 	unsigned int ID;
 
 	Shader(const char* vertexPath, const char* fragmentPath, const char* geometryPath = nullptr);
+	//~Shader();
+
 	void use();
 
 	void setBool(const std::string &name, bool value) const;
@@ -34,6 +37,9 @@ public:
 	void setDirectionalLightProperties(DirectionalLight light, Camera camera) const;
 private:
 	void checkCompileErrors(GLuint shader, std::string type);
+	mutable std::unordered_map<std::string, GLint> m_UniformLocationCache;
+
+	GLint GetUniformLocation(const std::string& name) const;
 };
 
 #endif

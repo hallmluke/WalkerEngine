@@ -9,11 +9,12 @@ x86/
 **/x86/
 bld/
 [Bb]in/
+[Bb]in-int/
 [Oo]bj/
 [Ll]og/
 
 # Visual Studio cache/options directory
 .vs/
 
-src/WalkerEngine/Models/Cerberus/
-src/WalkerEngine/Models/bathroom/
+WalkerEngine/Models/Cerberus/
+WalkerEngine/Models/bathroom/

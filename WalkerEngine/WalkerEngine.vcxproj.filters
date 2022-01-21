@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="imgui">
+      <UniqueIdentifier>{0098A80F-6CAC-D0C0-352E-7420A101CDF1}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\Application.cpp" />
+    <ClCompile Include="src\Camera.cpp" />
+    <ClCompile Include="src\DirectionalLight.cpp" />
+    <ClCompile Include="src\GBuffer.cpp" />
+    <ClCompile Include="src\GBufferPBR.cpp" />
+    <ClCompile Include="src\ImGuiManager.cpp" />
+    <ClCompile Include="src\Log.cpp" />
+    <ClCompile Include="src\Model.cpp" />
+    <ClCompile Include="src\ModelNode.cpp" />
+    <ClCompile Include="src\PointLight.cpp" />
+    <ClCompile Include="src\Quad.cpp" />
+    <ClCompile Include="src\SSAOBlurPass.cpp" />
+    <ClCompile Include="src\SSAOPass.cpp" />
+    <ClCompile Include="src\Shader.cpp" />
+    <ClCompile Include="src\Skybox.cpp" />
+    <ClCompile Include="src\Transform.cpp" />
+    <ClCompile Include="src\Volume.cpp" />
+    <ClCompile Include="src\glad.c" />
+    <ClCompile Include="src\imgui\imgui.cpp">
+      <Filter>imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="src\imgui\imgui_demo.cpp">
+      <Filter>imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="src\imgui\imgui_draw.cpp">
+      <Filter>imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="src\imgui\imgui_impl_glfw.cpp">
+      <Filter>imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="src\imgui\imgui_impl_opengl3.cpp">
+      <Filter>imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="src\imgui\imgui_tables.cpp">
+      <Filter>imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="src\imgui\imgui_widgets.cpp">
+      <Filter>imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\stb_image.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\Application.h" />
+    <ClInclude Include="src\Camera.h" />
+    <ClInclude Include="src\Core.h" />
+    <ClInclude Include="src\Cube.h" />
+    <ClInclude Include="src\DirectionalLight.h" />
+    <ClInclude Include="src\EntryPoint.h" />
+    <ClInclude Include="src\GBuffer.h" />
+    <ClInclude Include="src\GBufferPBR.h" />
+    <ClInclude Include="src\ImGuiManager.h" />
+    <ClInclude Include="src\Log.h" />
+    <ClInclude Include="src\Mesh.h" />
+    <ClInclude Include="src\Model.h" />
+    <ClInclude Include="src\ModelNode.h" />
+    <ClInclude Include="src\PointLight.h" />
+    <ClInclude Include="src\Quad.h" />
+    <ClInclude Include="src\Shader.h" />
+    <ClInclude Include="src\Skybox.h" />
+    <ClInclude Include="src\SSAOBlurPass.h" />
+    <ClInclude Include="src\SSAOPass.h" />
+    <ClInclude Include="src\Transform.h" />
+    <ClInclude Include="src\Volume.h" />
+    <ClInclude Include="src\Walker.h" />
+    <ClInclude Include="src\imgui\imconfig.h" />
+    <ClInclude Include="src\imgui\imgui.h" />
+    <ClInclude Include="src\imgui\imgui_impl_glfw.h" />
+    <ClInclude Include="src\imgui\imgui_impl_opengl3.h" />
+    <ClInclude Include="src\imgui\imgui_impl_opengl3_loader.h" />
+    <ClInclude Include="src\imgui\imgui_internal.h" />
+    <ClInclude Include="src\imgui\imstb_rectpack.h" />
+    <ClInclude Include="src\imgui\imstb_textedit.h" />
+    <ClInclude Include="src\imgui\imstb_truetype.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Shaders\basic_lighting.frag" />
+    <None Include="Shaders\basic_lighting.vert" />
+    <None Include="Shaders\debug_quad.frag" />
+    <None Include="Shaders\debug_quad.vert" />
+    <None Include="Shaders\deferred_shading.frag" />
+    <None Include="Shaders\deferred_shading.vert" />
+    <None Include="Shaders\depth_shader.frag" />
+    <None Include="Shaders\depth_shader.vert" />
+    <None Include="Shaders\depth_shader_cascades.geom" />
+    <None Include="Shaders\depth_shader_cascades.vert" />
+    <None Include="Shaders\depth_shader_cube.frag" />
+    <None Include="Shaders\depth_shader_cube.geom" />
+    <None Include="Shaders\depth_shader_cube.vert" />
+    <None Include="Shaders\g_buffer.frag" />
+    <None Include="Shaders\g_buffer.vert" />
+    <None Include="Shaders\g_buffer_pbr.frag" />
+    <None Include="Shaders\geometry_shader.geom" />
+    <None Include="Shaders\light_cube.frag" />
+    <None Include="Shaders\light_cube.vert" />
+    <None Include="Shaders\pbr_deferred.frag" />
+    <None Include="Shaders\raymarch.frag" />
+    <None Include="Shaders\raymarch.vert" />
+    <None Include="Shaders\skybox.frag" />
+    <None Include="Shaders\skybox.vert" />
+    <None Include="Shaders\ssao_blur_pass.frag" />
+    <None Include="Shaders\ssao_pass.frag" />
+    <None Include="Shaders\ssao_pass.vert" />
+  </ItemGroup>
+</Project>
