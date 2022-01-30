@@ -1,4 +1,4 @@
-#pragma once
+#include "walkerpch.h"
 #include "Model.h"
 #include "Transform.h"
 #include "imgui/imgui.h"

@@ -1,3 +1,4 @@
+#include "walkerpch.h"/*
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <stb_image.h>
@@ -379,4 +380,4 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
     if (!ImGui::GetIO().WantCaptureMouse || cameraMove) {
         camera.ProcessMouseScroll(yoffset);
     }
-}
+}*/

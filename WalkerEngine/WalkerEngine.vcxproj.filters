@@ -47,6 +47,9 @@
     </ClCompile>
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\stb_image.cpp" />
+    <ClCompile Include="src\walkerpch.cpp" />
+    <ClCompile Include="src\Window.cpp" />
+    <ClCompile Include="src\Platform\Windows\WindowsWindow.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Application.h" />
@@ -80,6 +83,13 @@
     <ClInclude Include="src\imgui\imstb_rectpack.h" />
     <ClInclude Include="src\imgui\imstb_textedit.h" />
     <ClInclude Include="src\imgui\imstb_truetype.h" />
+    <ClInclude Include="src\Events\Event.h" />
+    <ClInclude Include="src\Events\KeyboardEvent.h" />
+    <ClInclude Include="src\Events\MouseEvent.h" />
+    <ClInclude Include="src\Events\WindowEvent.h" />
+    <ClInclude Include="src\walkerpch.h" />
+    <ClInclude Include="src\Window.h" />
+    <ClInclude Include="src\Platform\Windows\WindowsWindow.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Shaders\basic_lighting.frag" />
@@ -109,5 +119,6 @@
     <None Include="Shaders\ssao_blur_pass.frag" />
     <None Include="Shaders\ssao_pass.frag" />
     <None Include="Shaders\ssao_pass.vert" />
+    <None Include="cpp.hint" />
   </ItemGroup>
 </Project>

@@ -1,3 +1,4 @@
+#include "walkerpch.h"
 #include "Transform.h"
 
 glm::mat4 Transform::getLocalModelMatrix() {

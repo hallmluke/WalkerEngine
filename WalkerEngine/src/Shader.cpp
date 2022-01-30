@@ -1,3 +1,4 @@
+#include "walkerpch.h"
 #include "Shader.h"
 #include "PointLight.h"
 #include "DirectionalLight.h"
@@ -149,7 +150,7 @@ void Shader::setPointLightProperties(PointLight light) const
         glActiveTexture(GL_TEXTURE4);
         glBindTexture(GL_TEXTURE_CUBE_MAP, light.depthCubeMap);
         setInt("pointLight.depthMap", 4);
-        setFloat("pointLight.far_plane", light.far);
+        setFloat("pointLight.far_plane", light.farPlane);
         setFloat("pointLight.bias", light.bias);
     }
 
@@ -182,7 +183,7 @@ void Shader::setPointLightProperties(std::vector<PointLight*> lights) const
             glActiveTexture(GL_TEXTURE6);
             glBindTexture(GL_TEXTURE_CUBE_MAP, lights[i]->depthCubeMap);
             setInt(lightPrefix + ".depthMap", 6);
-            setFloat(lightPrefix + ".far_plane", lights[i]->far);
+            setFloat(lightPrefix + ".far_plane", lights[i]->farPlane);
             setFloat(lightPrefix + ".bias", lights[i]->bias);
         }
     }

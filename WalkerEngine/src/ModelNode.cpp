@@ -1,3 +1,4 @@
+#include "walkerpch.h"
 #include "ModelNode.h"
 #include "Mesh.h"
 #include "Shader.h"

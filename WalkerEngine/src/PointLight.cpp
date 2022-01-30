@@ -1,3 +1,4 @@
+#include "walkerpch.h"
 #include "PointLight.h"
 #include "Cube.h"
 #include "Shader.h"
@@ -100,7 +101,7 @@ void PointLight::GenerateShadowMap(Shader& shader, Model& model)
 	for (unsigned int i = 0; i < 6; ++i) {
 		shader.setMat4("shadowMatrices[" + std::to_string(i) + "]", shadowTransforms[i]);
 	}
-	shader.setFloat("far_plane", far);
+	shader.setFloat("far_plane", farPlane);
 	shader.setVec3("lightPos", position);
 	//shader.setMat4("model", model.transform);
 

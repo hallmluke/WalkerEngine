@@ -1,5 +1,5 @@
+#include "walkerpch.h"
 #include "GBuffer.h"
-#include <iostream>
 #include "imgui/imgui.h"
 
 GBuffer::GBuffer(unsigned int width, unsigned int height)

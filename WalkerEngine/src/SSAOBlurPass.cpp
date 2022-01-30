@@ -1,3 +1,4 @@
+#include "walkerpch.h"
 #include "SSAOBlurPass.h"
 
 SSAOBlurPass::SSAOBlurPass(unsigned int width, unsigned int height)

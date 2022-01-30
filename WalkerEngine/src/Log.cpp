@@ -1,3 +1,4 @@
+#include "walkerpch.h"
 #include "Log.h"
 
 namespace Walker {
