@@ -15,10 +15,16 @@ namespace Walker {
 		void OnEvent(Event& e);
 
 		void Run();
+
+		static Application& Get() { return *s_Instance; }
+
+		Window& GetWindow() { return *m_Window; }
+
 	private:
 		bool OnWindowClose(WindowCloseEvent& e);
 		std::unique_ptr<Window> m_Window;
 		bool m_Running = true;
+		static Application* s_Instance;
 	};
 
 	Application* CreateApplication();

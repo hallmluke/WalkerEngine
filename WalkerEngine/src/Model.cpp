@@ -208,7 +208,6 @@ std::unique_ptr<Mesh> Model::processMesh(aiMesh* mesh, const aiScene* scene)
     textures.insert(textures.end(), metallicRoughnessMaps.begin(), metallicRoughnessMaps.end());
 
 
-
     // Transparency check
     for (int i = 0; i < diffuseMaps.size(); ++i) {
         if (diffuseMaps[i].transparency) {

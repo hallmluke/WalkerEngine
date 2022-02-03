@@ -54,13 +54,8 @@ namespace Walker {
 			++s_GLFWWindowCount;
 		}
 
-		//m_Context = GraphicsContext::Create(m_Window);
-		//m_Context->Init();
-		glfwMakeContextCurrent(m_Window);
-		int status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
-		if (!status) {
-			W_CORE_ERROR("glad loader failed");
-		}
+		m_Context = GraphicsContext::Create(m_Window);
+		m_Context->Init();
 
 		if (!props.Icon.empty()) {
 			SetIcon(props.Icon);
@@ -174,8 +169,7 @@ namespace Walker {
 	void WindowsWindow::OnUpdate()
 	{
 		glfwPollEvents();
-		//m_Context->SwapBuffers();
-		glfwSwapBuffers(m_Window);
+		m_Context->SwapBuffers();
 	}
 
 	void WindowsWindow::SetVSync(bool enabled)

@@ -50,6 +50,8 @@
     <ClCompile Include="src\walkerpch.cpp" />
     <ClCompile Include="src\Window.cpp" />
     <ClCompile Include="src\Platform\Windows\WindowsWindow.cpp" />
+    <ClCompile Include="src\Renderer\GraphicsContext.cpp" />
+    <ClCompile Include="src\Platform\OpenGL\OpenGLContext.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Application.h" />
@@ -90,6 +92,8 @@
     <ClInclude Include="src\walkerpch.h" />
     <ClInclude Include="src\Window.h" />
     <ClInclude Include="src\Platform\Windows\WindowsWindow.h" />
+    <ClInclude Include="src\Renderer\GraphicsContext.h" />
+    <ClInclude Include="src\Platform\OpenGL\OpenGLContext.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Shaders\basic_lighting.frag" />
