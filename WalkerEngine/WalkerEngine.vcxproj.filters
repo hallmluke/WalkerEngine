@@ -130,33 +130,6 @@
     <ClInclude Include="src\Renderer\Material.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Shaders\basic_lighting.frag" />
-    <None Include="Shaders\basic_lighting.vert" />
-    <None Include="Shaders\debug_quad.frag" />
-    <None Include="Shaders\debug_quad.vert" />
-    <None Include="Shaders\deferred_shading.frag" />
-    <None Include="Shaders\deferred_shading.vert" />
-    <None Include="Shaders\depth_shader.frag" />
-    <None Include="Shaders\depth_shader.vert" />
-    <None Include="Shaders\depth_shader_cascades.geom" />
-    <None Include="Shaders\depth_shader_cascades.vert" />
-    <None Include="Shaders\depth_shader_cube.frag" />
-    <None Include="Shaders\depth_shader_cube.geom" />
-    <None Include="Shaders\depth_shader_cube.vert" />
-    <None Include="Shaders\g_buffer.frag" />
-    <None Include="Shaders\g_buffer.vert" />
-    <None Include="Shaders\g_buffer_pbr.frag" />
-    <None Include="Shaders\geometry_shader.geom" />
-    <None Include="Shaders\light_cube.frag" />
-    <None Include="Shaders\light_cube.vert" />
-    <None Include="Shaders\pbr_deferred.frag" />
-    <None Include="Shaders\raymarch.frag" />
-    <None Include="Shaders\raymarch.vert" />
-    <None Include="Shaders\skybox.frag" />
-    <None Include="Shaders\skybox.vert" />
-    <None Include="Shaders\ssao_blur_pass.frag" />
-    <None Include="Shaders\ssao_pass.frag" />
-    <None Include="Shaders\ssao_pass.vert" />
     <None Include="cpp.hint" />
   </ItemGroup>
 </Project>

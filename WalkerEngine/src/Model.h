@@ -36,7 +36,7 @@ namespace Walker {
         std::unique_ptr<ModelNode> ProcessNode(aiNode* node, const aiScene* scene);
 
         std::unique_ptr<Mesh> ProcessMesh(aiMesh* mesh, const aiScene* scene);
-        std::vector<std::shared_ptr<Material>> ProcessMaterials(const aiScene* scene);
+        std::vector<std::shared_ptr<Material>> ProcessMaterials(const aiScene* scene, const std::string directory);
 
         // checks all material textures of a given type and loads the textures if they're not loaded yet.
         // the required info is returned as a Texture struct.

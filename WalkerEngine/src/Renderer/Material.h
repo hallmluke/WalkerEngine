@@ -18,7 +18,7 @@ namespace Walker {
 
 	class Material {
 	public:
-		Material(aiMaterial* mat);
+		Material(aiMaterial* mat, std::string textureDirectory);
 
 		std::string GetName() const { return m_Name; }
 	private:

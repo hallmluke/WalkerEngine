@@ -88,13 +88,14 @@ namespace Walker {
             return;
         }
         // retrieve the directory path of the filepath
-        //m_Directory = path.substr(0, path.find_last_of('/'));
+
+        std::string directory = path.substr(0, path.find_last_of('/') + 1);
 
         
-        m_Materials = ProcessMaterials(scene);
+        m_Materials = ProcessMaterials(scene, directory);
         // process ASSIMP's root node recursively
         m_RootNode = ProcessNode(scene->mRootNode, scene);
-
+        W_CORE_INFO("Completed importing model");
     }
 
     std::unique_ptr<ModelNode> Model::ProcessNode(aiNode* node, const aiScene* scene)
@@ -224,11 +225,11 @@ namespace Walker {
         return std::make_unique<Mesh>(mesh->mName.C_Str(), vertices, indices, m_Materials[mesh->mMaterialIndex]);
     }
 
-    std::vector<std::shared_ptr<Material>> Model::ProcessMaterials(const aiScene* scene)
+    std::vector<std::shared_ptr<Material>> Model::ProcessMaterials(const aiScene* scene, const std::string directory)
     {
         std::vector<std::shared_ptr<Material>> materials = std::vector<std::shared_ptr<Material>>();
         for (uint32_t i = 0; i < scene->mNumMaterials; i++) {
-            materials.push_back(std::make_shared<Material>(scene->mMaterials[i]));
+            materials.push_back(std::make_shared<Material>(scene->mMaterials[i], directory));
         }
 
         return materials;

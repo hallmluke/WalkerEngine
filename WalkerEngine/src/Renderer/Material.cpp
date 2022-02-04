@@ -3,7 +3,7 @@
 
 namespace Walker {
 
-	Material::Material(aiMaterial* mat)
+	Material::Material(aiMaterial* mat, std::string textureDirectory)
 	{
         aiString name;
         if (AI_SUCCESS == mat->Get(AI_MATKEY_NAME, &name, NULL)) {
@@ -17,7 +17,7 @@ namespace Walker {
         
         aiString fileBaseColor, fileMetallicRoughness, fileNormal;
         if (AI_SUCCESS == mat->GetTexture(AI_MATKEY_GLTF_PBRMETALLICROUGHNESS_BASE_COLOR_TEXTURE, &fileBaseColor)) {
-            m_Albedo = Texture2D::Create(fileBaseColor.C_Str());
+            m_Albedo = Texture2D::Create(textureDirectory + fileBaseColor.C_Str());
         }
         else {
             W_CORE_ERROR("Falied to retrieve albedo texture for material '{0}'", m_Name);
@@ -26,7 +26,7 @@ namespace Walker {
 
 
         if (AI_SUCCESS == mat->GetTexture(AI_MATKEY_GLTF_PBRMETALLICROUGHNESS_METALLICROUGHNESS_TEXTURE, &fileMetallicRoughness)) {
-            m_MetallicRoughness = Texture2D::Create(fileMetallicRoughness.C_Str());
+            m_MetallicRoughness = Texture2D::Create(textureDirectory + fileMetallicRoughness.C_Str());
         }
         else {
             W_CORE_ERROR("Falied to retrieve metallic/roughness texture for material '{0}'", m_Name);
@@ -34,7 +34,7 @@ namespace Walker {
         }
 
         if (AI_SUCCESS == mat->GetTexture(aiTextureType_NORMALS, 0, &fileNormal)) {
-            m_Normal = Texture2D::Create(fileNormal.C_Str());
+            m_Normal = Texture2D::Create(textureDirectory + fileNormal.C_Str());
         }
         else {
             W_CORE_ERROR("Falied to retrieve normal texture for material '{0}'", m_Name);

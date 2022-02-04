@@ -1,6 +1,7 @@
 #include "walkerpch.h"
 #include "Application.h"
 #include "ImGuiManager.h"
+#include "Model.h"
 
 #include "GLFW/glfw3.h"
 
@@ -29,6 +30,7 @@ namespace Walker {
 	void Application::Run()
 	{
 		ImGuiManager imguiManager((GLFWwindow*)m_Window->GetNativeWindow());
+		Model sponzaPBR("SponzaPBR", "Models/SponzaPBR/Sponza.gltf", glm::mat4(1.0f));
 
 		while (m_Running) {
 
