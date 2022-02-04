@@ -97,11 +97,13 @@ namespace Walker {
         }
     }
 
-    void Camera::ProcessMouseScroll(float yoffset)
+    bool Camera::ProcessMouseScroll(MouseScrolledEvent& e)
     {
+        float yoffset = e.GetYOffset();
         m_Zoom -= yoffset;
         m_Zoom = std::max(1.0f, m_Zoom);
         m_Zoom = std::min(45.0f, m_Zoom);
+        return true;
     }
 
     void Camera::UpdateCameraVectors()
@@ -129,7 +131,7 @@ namespace Walker {
     void Camera::OnEvent(Event& e)
     {
         EventDispatcher dispatcher(e);
-        dispatcher.Dispatch<MouseScrolledEvent>(BIND_EVENT_FN(ProcessMouseScroll));
+        dispatcher.Dispatch<MouseScrolledEvent>(BIND_EVENT_FN(Camera::ProcessMouseScroll));
     }
 
     void Camera::UpdateViewMatrix()

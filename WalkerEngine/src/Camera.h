@@ -54,7 +54,7 @@ namespace Walker {
         void UpdateCameraVectors();
         void ProcessKeyboard(float deltaTime);
         void ProcessMouseMovement(float xoffset, float yoffset, float deltaTime);
-        void ProcessMouseScroll(float yoffset);
+        bool ProcessMouseScroll(MouseScrolledEvent& e);
 
     };
 }

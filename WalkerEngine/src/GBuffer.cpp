@@ -1,7 +1,7 @@
 #include "walkerpch.h"
 #include "GBuffer.h"
 #include "imgui/imgui.h"
-
+/*
 GBuffer::GBuffer(unsigned int width, unsigned int height)
 {
     InitBuffers(width, height);
@@ -85,3 +85,4 @@ unsigned int GBuffer::GetGBuffer()
 {
     return gBuffer;
 }
+*/

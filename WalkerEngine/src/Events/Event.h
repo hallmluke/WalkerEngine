@@ -14,11 +14,11 @@ namespace Walker {
 	};
 
 	enum EventCategory {
-		None = 0,
-		Input = BIT(0),
-		Keyboard = BIT(1),
-		Mouse = BIT(2),
-		MouseButton = BIT(3),
+		EventCategoryNone = 0,
+		EventCategoryInput = BIT(0),
+		EventCategoryKeyboard = BIT(1),
+		EventCategoryMouse = BIT(2),
+		EventCategoryMouseButton = BIT(3),
 		EventCategoryWindow = BIT(4)
 	};
 
@@ -27,7 +27,6 @@ namespace Walker {
                                virtual const char* GetName() const override { return #type; }
 
 #define EVENT_CLASS_CATEGORY(category) virtual int GetCategoryFlags() const override { return category; }
-#define BIND_EVENT_FN(x) std::bind(&x, this, std::placeholders::_1)
 
 	class WALKER_API Event {
 		friend class EventDispatcher;

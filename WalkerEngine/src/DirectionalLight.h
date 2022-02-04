@@ -70,6 +70,6 @@ namespace Walker {
 		void InitShadowMap();
 		void InitCascadedShadowMaps();
 		int shadowCascadeLevels = 4;
-		Shader cascadedShader = Shader("Shaders/depth_shader_cascades.vert", "Shaders/depth_shader.frag", "Shaders/depth_shader_cascades.geom");
+		//Shader cascadedShader = Shader("Shaders/depth_shader_cascades.vert", "Shaders/depth_shader.frag", "Shaders/depth_shader_cascades.geom");
 	};
 }

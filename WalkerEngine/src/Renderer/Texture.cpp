@@ -2,7 +2,7 @@
 #include "Texture.h"
 
 #include "Renderer/Renderer.h"
-#include "Platform/OpenGL/OpenGLTexture.h"
+#include "Platform/OpenGL/OpenGLTexture2D.h"
 
 namespace Walker {
 

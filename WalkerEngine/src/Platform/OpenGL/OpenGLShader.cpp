@@ -8,7 +8,7 @@
 
 namespace Walker {
 
-    OpenGLShader::OpenGLShader(const std::string& name, const std::string& vertexPath, const std::string& fragmentPath, const std::string& geometryPath = "")
+    OpenGLShader::OpenGLShader(const std::string& name, const std::string& vertexPath, const std::string& fragmentPath, const std::string& geometryPath)
     {
         // 1. retrieve the vertex/fragment source code from filePath
         std::string vertexCode;
@@ -150,9 +150,9 @@ namespace Walker {
         glUniform3f(GetUniformLocation(name), value.x, value.y, value.z);
     }
 
-    void OpenGLShader::SetPointLightProperties(PointLight light)
+    /*void OpenGLShader::SetPointLightProperties(PointLight light)
     {
-        SetVec3("pointLight.position", light.position);
+        /*SetVec3("pointLight.position", light.position);
         SetVec3("pointLight.ambient", glm::vec3(light.ambientIntensity));
         SetVec3("pointLight.diffuse", glm::vec3(light.diffuseIntensity));
         SetVec3("pointLight.specular", glm::vec3(light.specularIntensity));
@@ -173,7 +173,7 @@ namespace Walker {
 
     void OpenGLShader::SetPointLightProperties(std::vector<PointLight*> lights)
     {
-        int maxLights = 64;
+        /*int maxLights = 64;
         int maxedLights = maxLights;
 
         if (lights.size() < maxLights) {
@@ -204,7 +204,7 @@ namespace Walker {
 
     void OpenGLShader::SetDirectionalLightProperties(DirectionalLight light, Camera camera)
     {
-        SetVec3("dirLight.direction", light.direction);
+        /*SetVec3("dirLight.direction", light.direction);
         SetVec3("dirLight.color", light.color);
         SetVec3("dirLight.ambient", glm::vec3(light.ambientIntensity));
         SetVec3("dirLight.diffuse", glm::vec3(light.diffuseIntensity));
@@ -235,7 +235,7 @@ namespace Walker {
                 SetInt("dirLight.shadowMap", 5);
             }
         }
-    }
+    }*/
 
     void OpenGLShader::CheckCompileErrors(GLuint shader, std::string type)
     {

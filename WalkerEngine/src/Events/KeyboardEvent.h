@@ -11,7 +11,7 @@ namespace Walker {
 	public:
 		int GetKeyCode() const { return m_KeyCode; }
 
-		EVENT_CLASS_CATEGORY(Keyboard | Input);
+		EVENT_CLASS_CATEGORY(EventCategoryKeyboard | EventCategoryInput);
 	protected:
 		KeyEvent(const int keycode)
 			: m_KeyCode(keycode) {}

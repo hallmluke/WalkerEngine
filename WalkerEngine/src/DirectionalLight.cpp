@@ -1,14 +1,14 @@
 #include "walkerpch.h"
 #include "DirectionalLight.h"
 #include "Cube.h"
-#include "Shader.h"
+#include "Renderer/Shader.h"
 #include "Model.h"
 #include "Camera.h"
 #include "imgui\imgui.h";
 #include <glm/gtx/string_cast.hpp>
 
 namespace Walker {
-
+	/*
 	DirectionalLight::DirectionalLight(glm::vec3 dir, bool shadowMapEnabled) : m_Direction(dir)
 	{
 		m_Name = "Directional Light";
@@ -247,7 +247,7 @@ namespace Walker {
 
 	void DirectionalLight::InitBuffers()
 	{
-		vector<float> vertices = Cube::getUnindexedVertices();
+		std::vector<float> vertices = Cube::GetUnindexedVertices();
 
 		glGenVertexArrays(1, &VAO);
 		glGenBuffers(1, &VBO);
@@ -316,4 +316,6 @@ namespace Walker {
 
 		shadowMapInitialized = true;
 	}
+
+	*/
 }

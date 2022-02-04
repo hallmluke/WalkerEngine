@@ -1,9 +1,10 @@
 #pragma once
 #include <glad/glad.h>
-#include "Shader.h"
+#include "Renderer/Shader.h"
 #include "Model.h"
 
 class GBuffer {
+	/*
 public:
 	GBuffer(unsigned int width, unsigned int height);
 	void InitBuffers(unsigned int width, unsigned int height);
@@ -20,4 +21,5 @@ private:
 	unsigned int attachments[3] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2 };
 	unsigned int rboDepth;
 	Shader shader = Shader("Shaders/g_buffer.vert", "Shaders/g_buffer.frag");
+	*/
 };

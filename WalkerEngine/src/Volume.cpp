@@ -5,7 +5,7 @@
 #include <glad/glad.h>
 #include "imgui/imgui.h"
 
-Volume::Volume()
+/*Volume::Volume()
 {
 	InitBuffers();
 	PopulateTestData();
@@ -120,3 +120,4 @@ void Volume::PopulateTestData()
 		}
 	}
 }
+*/

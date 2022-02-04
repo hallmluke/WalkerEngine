@@ -1,6 +1,6 @@
 #include "walkerpch.h"
 #include "SSAOBlurPass.h"
-
+/*
 SSAOBlurPass::SSAOBlurPass(unsigned int width, unsigned int height)
 {
 	InitBuffers(width, height);
@@ -42,3 +42,4 @@ void SSAOBlurPass::BindTextures()
 	glActiveTexture(GL_TEXTURE4);
 	glBindTexture(GL_TEXTURE_2D, ssaoColorBufferBlur);
 }
+*/

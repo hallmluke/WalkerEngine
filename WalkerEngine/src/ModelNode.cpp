@@ -1,97 +1,98 @@
 #include "walkerpch.h"
 #include "ModelNode.h"
-#include "Mesh.h"
-#include "Shader.h"
 
-ModelNode::ModelNode(const std::string name, std::vector<std::unique_ptr<Mesh>> meshPtrs, glm::mat4 initialTransform) : name(name)
-{
-	this->meshPtrs = std::move(meshPtrs);
-	SetInitialTransform(initialTransform);
-}
+namespace Walker {
 
-void ModelNode::Draw(Shader& shader)//, glm::mat4 accumulatedTransform)
-{
-	for (const auto& meshPtr : meshPtrs) {
-		meshPtr->Draw(shader, globalTransform);
-	}
-	for (const auto& childPtr : childNodePtrs) {
-		childPtr->Draw(shader);
-	}
-}
-
-void ModelNode::ShowTree(ModelNode*& selectedNode)
-{
-	int flags = ImGuiTreeNodeFlags_OpenOnArrow | (childNodePtrs.size() == 0 ? ImGuiTreeNodeFlags_Leaf : 0);
-	flags = flags | (selectedNode == this ? ImGuiTreeNodeFlags_Selected : 0);
-
-	bool expanded = ImGui::TreeNodeEx(name.c_str(), flags);
-
-	if (ImGui::IsItemClicked()) {
-		selectedNode = this;
+	ModelNode::ModelNode(const std::string name, std::vector<std::unique_ptr<Mesh>> meshPtrs, glm::mat4 initialTransform) : name(name)
+	{
+		this->meshPtrs = std::move(meshPtrs);
+		SetInitialTransform(initialTransform);
 	}
 
-	if (expanded) {
-		for (const auto& child : childNodePtrs) {
-			child->ShowTree(selectedNode);
+	void ModelNode::Draw(Shader& shader)//, glm::mat4 accumulatedTransform)
+	{
+		for (const auto& meshPtr : meshPtrs) {
+			meshPtr->Draw(shader, globalTransform);
+		}
+		for (const auto& childPtr : childNodePtrs) {
+			childPtr->Draw(shader);
+		}
+	}
+
+	void ModelNode::ShowTree(ModelNode*& selectedNode)
+	{
+		int flags = ImGuiTreeNodeFlags_OpenOnArrow | (childNodePtrs.size() == 0 ? ImGuiTreeNodeFlags_Leaf : 0);
+		flags = flags | (selectedNode == this ? ImGuiTreeNodeFlags_Selected : 0);
+
+		bool expanded = ImGui::TreeNodeEx(name.c_str(), flags);
+
+		if (ImGui::IsItemClicked()) {
+			selectedNode = this;
 		}
 
-		ImGui::TreePop();
+		if (expanded) {
+			for (const auto& child : childNodePtrs) {
+				child->ShowTree(selectedNode);
+			}
+
+			ImGui::TreePop();
+		}
 	}
-}
 
-void ModelNode::AddChild(std::unique_ptr<ModelNode> modelNode)
-{
-	if (modelNode) {
-		modelNode->parent = this;
-		childNodePtrs.push_back(std::move(modelNode));
+	void ModelNode::AddChild(std::unique_ptr<ModelNode> modelNode)
+	{
+		if (modelNode) {
+			modelNode->parent = this;
+			childNodePtrs.push_back(std::move(modelNode));
+		}
 	}
-}
 
-void ModelNode::SetInitialTransform(glm::mat4 transform)
-{
-	initialTransform = transform;
-}
-
-void ModelNode::SetRootTransform(glm::mat4 transform) {
-	rootTransform = transform;
-}
-
-void ModelNode::UpdateGlobalTransform()
-{
-	globalTransform = rootTransform * initialTransform * appliedTransform.m_transform;
-
-	for (const auto& childPtr : childNodePtrs) {
-		childPtr->UpdateGlobalTransform(globalTransform);
+	void ModelNode::SetInitialTransform(glm::mat4 transform)
+	{
+		initialTransform = transform;
 	}
-}
 
-void ModelNode::UpdateGlobalTransform(glm::mat4 parentGlobalTransform)
-{
-	globalTransform = parentGlobalTransform * initialTransform * appliedTransform.m_transform;
-
-	for (const auto& childPtr : childNodePtrs) {
-		childPtr->UpdateGlobalTransform(globalTransform);
+	void ModelNode::SetRootTransform(glm::mat4 transform) {
+		rootTransform = transform;
 	}
-}
 
-void ModelNode::ApplyTransform()
-{
-	appliedTransform.setAppliedTransform();
+	void ModelNode::UpdateGlobalTransform()
+	{
+		globalTransform = rootTransform * initialTransform * appliedTransform.m_transform;
 
-	if (parent) {
-		UpdateGlobalTransform(parent->globalTransform);
+		for (const auto& childPtr : childNodePtrs) {
+			childPtr->UpdateGlobalTransform(globalTransform);
+		}
 	}
-	else {
-		UpdateGlobalTransform();
+
+	void ModelNode::UpdateGlobalTransform(glm::mat4 parentGlobalTransform)
+	{
+		globalTransform = parentGlobalTransform * initialTransform * appliedTransform.m_transform;
+
+		for (const auto& childPtr : childNodePtrs) {
+			childPtr->UpdateGlobalTransform(globalTransform);
+		}
 	}
-}
 
-void ModelNode::ApplyTransform(Transform parentTransform)
-{
-	std::cout << this->name << std::endl;
-	appliedTransform.setAppliedTransform(parentTransform.m_transform);
+	void ModelNode::ApplyTransform()
+	{
+		appliedTransform.setAppliedTransform();
 
-	for (unsigned int i = 0; i < childNodePtrs.size(); i++) {
-		childNodePtrs[i]->ApplyTransform(appliedTransform);
+		if (parent) {
+			UpdateGlobalTransform(parent->globalTransform);
+		}
+		else {
+			UpdateGlobalTransform();
+		}
+	}
+
+	void ModelNode::ApplyTransform(Transform parentTransform)
+	{
+		std::cout << this->name << std::endl;
+		appliedTransform.setAppliedTransform(parentTransform.m_transform);
+
+		for (unsigned int i = 0; i < childNodePtrs.size(); i++) {
+			childNodePtrs[i]->ApplyTransform(appliedTransform);
+		}
 	}
 }

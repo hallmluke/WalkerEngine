@@ -118,6 +118,8 @@ namespace Walker {
 			}
 			default:
 				//W_CORE_ASSERT(false, "Unknown ShaderDataType!");
+				break;
+				
 			}
 		}
 

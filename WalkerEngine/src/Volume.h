@@ -1,10 +1,10 @@
 #pragma once
 #include <vector>
-#include "Shader.h"
+#include "Renderer/Shader.h"
 #include "Quad.h"
 
 class Volume {
-public:
+/*public:
 	Volume();
 	void InitBuffers();
 	void InitTexture();
@@ -23,5 +23,5 @@ private:
 	float radius = 0.4;
 	float opacityThreshold = 0.1;
 	glm::vec3 origin;
-	Quad quad;
+	Quad quad;*/
 };

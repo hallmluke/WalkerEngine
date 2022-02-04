@@ -1,9 +1,9 @@
 #pragma once
 #include "Quad.h"
-#include "Shader.h"
+//#include "Shader.h"
 
 class SSAOBlurPass {
-public:
+/*public:
 	SSAOBlurPass(unsigned int width, unsigned int height);
 	void InitBuffers(unsigned int width, unsigned int height);
 	void BindFrameBuffer(bool clearBuffer = true);
@@ -13,5 +13,5 @@ public:
 private:
 	unsigned int ssaoBlurFBO, ssaoColorBufferBlur;
 	Quad quad;
-	Shader shaderSSAOBlur = Shader("Shaders/ssao_pass.vert", "Shaders/ssao_blur_pass.frag");
+	Shader shaderSSAOBlur = Shader("Shaders/ssao_pass.vert", "Shaders/ssao_blur_pass.frag");*/
 };

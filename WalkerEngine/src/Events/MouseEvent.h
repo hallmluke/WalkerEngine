@@ -23,7 +23,7 @@ namespace Walker {
 		}
 
 		EVENT_CLASS_TYPE(MouseMove)
-		EVENT_CLASS_CATEGORY(Mouse | Input)
+		EVENT_CLASS_CATEGORY(EventCategoryMouse | EventCategoryInput)
 	private:
 		float m_MouseX, m_MouseY;
 	};
@@ -45,7 +45,7 @@ namespace Walker {
 		}
 
 		EVENT_CLASS_TYPE(MouseScroll)
-		EVENT_CLASS_CATEGORY(Mouse | Input)
+		EVENT_CLASS_CATEGORY(EventCategoryMouse | EventCategoryInput)
 	private:
 		float m_XOffset, m_YOffset;
 	};
@@ -55,7 +55,7 @@ namespace Walker {
 	public:
 		int GetMouseButton() const { return m_Button; }
 
-		EVENT_CLASS_CATEGORY(Mouse | Input | MouseButton)
+		EVENT_CLASS_CATEGORY(EventCategoryMouse | EventCategoryInput | EventCategoryMouseButton)
 	protected:
 		MouseButtonEvent(const int button)
 			: m_Button(button) {}

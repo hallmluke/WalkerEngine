@@ -3,6 +3,7 @@
 #include "Cube.h"
 #include "stb_image.h"
 
+/*
 Skybox::Skybox(std::string directory)
 {
 	InitBuffers();
@@ -74,3 +75,4 @@ void Skybox::InitTextures(std::string directory)
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R,
 		GL_CLAMP_TO_EDGE);
 }
+*/
