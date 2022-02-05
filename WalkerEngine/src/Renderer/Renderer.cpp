@@ -36,6 +36,8 @@ namespace Walker {
 		shader->SetMat4("u_ViewProjection", s_SceneData->ViewProjectionMatrix);
 		shader->SetMat4("u_Transform", transform);*/
 
+		shader->Bind();
+		shader->SetMat4("model", transform);
 		vertexArray->Bind();
 		RenderCommand::DrawIndexed(vertexArray);
 	}

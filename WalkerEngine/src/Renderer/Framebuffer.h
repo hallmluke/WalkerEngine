@@ -75,6 +75,9 @@ namespace Walker {
 		virtual const FramebufferSpecification& GetSpecification() const = 0;
 
 		static std::shared_ptr<Framebuffer> Create(const FramebufferSpecification& spec);
+
+		// Temporary
+		virtual uint32_t GetId() const = 0;
 	};
 
 

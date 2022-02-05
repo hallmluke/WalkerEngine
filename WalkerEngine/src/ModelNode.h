@@ -13,7 +13,7 @@ namespace Walker {
 	class ModelNode {
 	public:
 		ModelNode(const std::string name, std::vector<std::unique_ptr<Mesh>> meshPtrs, glm::mat4 initialTransform);
-		void Draw(Shader& shader);// , glm::mat4 transform);
+		void Draw(std::shared_ptr<Shader> shader);// , glm::mat4 transform);
 		void ShowTree(ModelNode*& selectedNode);
 		void AddChild(std::unique_ptr<ModelNode> modelNode);
 		void SetInitialTransform(glm::mat4 transform);

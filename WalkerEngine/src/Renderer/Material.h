@@ -21,6 +21,9 @@ namespace Walker {
 		Material(aiMaterial* mat, std::string textureDirectory);
 
 		std::string GetName() const { return m_Name; }
+		
+		// Temporary
+		void BindTextures();
 	private:
 		std::string m_Name;
 		std::shared_ptr<Texture> m_Albedo;

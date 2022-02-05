@@ -10,9 +10,9 @@ namespace Walker {
     class Camera
     {
     public:
-        Camera(glm::vec3 position);
-        Camera(glm::vec3 position, float yaw, float pitch);
-        Camera(float posX, float posY, float posZ, float yaw, float pitch);
+        Camera(glm::vec3 position, float viewportWidth, float viewportHeight);
+        Camera(glm::vec3 position, float yaw, float pitch, float viewportWidth, float viewportHeight);
+        Camera(float posX, float posY, float posZ, float yaw, float pitch, float viewportWidth, float viewportHeight);
 
         void OnUpdate(float deltaTime);
         void OnEvent(Event& e);
@@ -20,8 +20,8 @@ namespace Walker {
         void UpdateViewMatrix();
         const glm::mat4& GetViewMatrix() const;
 
-        void UpdateProjectionMatrix(float aspectRatio);
-        void UpdateProjectionMatrix(float aspectRatio, float nearPlane, float farPlane);
+        void UpdateProjectionMatrix();
+        void UpdateProjectionMatrix(float nearPlane, float farPlane);
         const glm::mat4& GetProjectionMatrix() const;
 
         const glm::mat4& GetViewProjectionMatrix() const;
@@ -42,12 +42,15 @@ namespace Walker {
         float m_Yaw = -90.0f;
         float m_Pitch = 0.0f;
 
-        float m_MovementSpeed = 2.5f;
-        float m_MouseSensitivity = 0.1f;
+        float m_MovementSpeed = 5.0f;
+        float m_MouseSensitivity = 3.0f;
         float m_Zoom = 45.0f;
 
         float m_NearPlane = 0.1f;
         float m_FarPlane = 100.0f;
+
+        float m_ViewportWidth;
+        float m_ViewportHeight;
 
         glm::vec2 m_LastMousePosition = { 0, 0 };
 

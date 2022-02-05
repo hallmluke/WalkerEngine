@@ -60,7 +60,7 @@ namespace Walker {
         Mesh(const std::string name, std::vector<Vertex> vertices, std::vector<uint32_t> indices, std::shared_ptr<Material> material);
 
         // render the mesh
-        void Draw(Shader& shader, glm::mat4 transform);
+        void Draw(std::shared_ptr<Shader> shader, glm::mat4 transform);
         /* {
             // bind appropriate textures
             unsigned int diffuseNr = 1;
@@ -145,6 +145,7 @@ namespace Walker {
         std::shared_ptr<VertexArray> m_VertexArray;
         std::shared_ptr<VertexBuffer> m_VertexBuffer;
         std::shared_ptr<IndexBuffer> m_IndexBuffer;
+        std::shared_ptr<Material> m_Material;
         // render data 
         //unsigned int VBO, EBO;
 

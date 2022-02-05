@@ -161,6 +161,7 @@
     <None Include="Shaders\basic_lighting.vert" />
     <None Include="Shaders\debug_quad.frag" />
     <None Include="Shaders\debug_quad.vert" />
+    <None Include="Shaders\debug_quad_input.frag" />
     <None Include="Shaders\deferred_shading.frag" />
     <None Include="Shaders\deferred_shading.vert" />
     <None Include="Shaders\depth_shader.frag" />
@@ -184,6 +185,7 @@
     <None Include="Shaders\ssao_blur_pass.frag" />
     <None Include="Shaders\ssao_pass.frag" />
     <None Include="Shaders\ssao_pass.vert" />
+    <None Include="Shaders\test.frag" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

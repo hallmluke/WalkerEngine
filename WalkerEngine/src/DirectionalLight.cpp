@@ -8,7 +8,7 @@
 #include <glm/gtx/string_cast.hpp>
 
 namespace Walker {
-	/*
+	
 	DirectionalLight::DirectionalLight(glm::vec3 dir, bool shadowMapEnabled) : m_Direction(dir)
 	{
 		m_Name = "Directional Light";
@@ -17,11 +17,12 @@ namespace Walker {
 		m_SpecularIntensity = 1.0f;
 		m_Color = glm::vec3(0.8f);
 
-		DirectionalLight::shadowMapEnabled = shadowMapEnabled;
+		m_ShadowMapEnabled = shadowMapEnabled;
 
-		InitUBO();
+		//InitUBO();
 	}
 
+	/*
 	void DirectionalLight::DrawDebug(Shader& shader)
 	{
 		if (!initialized) {

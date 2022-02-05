@@ -47,5 +47,7 @@
     <None Include="Shaders\ssao_blur_pass.frag" />
     <None Include="Shaders\ssao_pass.frag" />
     <None Include="Shaders\ssao_pass.vert" />
+    <None Include="Shaders\debug_quad_input.frag" />
+    <None Include="Shaders\test.frag" />
   </ItemGroup>
 </Project>

@@ -14,9 +14,9 @@ namespace Walker {
         SetGlobalTransformOnNodes();
     }
 
-    void Model::Draw(Shader& shader)
+    void Model::Draw(std::shared_ptr<Shader> shader)
     {
-        //m_RootNode->Draw(shader);
+        m_RootNode->Draw(shader);
     }
 
     void Model::ControlWindow()

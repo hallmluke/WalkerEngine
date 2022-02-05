@@ -1,5 +1,6 @@
 #include "walkerpch.h"
 #include "Mesh.h"
+#include "Renderer/Renderer.h"
 
 namespace Walker {
 
@@ -7,15 +8,21 @@ namespace Walker {
         m_Name = name;
         m_Vertices = vertices;
         m_Indices = indices;
+        m_Material = material;
         //this->textures = textures;
         //this->transparency = transparency;
 
         SetupMesh();
     }
 
-    void Mesh::Draw(Shader& shader, glm::mat4 transform)
+    void Mesh::Draw(std::shared_ptr<Shader> shader, glm::mat4 transform)
     {
-        W_CORE_INFO("Drawing some shit");
+        m_Material->BindTextures();
+        shader->SetInt("texture_diffuse1", 0);
+        shader->SetInt("texture_metallicRoughness1", 1);
+        shader->SetInt("texture_normal1", 2);
+        Renderer::Submit(shader, m_VertexArray, transform);
+        //RenderCommand::DrawIndexed(m_VertexArray);
     }
 
 	void Mesh::SetupMesh()

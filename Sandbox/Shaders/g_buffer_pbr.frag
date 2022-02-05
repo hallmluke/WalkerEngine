@@ -8,6 +8,7 @@ in vec3 FragPos;
 in mat3 TBN;
 in vec2 TexCoords;
 //in vec3 Normal;
+out vec4 FragColor;
 
 uniform bool diffuse_tex;
 uniform sampler2D texture_diffuse1;

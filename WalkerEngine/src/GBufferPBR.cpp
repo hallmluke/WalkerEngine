@@ -5,6 +5,7 @@
 
 #include "Renderer/Framebuffer.h"
 #include "Renderer/Shader.h"
+#include "Renderer/RenderCommand.h"
 
 namespace Walker {
 
@@ -65,7 +66,7 @@ namespace Walker {
         }
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
     }
-
+    
     void GBufferPBR::BindTextures()
     {
         glActiveTexture(GL_TEXTURE0);
@@ -112,10 +113,12 @@ namespace Walker {
             { "gPosition", FramebufferTextureFormat::RGBA16F, FramebufferTextureType::FLOAT }, 
             { "gNormal", FramebufferTextureFormat::RGBA16F, FramebufferTextureType::FLOAT },
             { "gAlbedo", FramebufferTextureFormat::RGBA16F, FramebufferTextureType::UNSIGNED_BYTE },
-            { "gMetRoughAO", FramebufferTextureFormat::RGBA16F, FramebufferTextureType::UNSIGNED_BYTE }
+            { "gMetRoughAO", FramebufferTextureFormat::RGBA16F, FramebufferTextureType::UNSIGNED_BYTE },
+            { "Depth", FramebufferTextureFormat::DEPTH24STENCIL8, FramebufferTextureType::FLOAT }
         };
         fbSpec.Width = width;
         fbSpec.Height = height;
+        fbSpec.Samples = 1;
         m_Framebuffer = Framebuffer::Create(fbSpec);
 
         // TODO: Use shader library?
@@ -125,6 +128,23 @@ namespace Walker {
     void GBufferPBRPass::Draw() const {
         m_Framebuffer->Bind();
         // Draw some objects
+    }
+
+    void GBufferPBRPass::DrawModel(Model& model, glm::mat4 view, glm::mat4 projection) const
+    {
+        m_Framebuffer->Bind();
+        RenderCommand::Clear();
+        m_Shader->Bind();
+        m_Shader->SetMat4("view", view);
+        m_Shader->SetMat4("projection", projection);
+        model.Draw(m_Shader);
+    }
+
+    void GBufferPBRPass::BindTextures()
+    {
+        m_Framebuffer->BindColorAttachment(0, 0);
+        m_Framebuffer->BindColorAttachment(1, 1);
+        m_Framebuffer->BindColorAttachment(2, 2);
     }
 
     void GBufferPBRPass::BindInputs() const {

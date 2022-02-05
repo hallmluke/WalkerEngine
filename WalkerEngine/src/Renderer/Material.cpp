@@ -20,7 +20,7 @@ namespace Walker {
             m_Albedo = Texture2D::Create(textureDirectory + fileBaseColor.C_Str());
         }
         else {
-            W_CORE_ERROR("Falied to retrieve albedo texture for material '{0}'", m_Name);
+            W_CORE_WARN("Falied to retrieve albedo texture for material '{0}'", m_Name);
             m_UseAlbedo = false;
         }
 
@@ -29,7 +29,7 @@ namespace Walker {
             m_MetallicRoughness = Texture2D::Create(textureDirectory + fileMetallicRoughness.C_Str());
         }
         else {
-            W_CORE_ERROR("Falied to retrieve metallic/roughness texture for material '{0}'", m_Name);
+            W_CORE_WARN("Falied to retrieve metallic/roughness texture for material '{0}'", m_Name);
             m_UseMetallicRoughness = false;
         }
 
@@ -37,7 +37,7 @@ namespace Walker {
             m_Normal = Texture2D::Create(textureDirectory + fileNormal.C_Str());
         }
         else {
-            W_CORE_ERROR("Falied to retrieve normal texture for material '{0}'", m_Name);
+            W_CORE_WARN("Falied to retrieve normal texture for material '{0}'", m_Name);
             m_UseNormal = false;
         }
 
@@ -91,4 +91,16 @@ namespace Walker {
         }
         return textures;*/
 	}
+    void Material::BindTextures()
+    {
+        if (m_UseAlbedo) {
+            m_Albedo->Bind(0);
+        }
+        if (m_UseMetallicRoughness) {
+            m_MetallicRoughness->Bind(1);
+        }
+        if (m_UseNormal) {
+            m_Normal->Bind(2);
+        }
+    }
 }

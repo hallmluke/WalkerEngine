@@ -25,12 +25,14 @@ namespace Walker {
 		virtual void BindColorAttachment(std::string name, uint32_t slot = 0) const override;
 
 		virtual const FramebufferSpecification& GetSpecification() const override { return m_Specification; }
+
+		virtual uint32_t GetId() const override { return m_RendererID; }
 	private:
 		uint32_t m_RendererID = 0;
 		FramebufferSpecification m_Specification;
 
 		std::vector<FramebufferTextureSpecification> m_ColorAttachmentSpecifications;
-		FramebufferTextureSpecification m_DepthAttachmentSpecification = { "Depth", FramebufferTextureFormat::None, FramebufferTextureType::FLOAT };
+		FramebufferTextureSpecification m_DepthAttachmentSpecification = { "Depth", FramebufferTextureFormat::DEPTH24STENCIL8, FramebufferTextureType::FLOAT };
 
 		std::vector<uint32_t> m_ColorAttachments;
 		uint32_t m_DepthAttachment = 0;

@@ -41,6 +41,9 @@ namespace Walker {
 		virtual bool IsVSync() const = 0;
 		virtual void SetIcon(std::string icon) const = 0;
 
+		virtual void EnableCursor() const = 0;
+		virtual void DisableCursor() const = 0;
+
 		virtual void* GetNativeWindow() const = 0;
 
 		static Window* Create(const WindowProps& props = WindowProps());

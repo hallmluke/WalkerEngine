@@ -53,6 +53,8 @@ namespace Walker {
 		float m_DiffuseIntensity;
 		float m_SpecularIntensity;
 
+		bool m_ShadowMapEnabled = true;
+
 		float debugDrawSize = 0.2f;
 		bool drawDebugEnabled = true;
 		float debugDistance = 20.0f;

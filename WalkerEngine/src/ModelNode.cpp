@@ -9,7 +9,7 @@ namespace Walker {
 		SetInitialTransform(initialTransform);
 	}
 
-	void ModelNode::Draw(Shader& shader)//, glm::mat4 accumulatedTransform)
+	void ModelNode::Draw(std::shared_ptr<Shader> shader)//, glm::mat4 accumulatedTransform)
 	{
 		for (const auto& meshPtr : meshPtrs) {
 			meshPtr->Draw(shader, globalTransform);

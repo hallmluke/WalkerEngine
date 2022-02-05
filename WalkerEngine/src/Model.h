@@ -18,7 +18,7 @@ namespace Walker {
         Model(const std::string name, std::string const& path, glm::mat4 initialTransform);
 
         // draws the model, and thus all its meshes
-        void Draw(Shader& shader);
+        void Draw(std::shared_ptr<Shader> shader);
 
         void ControlWindow();
         void SetGlobalTransformOnNodes();

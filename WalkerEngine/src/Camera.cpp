@@ -7,32 +7,41 @@
 
 namespace Walker {
 
-    Camera::Camera(glm::vec3 position)
+    Camera::Camera(glm::vec3 position, float viewportWidth, float viewportHeight)
     {
         m_Position = position;
         m_WorldUp = glm::vec3(0.0f, 1.0f, 0.0f);
+        m_ViewportWidth = viewportWidth;
+        m_ViewportHeight = viewportHeight;
         UpdateCameraVectors();
         UpdateViewMatrix();
+        UpdateProjectionMatrix();
     }
 
-    Camera::Camera(glm::vec3 position, float yaw, float pitch)
+    Camera::Camera(glm::vec3 position, float yaw, float pitch, float viewportWidth, float viewportHeight)
     {
         m_Position = position;
         m_WorldUp = glm::vec3(0.0f, 1.0f, 0.0f);
         m_Yaw = yaw;
         m_Pitch = pitch;
+        m_ViewportWidth = viewportWidth;
+        m_ViewportHeight = viewportHeight;
         UpdateCameraVectors();
         UpdateViewMatrix();
+        UpdateProjectionMatrix();
     }
 
-    Camera::Camera(float posX, float posY, float posZ, float yaw, float pitch)
+    Camera::Camera(float posX, float posY, float posZ, float yaw, float pitch, float viewportWidth, float viewportHeight)
     {
         m_Position = glm::vec3(posX, posY, posZ);
         m_WorldUp = glm::vec3(0.0f, 1.0f, 0.0f);
         m_Yaw = yaw;
         m_Pitch = pitch;
+        m_ViewportWidth = viewportWidth;
+        m_ViewportHeight = viewportHeight;
         UpdateCameraVectors();
         UpdateViewMatrix();
+        UpdateProjectionMatrix();
     }
 
 
@@ -65,35 +74,39 @@ namespace Walker {
 
     void Camera::ProcessMouseMovement(float xoffset, float yoffset, float deltaTime)
     {
-        xoffset *= m_MouseSensitivity;
-        yoffset *= m_MouseSensitivity;
+        if (Input::IsMouseButtonPressed(Mouse::ButtonRight)) {
+            xoffset *= m_MouseSensitivity;
+            yoffset *= m_MouseSensitivity;
 
-        m_Yaw += xoffset * deltaTime;
-        m_Pitch += yoffset * deltaTime;
+            m_Yaw += xoffset * deltaTime;
+            m_Pitch -= yoffset * deltaTime;
 
-        m_Pitch = std::min(m_Pitch, 89.0f);
-        m_Pitch = std::max(m_Pitch, -89.0f);
+            m_Pitch = std::min(m_Pitch, 89.0f);
+            m_Pitch = std::max(m_Pitch, -89.0f);
+        }
     }
 
     void Camera::ProcessKeyboard(float deltaTime)
     {
-        float velocity = m_MovementSpeed * deltaTime;
+        if (Input::IsMouseButtonPressed(Mouse::ButtonRight)) {
+            float velocity = m_MovementSpeed * deltaTime;
 
-        if (Input::IsKeyPressed(Key::Up) || Input::IsKeyPressed(Key::W)) {
-            glm::vec3 movement = m_Front * velocity;
-            m_Position += movement;
-        }
-        if (Input::IsKeyPressed(Key::Down) || Input::IsKeyPressed(Key::S)) {
-            glm::vec3 movement = m_Front * velocity;
-            m_Position -= movement;
-        }
-        if (Input::IsKeyPressed(Key::Left) || Input::IsKeyPressed(Key::A)) {
-            glm::vec3 movement = m_Right * velocity;
-            m_Position -= movement;
-        }
-        if (Input::IsKeyPressed(Key::Right) || Input::IsKeyPressed(Key::D)) {
-            glm::vec3 movement = m_Right * velocity;
-            m_Position += movement;
+            if (Input::IsKeyPressed(Key::Up) || Input::IsKeyPressed(Key::W)) {
+                glm::vec3 movement = m_Front * velocity;
+                m_Position += movement;
+            }
+            if (Input::IsKeyPressed(Key::Down) || Input::IsKeyPressed(Key::S)) {
+                glm::vec3 movement = m_Front * velocity;
+                m_Position -= movement;
+            }
+            if (Input::IsKeyPressed(Key::Left) || Input::IsKeyPressed(Key::A)) {
+                glm::vec3 movement = m_Right * velocity;
+                m_Position -= movement;
+            }
+            if (Input::IsKeyPressed(Key::Right) || Input::IsKeyPressed(Key::D)) {
+                glm::vec3 movement = m_Right * velocity;
+                m_Position += movement;
+            }
         }
     }
 
@@ -145,14 +158,16 @@ namespace Walker {
         return m_ViewMatrix;
     }
 
-    void Camera::UpdateProjectionMatrix(float aspectRatio)
+    void Camera::UpdateProjectionMatrix()
     {
-        UpdateProjectionMatrix(aspectRatio, m_NearPlane, m_FarPlane);
+        UpdateProjectionMatrix(m_NearPlane, m_FarPlane);
     }
 
-    void Camera::UpdateProjectionMatrix(float aspectRatio, float nearPlane, float farPlane)
+    void Camera::UpdateProjectionMatrix(float nearPlane, float farPlane)
     {
+        float aspectRatio = m_ViewportWidth / m_ViewportHeight;
         m_ProjectionMatrix = glm::perspective(glm::radians(m_Zoom), aspectRatio, nearPlane, farPlane);
+        m_ViewProjMatrix = m_ProjectionMatrix * m_ViewMatrix;
     }
 
     const glm::mat4& Camera::GetProjectionMatrix() const

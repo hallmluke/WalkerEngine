@@ -31,7 +31,7 @@ namespace Walker {
 	
 		virtual const std::string& GetName() const = 0;
 
-		static std::shared_ptr<Shader> Create(const std::string& name, const std::string& vertexPath, const std::string& fragmentPath, const std::string& geometryPath = nullptr);
+		static std::shared_ptr<Shader> Create(const std::string& name, const std::string& vertexPath, const std::string& fragmentPath, const std::string& geometryPath = "");
 
 	};
 
