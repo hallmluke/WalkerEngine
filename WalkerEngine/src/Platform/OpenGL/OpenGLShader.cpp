@@ -200,17 +200,17 @@ namespace Walker {
         }
 
         SetInt("numberOfLights", maxedLights);
-    }
+    }*/
 
     void OpenGLShader::SetDirectionalLightProperties(DirectionalLight light, Camera camera)
     {
-        /*SetVec3("dirLight.direction", light.direction);
-        SetVec3("dirLight.color", light.color);
-        SetVec3("dirLight.ambient", glm::vec3(light.ambientIntensity));
-        SetVec3("dirLight.diffuse", glm::vec3(light.diffuseIntensity));
-        SetVec3("dirLight.specular", glm::vec3(light.specularIntensity));
+        SetVec3("dirLight.direction", light.GetDirection());
+        SetVec3("dirLight.color", light.GetColor());
+        SetVec3("dirLight.ambient", glm::vec3(light.GetAmbientIntensity()));
+        SetVec3("dirLight.diffuse", glm::vec3(light.GetDiffuseIntensity()));
+        SetVec3("dirLight.specular", glm::vec3(light.GetSpecularIntensity()));
 
-        if (light.shadowMapEnabled) {
+        /*if (light.shadowMapEnabled) {
             if (light.cascadedShadowMapping) {
                 //SetMat4("dirLight.lightSpaceMatrix", light.GetLightSpaceMatrix(camera));
                 //SetFloat("dirLight.shadowBias", light.minimumShadowBias);
@@ -234,8 +234,8 @@ namespace Walker {
                 glBindTexture(GL_TEXTURE_2D, light.depthMap);
                 SetInt("dirLight.shadowMap", 5);
             }
-        }
-    }*/
+        }*/
+    }
 
     void OpenGLShader::CheckCompileErrors(GLuint shader, std::string type)
     {

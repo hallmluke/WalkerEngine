@@ -114,7 +114,7 @@ namespace Walker {
             { "gNormal", FramebufferTextureFormat::RGBA16F, FramebufferTextureType::FLOAT },
             { "gAlbedo", FramebufferTextureFormat::RGBA16F, FramebufferTextureType::UNSIGNED_BYTE },
             { "gMetRoughAO", FramebufferTextureFormat::RGBA16F, FramebufferTextureType::UNSIGNED_BYTE },
-            { "Depth", FramebufferTextureFormat::DEPTH24STENCIL8, FramebufferTextureType::FLOAT }
+            { "Depth", FramebufferTextureFormat::DEPTH32F, FramebufferTextureType::FLOAT }
         };
         fbSpec.Width = width;
         fbSpec.Height = height;
@@ -122,7 +122,8 @@ namespace Walker {
         m_Framebuffer = Framebuffer::Create(fbSpec);
 
         // TODO: Use shader library?
-        m_Shader = Shader::Create("GBufferPBR", "Shaders/g_buffer.vert", "Shaders/g_buffer_pbr.frag");
+        //m_Shader = Shader::Create("GBufferPBR", "Shaders/g_buffer.vert", "Shaders/g_buffer_pbr.frag");
+        m_Shader = Shader::Create("GBufferPBR", "Shaders/g_buffer.vert", "Shaders/test.frag");
     }
 
     void GBufferPBRPass::Draw() const {

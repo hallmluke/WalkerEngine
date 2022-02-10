@@ -5,10 +5,8 @@
 #include <vector>
 #include <unordered_map>
 #include <glm/glm.hpp>
-
-class PointLight;
-class DirectionalLight;
-class Camera;
+#include "DirectionalLight.h"
+#include "Camera.h"
 
 namespace Walker {
 
@@ -27,7 +25,7 @@ namespace Walker {
 		virtual void SetVec3(const std::string& name, glm::vec3 value) = 0;
 		//virtual void SetPointLightProperties(PointLight light) = 0;
 		//virtual void SetPointLightProperties(std::vector<PointLight*> lights) = 0;
-		//virtual void SetDirectionalLightProperties(DirectionalLight light, Camera camera) = 0;
+		virtual void SetDirectionalLightProperties(DirectionalLight light, Camera camera) = 0;
 	
 		virtual const std::string& GetName() const = 0;
 

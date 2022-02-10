@@ -3,7 +3,6 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <glad/glad.h>
-#include "Renderer/Shader.h"
 
 class Model;
 class Camera;
@@ -13,21 +12,26 @@ namespace Walker {
 	class DirectionalLight {
 	public:
 		DirectionalLight(glm::vec3 dir, bool shadowMapEnabled = true);
-		~DirectionalLight();
-		void DrawDebug(Shader& shader);
-		void ControlWindow();
+		//~DirectionalLight();
+		//void DrawDebug(Shader& shader);
+		//void ControlWindow();
 
 		//const char* name;
 
 		//glm::vec3 direction;
 		//glm::vec3 color;
 
+		glm::vec3 GetDirection() const { return m_Direction; }
+		glm::vec3 GetColor() const { return m_Color; }
+		float GetAmbientIntensity() const { return m_AmbientIntensity; }
+		float GetDiffuseIntensity() const { return m_DiffuseIntensity; }
+		float GetSpecularIntensity() const { return m_SpecularIntensity; }
 		
 
 		unsigned int VBO, VAO;
 
 		// Shadow mapping
-		bool shadowMapEnabled = true;
+		/*bool shadowMapEnabled = true;
 		bool cascadedShadowMapping = true;
 		unsigned int depthMapFBO;
 		unsigned int depthMap;
@@ -41,7 +45,7 @@ namespace Walker {
 		float shadowBiasFactor = 0.005f;
 		void GenerateShadowMap(Shader& shader, Model& model, Camera& camera);
 		void GenerateCascadedShadowMap(Model& model, Camera& camera);
-		std::vector<float> GetShadowCascadeLevels(float cameraFarPlane);
+		std::vector<float> GetShadowCascadeLevels(float cameraFarPlane);*/
 
 	private:
 		std::string m_Name;
@@ -61,7 +65,7 @@ namespace Walker {
 
 
 
-		unsigned int matricesUBO;
+		/*unsigned int matricesUBO;
 		void InitUBO();
 		bool initialized = false;
 		void InitBuffers();
@@ -71,7 +75,7 @@ namespace Walker {
 		bool shadowMapInitialized = false;
 		void InitShadowMap();
 		void InitCascadedShadowMaps();
-		int shadowCascadeLevels = 4;
+		int shadowCascadeLevels = 4;*/
 		//Shader cascadedShader = Shader("Shaders/depth_shader_cascades.vert", "Shaders/depth_shader.frag", "Shaders/depth_shader_cascades.geom");
 	};
 }

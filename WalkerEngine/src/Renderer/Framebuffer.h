@@ -13,15 +13,17 @@ namespace Walker {
 
 		// Depth/stencil
 		DEPTH24STENCIL8,
+		DEPTH32F,
 
 		// Defaults
-		Depth = DEPTH24STENCIL8
+		Depth = DEPTH32F
 	};
 
 	enum class FramebufferTextureType
 	{
 		None = 0,
 		UNSIGNED_BYTE,
+		UNSIGNED_INT_24_8,
 		FLOAT
 	};
 

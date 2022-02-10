@@ -43,36 +43,44 @@ namespace Walker {
 		ImGuiManager imguiManager((GLFWwindow*)m_Window->GetNativeWindow());
 		Model sponzaPBR("SponzaPBR", "Models/SponzaPBR/Sponza.gltf", glm::mat4(1.0f));
 		Camera camera(glm::vec3(1.0f), m_Window->GetWidth(), m_Window->GetHeight());
-		//GBufferPBRPass gBufferPBRPass(m_Window->GetWidth(), m_Window->GetHeight());
-		//Quad quad;
-		//std::shared_ptr<Shader> shader = Shader::Create("debug", "Shaders/debug_quad.vert", "Shaders/debug_quad_input.frag");
+		GBufferPBRPass gBufferPBRPass(m_Window->GetWidth(), m_Window->GetHeight());
+		Quad quad;
+		std::shared_ptr<Shader> shader = Shader::Create("debug", "Shaders/debug_quad.vert", "Shaders/debug_quad_input.frag");
 		std::shared_ptr<Shader> shader2 = Shader::Create("debug", "Shaders/g_buffer.vert", "Shaders/test.frag");
 
 		while (m_Running) {
 
-			glClearColor(0, 0, 0, 1);
-			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+			RenderCommand::Clear();
 
 			float time = (float)glfwGetTime();
 			float timestep = time - m_LastFrameTime;
 			m_LastFrameTime = time;
 			imguiManager.BeginFrame();
 
-			shader2->Bind();
+			//shader2->Bind();
 			//float aspect = m_Window->GetWidth() / m_Window->GetHeight();
 			//glm::mat4 view = glm::lookAt(glm::vec3(3.0f), glm::vec3(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 			//glm::mat4 projection = glm::perspective(glm::radians(45.0f), aspect, 0.1f, 100.0f);
+			//shader2->SetMat4("view", camera.GetViewMatrix());
+			//shader2->SetMat4("projection", camera.GetProjectionMatrix());
+			
+			//sponzaPBR.Draw(shader2);
+
+			gBufferPBRPass.DrawModel(sponzaPBR, camera.GetViewMatrix(), camera.GetProjectionMatrix());
+			glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+			/*shader2->Bind();
 			shader2->SetMat4("view", camera.GetViewMatrix());
 			shader2->SetMat4("projection", camera.GetProjectionMatrix());
-			
-			sponzaPBR.Draw(shader2);
 
-			//gBufferPBRPass.DrawModel(sponzaPBR, camera.GetViewMatrix(), camera.GetProjectionMatrix());
-			//glBindFramebuffer(GL_FRAMEBUFFER, 0);
-			//shader->Bind();
-			//shader->SetInt("u_Input", 2);
-			//gBufferPBRPass.BindTextures();
-			//quad.Draw();
+			sponzaPBR.Draw(shader2);*/
+
+			shader->Bind();
+			shader->SetInt("u_Input", 0);
+			gBufferPBRPass.BindTextures();
+			quad.Draw();
+
+
 			/*glBindFramebuffer(GL_READ_FRAMEBUFFER, gBufferPBRPass.GetFramebufferId());
 			glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0); // write to default framebuffer
 			glBlitFramebuffer(0, 0, m_Window->GetWidth(), m_Window->GetHeight(), 0, 0, m_Window->GetWidth(), m_Window->GetHeight(),

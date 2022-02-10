@@ -1,9 +1,9 @@
 #version 330 core
 
-layout (location = 0) out vec3 gPosition;
-layout (location = 1) out vec3 gNormal;
-layout (location = 2) out vec3 gAlbedo;
-layout (location = 3) out vec3 gMetRoughAO;
+layout (location = 0) out vec4 gPosition;
+layout (location = 1) out vec4 gNormal;
+layout (location = 2) out vec4 gAlbedo;
+layout (location = 3) out vec4 gMetRoughAO;
 
 in vec3 FragPos;
 in mat3 TBN;
@@ -24,5 +24,12 @@ uniform sampler2D texture_metallicRoughness1;
 
 void main()
 {    
-    FragColor = vec4(texture(texture_diffuse1, TexCoords).xyz, 1);
+    //FragColor = vec4(texture(texture_diffuse1, TexCoords).xyz, 1);
+    gPosition = vec4(FragPos, 1.0);
+    gAlbedo = vec4(texture(texture_diffuse1, TexCoords).xyz, 1);
+    vec3 normal = texture(texture_normal1, TexCoords).rgb;
+    normal = normal * 2.0 - 1.0;
+    gNormal = vec4(normalize(TBN * normal), 1.0);
+
+
 }
