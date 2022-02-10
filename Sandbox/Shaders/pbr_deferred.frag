@@ -87,28 +87,28 @@ void main()
 
     //vec4 FragPosDirLightSpace = dirLight.lightSpaceMatrix * vec4(FragPos, 1.0);
 
-    if(debugPass == 0) {
-        FragColor = vec4(FragPos, 1.0);
-        return;
-    } else if (debugPass == 1) {
-        FragColor = vec4(Normal, 1.0);
-        return;
-    } else if (debugPass == 2) {
-        FragColor = vec4(Albedo, 1.0);
-        return;
-    } else if (debugPass == 3) {
-        FragColor = vec4(Metallic);
-        FragColor.a = 1.0;
-        return;
-    } else if (debugPass == 4) {
-        FragColor = vec4(Roughness);
-        FragColor.a = 1.0;
-        return;
-    } else if (debugPass == 5) {
-        FragColor = vec4(SSAO);
-        FragColor.a = 1.0;
-        return;
-    } else if (debugPass == 6) {
+    //if(debugPass == 0) {
+    //    FragColor = vec4(FragPos, 1.0);
+    //    return;
+    //} else if (debugPass == 1) {
+    //    FragColor = vec4(Normal, 1.0);
+    //    return;
+    //} else if (debugPass == 2) {
+    //    FragColor = vec4(Albedo, 1.0);
+    //    return;
+    //} else if (debugPass == 3) {
+    //    FragColor = vec4(Metallic);
+    //    FragColor.a = 1.0;
+    //    return;
+    //} else if (debugPass == 4) {
+    //    FragColor = vec4(Roughness);
+    //    FragColor.a = 1.0;
+    //    return;
+    //} else if (debugPass == 5) {
+    //    FragColor = vec4(SSAO);
+    //    FragColor.a = 1.0;
+    //    return;
+    //} else if (debugPass == 6) {
 
     vec3 F0 = vec3(0.04);
     F0 = mix(F0, Albedo, Metallic);
@@ -157,7 +157,7 @@ void main()
     color = pow(color, vec3(1.0/2.2)); // Gamma correct
     color = clamp(color, 0.0, 1.0);
     FragColor = vec4(color, 1.0);
-    }
+    //}
 }
 
 vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir, vec3 albedo, float roughness, float metallic, vec3 F0, vec4 fragPosWorldSpace) {
@@ -179,6 +179,7 @@ vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir, vec3 albedo, float 
     float NdotL = max(dot(normal, L), 0.0);
     //float shadow = ShadowCalculationDir(fragPosLightSpace, normal, L);
     float shadow = ShadowCalculationDirCascades(fragPosWorldSpace, normal, L);
+    //float shadow = 0;
     vec3 final = (1 - shadow) * (kD * albedo / PI + specular) * radiance * NdotL;
 
     return final;

@@ -31,5 +31,8 @@ void main()
     normal = normal * 2.0 - 1.0;
     gNormal = vec4(normalize(TBN * normal), 1.0);
 
-
+    gMetRoughAO.r = texture(texture_metallicRoughness1, TexCoords).b;
+    gMetRoughAO.g = texture(texture_metallicRoughness1, TexCoords).g;
+    gMetRoughAO.b = 0.0;
+    gMetRoughAO.a = 1.0;
 }

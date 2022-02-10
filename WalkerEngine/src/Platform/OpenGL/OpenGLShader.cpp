@@ -210,6 +210,17 @@ namespace Walker {
         SetVec3("dirLight.diffuse", glm::vec3(light.GetDiffuseIntensity()));
         SetVec3("dirLight.specular", glm::vec3(light.GetSpecularIntensity()));
 
+        std::vector<float> cascadeDistances = light.GetShadowCascadeLevels();
+        SetMat4("view", camera.GetViewMatrix());
+        SetFloat("farPlane", camera.GetFarPlane());
+        SetInt("cascadeCount", cascadeDistances.size());
+        for (size_t i = 0; i < cascadeDistances.size(); ++i)
+        {
+            SetFloat("cascadePlaneDistances[" + std::to_string(i) + "]", cascadeDistances[i]);
+        }
+        light.BindShadowMap(5);
+        SetInt("shadowMap", 5);
+
         /*if (light.shadowMapEnabled) {
             if (light.cascadedShadowMapping) {
                 //SetMat4("dirLight.lightSpaceMatrix", light.GetLightSpaceMatrix(camera));

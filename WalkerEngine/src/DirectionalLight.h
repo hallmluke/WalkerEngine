@@ -1,13 +1,19 @@
 #pragma once
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
-#include <glad/glad.h>
 
-class Model;
-class Camera;
+#include "Renderer/Framebuffer.h"
+#include "Renderer/UniformBuffer.h"
+//#include "Camera.h"
+//#include "Model.h"
+
+
 
 namespace Walker {
+
+	class Camera;
+	class Model;
+	class Shader;
 
 	class DirectionalLight {
 	public:
@@ -27,8 +33,16 @@ namespace Walker {
 		float GetDiffuseIntensity() const { return m_DiffuseIntensity; }
 		float GetSpecularIntensity() const { return m_SpecularIntensity; }
 		
+		glm::mat4 GetLightSpaceMatrix(Camera& camera, const float nearPlane, const float farPlane);
+		std::vector<glm::mat4> GetLightSpaceMatrices(Camera& camera);
 
-		unsigned int VBO, VAO;
+		std::vector<float> GetShadowCascadeLevels() const { return m_ShadowCascadeLevels; };
+		void SetShadowCascadeLevels(const float cameraFarPlane);
+		
+		void GenerateCascadedShadowMap(Model& model, Camera& camera);
+		void BindShadowMap(uint32_t slot) const;
+
+		//unsigned int VBO, VAO;
 
 		// Shadow mapping
 		/*bool shadowMapEnabled = true;
@@ -58,6 +72,14 @@ namespace Walker {
 		float m_SpecularIntensity;
 
 		bool m_ShadowMapEnabled = true;
+		std::shared_ptr<Framebuffer> m_ShadowMapFramebuffer;
+		std::shared_ptr<UniformBuffer> m_LightMatricesUniformBuffer;
+		uint32_t m_ShadowMapWidth = 2048;
+		uint32_t m_ShadowMapHeight = 2048;
+		std::vector<float> m_ShadowCascadeLevels;
+		std::shared_ptr<Shader> m_ShadowMapShader;
+		//float m_ShadowMapNearPlane = 0.1f;
+		//float m_ShadowMapFarPlane = 70.0f;
 
 		float debugDrawSize = 0.2f;
 		bool drawDebugEnabled = true;

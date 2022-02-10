@@ -110,14 +110,15 @@ namespace Walker {
     GBufferPBRPass::GBufferPBRPass(uint32_t width, uint32_t height) {
         FramebufferSpecification fbSpec;
         fbSpec.Attachments = { 
-            { "gPosition", FramebufferTextureFormat::RGBA16F, FramebufferTextureType::FLOAT }, 
-            { "gNormal", FramebufferTextureFormat::RGBA16F, FramebufferTextureType::FLOAT },
-            { "gAlbedo", FramebufferTextureFormat::RGBA16F, FramebufferTextureType::UNSIGNED_BYTE },
-            { "gMetRoughAO", FramebufferTextureFormat::RGBA16F, FramebufferTextureType::UNSIGNED_BYTE },
-            { "Depth", FramebufferTextureFormat::DEPTH32F, FramebufferTextureType::FLOAT }
+            { "gPosition", FramebufferTextureFormat::RGBA16F, FramebufferTextureType::FLOAT, FramebufferTextureTarget::TEXTURE_2D }, 
+            { "gNormal", FramebufferTextureFormat::RGBA16F, FramebufferTextureType::FLOAT, FramebufferTextureTarget::TEXTURE_2D },
+            { "gAlbedo", FramebufferTextureFormat::RGBA16F, FramebufferTextureType::UNSIGNED_BYTE, FramebufferTextureTarget::TEXTURE_2D },
+            { "gMetRoughAO", FramebufferTextureFormat::RGBA16F, FramebufferTextureType::UNSIGNED_BYTE, FramebufferTextureTarget::TEXTURE_2D },
+            { "Depth", FramebufferTextureFormat::DEPTH32F, FramebufferTextureType::FLOAT, FramebufferTextureTarget::TEXTURE_2D }
         };
         fbSpec.Width = width;
         fbSpec.Height = height;
+        
         fbSpec.Samples = 1;
         m_Framebuffer = Framebuffer::Create(fbSpec);
 
@@ -146,6 +147,7 @@ namespace Walker {
         m_Framebuffer->BindColorAttachment(0, 0);
         m_Framebuffer->BindColorAttachment(1, 1);
         m_Framebuffer->BindColorAttachment(2, 2);
+        m_Framebuffer->BindColorAttachment(3, 3);
     }
 
     void GBufferPBRPass::BindInputs() const {

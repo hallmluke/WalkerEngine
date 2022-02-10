@@ -27,15 +27,24 @@ namespace Walker {
 		FLOAT
 	};
 
+	enum class FramebufferTextureTarget
+	{
+		None = 0,
+		TEXTURE_2D,
+		TEXTURE_2D_ARRAY,
+		TEXTURE_CUBE_MAP
+	};
+
 	struct FramebufferTextureSpecification
 	{
 		FramebufferTextureSpecification() = default;
-		FramebufferTextureSpecification(std::string name, FramebufferTextureFormat format, FramebufferTextureType type)
-			: Name(name), TextureFormat(format), Type(type) {}
+		FramebufferTextureSpecification(std::string name, FramebufferTextureFormat format, FramebufferTextureType type, FramebufferTextureTarget target)
+			: Name(name), TextureFormat(format), Type(type), Target(target) {}
 
 		std::string Name;
 		FramebufferTextureFormat TextureFormat = FramebufferTextureFormat::None;
 		FramebufferTextureType Type = FramebufferTextureType::None;
+		FramebufferTextureTarget Target = FramebufferTextureTarget::None;
 		// TODO: filtering/wrap
 	};
 
@@ -51,6 +60,7 @@ namespace Walker {
 	struct FramebufferSpecification
 	{
 		uint32_t Width = 0, Height = 0;
+		uint32_t Depth = 0;
 		FramebufferAttachmentSpecification Attachments;
 		uint32_t Samples = 1;
 
@@ -73,6 +83,7 @@ namespace Walker {
 		virtual uint32_t GetColorAttachmentRendererID(uint32_t index = 0) const = 0;
 		virtual void BindColorAttachment(uint32_t index = 0, uint32_t slot = 0) const = 0;
 		virtual void BindColorAttachment(std::string name, uint32_t slot = 0) const = 0;
+		virtual void BindDepthAttachment(uint32_t slot = 0) const = 0;
 
 		virtual const FramebufferSpecification& GetSpecification() const = 0;
 

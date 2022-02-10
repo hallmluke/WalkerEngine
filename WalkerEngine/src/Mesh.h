@@ -4,7 +4,7 @@
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
-#include "imgui/imgui.h";
+#include "imgui/imgui.h"
 
 #include "Renderer/Buffer.h"
 #include "Renderer/VertexArray.h"

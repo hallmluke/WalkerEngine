@@ -9,6 +9,8 @@
 #include "GBufferPBR.h"
 #include "Quad.h"
 #include "Renderer/Shader.h"
+#include "DirectionalLight.h"
+
 #include "Input.h"
 #include "MouseCodes.h"
 
@@ -40,13 +42,15 @@ namespace Walker {
 
 	void Application::Run()
 	{
+		DirectionalLight dirLight(glm::vec3(0.0f, -1.0f, -0.1f));
 		ImGuiManager imguiManager((GLFWwindow*)m_Window->GetNativeWindow());
 		Model sponzaPBR("SponzaPBR", "Models/SponzaPBR/Sponza.gltf", glm::mat4(1.0f));
 		Camera camera(glm::vec3(1.0f), m_Window->GetWidth(), m_Window->GetHeight());
 		GBufferPBRPass gBufferPBRPass(m_Window->GetWidth(), m_Window->GetHeight());
 		Quad quad;
+		
 		std::shared_ptr<Shader> shader = Shader::Create("debug", "Shaders/debug_quad.vert", "Shaders/debug_quad_input.frag");
-		std::shared_ptr<Shader> shader2 = Shader::Create("debug", "Shaders/g_buffer.vert", "Shaders/test.frag");
+		std::shared_ptr<Shader> shader2 = Shader::Create("debug", "Shaders/deferred_shading.vert", "Shaders/pbr_deferred.frag");
 
 		while (m_Running) {
 
@@ -65,6 +69,7 @@ namespace Walker {
 			//shader2->SetMat4("projection", camera.GetProjectionMatrix());
 			
 			//sponzaPBR.Draw(shader2);
+			dirLight.GenerateCascadedShadowMap(sponzaPBR, camera);
 
 			gBufferPBRPass.DrawModel(sponzaPBR, camera.GetViewMatrix(), camera.GetProjectionMatrix());
 			glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -75,8 +80,13 @@ namespace Walker {
 
 			sponzaPBR.Draw(shader2);*/
 
-			shader->Bind();
-			shader->SetInt("u_Input", 0);
+			shader2->Bind();
+			shader2->SetInt("gPosition", 0);
+			shader2->SetInt("gNormal", 1);
+			shader2->SetInt("gAlbedo", 2);
+			shader2->SetInt("gMetRoughAO", 3);
+			shader2->SetVec3("camPos", camera.GetPosition());
+			shader2->SetDirectionalLightProperties(dirLight, camera);
 			gBufferPBRPass.BindTextures();
 			quad.Draw();
 

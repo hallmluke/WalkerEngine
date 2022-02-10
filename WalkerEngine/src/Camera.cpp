@@ -44,7 +44,7 @@ namespace Walker {
         UpdateProjectionMatrix();
     }
 
-
+    // TODO: Move out to utils/math
     std::vector<glm::vec4> Camera::GetFrustumCornersWorldSpace(const glm::mat4& proj, const glm::mat4& view)
     {
         const auto inv = glm::inverse(proj * view);

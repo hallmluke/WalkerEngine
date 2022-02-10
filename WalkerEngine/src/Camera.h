@@ -26,6 +26,12 @@ namespace Walker {
 
         const glm::mat4& GetViewProjectionMatrix() const;
 
+        const glm::vec3& GetPosition() const { return m_Position; }
+        const float GetNearPlane() const { return m_NearPlane; }
+        const float GetFarPlane() const { return m_FarPlane; }
+        const float GetZoom() const { return m_Zoom; }
+        const float GetAspectRatio() const { return m_ViewportWidth / m_ViewportHeight; }
+
         std::vector<glm::vec4> GetFrustumCornersWorldSpace(const glm::mat4& proj, const glm::mat4& view);
 
     private:

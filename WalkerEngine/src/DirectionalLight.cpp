@@ -1,11 +1,10 @@
 #include "walkerpch.h"
 #include "DirectionalLight.h"
-#include "Cube.h"
 #include "Renderer/Shader.h"
-#include "Model.h"
-#include "Camera.h"
 #include "imgui\imgui.h";
 #include <glm/gtx/string_cast.hpp>
+#include "Camera.h"
+#include "Model.h"
 
 namespace Walker {
 	
@@ -13,13 +12,170 @@ namespace Walker {
 	{
 		m_Name = "Directional Light";
 		m_AmbientIntensity = 0.1f;
-		m_DiffuseIntensity = 0.8f;
+		m_DiffuseIntensity = 3.0f;
 		m_SpecularIntensity = 1.0f;
 		m_Color = glm::vec3(0.8f);
 
 		m_ShadowMapEnabled = shadowMapEnabled;
 
+		FramebufferSpecification fbSpec;
+		fbSpec.Attachments = {
+			{ "Depth", FramebufferTextureFormat::DEPTH32F, FramebufferTextureType::FLOAT, FramebufferTextureTarget::TEXTURE_2D_ARRAY }
+		}; // TODO: Border for texture
+		fbSpec.Width = m_ShadowMapWidth;
+		fbSpec.Height = m_ShadowMapHeight;
+		fbSpec.Depth = 5; // TODO: Correspond to number of cascades
+		fbSpec.Samples = 1;
+		m_ShadowMapFramebuffer = Framebuffer::Create(fbSpec);
+
+		m_LightMatricesUniformBuffer = UniformBuffer::Create(sizeof(glm::mat4) * 16, 0);
+
+		SetShadowCascadeLevels(70.0f); // TODO: retrieve from camera
+		m_ShadowMapShader = Shader::Create("Depth", "Shaders/depth_shader_cascades.vert", "Shaders/depth_shader.frag", "Shaders/depth_shader_cascades.geom"); // TODO: Use shader library
+
 		//InitUBO();
+	}
+
+	glm::mat4 DirectionalLight::GetLightSpaceMatrix(Camera& camera, const float nearPlane, const float farPlane)
+	{
+		std::vector<glm::vec4> corners = camera.GetFrustumCornersWorldSpace(glm::perspective(glm::radians(camera.GetZoom()), camera.GetAspectRatio(), nearPlane, farPlane), camera.GetViewMatrix());
+
+		glm::vec3 center = glm::vec3(0, 0, 0);
+		for (const auto& v : corners)
+		{
+			center += glm::vec3(v);
+		}
+		center /= corners.size();
+
+		glm::vec3 centerDirection = center - m_Direction;
+
+
+		const auto lightView = glm::lookAt(
+			center - m_Direction,
+			center,
+			glm::vec3(0.0f, 1.0f, 0.0f)
+		);
+
+		float minX = std::numeric_limits<float>::max();
+		float maxX = std::numeric_limits<float>::min();
+		float minY = std::numeric_limits<float>::max();
+		float maxY = std::numeric_limits<float>::min();
+		float minZ = std::numeric_limits<float>::max();
+		float maxZ = std::numeric_limits<float>::min();
+		for (const auto& v : corners)
+		{
+			const auto trf = lightView * v;
+			minX = std::min(minX, trf.x);
+			maxX = std::max(maxX, trf.x);
+			minY = std::min(minY, trf.y);
+			maxY = std::max(maxY, trf.y);
+			minZ = std::min(minZ, trf.z);
+			maxZ = std::max(maxZ, trf.z);
+		}
+
+		if (minZ < 0)
+		{
+			minZ *= debugDistance;
+		}
+		else
+		{
+			minZ /= debugDistance;
+		}
+		if (maxZ < 0)
+		{
+			maxZ /= debugDistance;
+		}
+		else
+		{
+			if (maxZ < 0.5f) {
+				maxZ = 0.5f;
+			}
+			//maxZ += 0.1;
+			maxZ *= debugDistance;
+		}
+
+		const glm::mat4 lightProjection = glm::ortho(minX, maxX, minY, maxY, minZ, maxZ);
+
+		return lightProjection * lightView;
+	}
+
+	std::vector<glm::mat4> DirectionalLight::GetLightSpaceMatrices(Camera& camera)
+	{
+		std::vector<glm::mat4> matrices;
+
+		for (size_t i = 0; i < m_ShadowCascadeLevels.size() + 1; ++i)
+		{
+			if (i == 0)
+			{
+				matrices.push_back(GetLightSpaceMatrix(camera, camera.GetNearPlane(), m_ShadowCascadeLevels[i]));
+			}
+			else if (i < m_ShadowCascadeLevels.size())
+			{
+				matrices.push_back(GetLightSpaceMatrix(camera, m_ShadowCascadeLevels[i - 1], m_ShadowCascadeLevels[i]));
+			}
+			else
+			{
+				matrices.push_back(GetLightSpaceMatrix(camera, m_ShadowCascadeLevels[i - 1], camera.GetFarPlane()));
+			}
+		}
+		return matrices;
+	}
+
+	void DirectionalLight::GenerateCascadedShadowMap(Model& model, Camera& camera)
+	{
+		// Upload light space matrices to uniform buffer
+		std::vector<glm::mat4> lightSpaceMatrices = GetLightSpaceMatrices(camera);
+		for (size_t i = 0; i < lightSpaceMatrices.size(); ++i)
+		{
+			m_LightMatricesUniformBuffer->SetData(&lightSpaceMatrices[i], sizeof(glm::mat4x4), i * sizeof(glm::mat4x4));
+			//glBufferSubData(GL_UNIFORM_BUFFER, i * sizeof(glm::mat4x4), sizeof(glm::mat4x4), &lightSpaceMatrices[i]);
+		}
+
+
+		m_ShadowMapFramebuffer->Bind();
+		RenderCommand::Clear();
+		model.Draw(m_ShadowMapShader);
+		 
+		/*if (!shadowMapInitialized) {
+			InitCascadedShadowMaps();
+		}
+
+		// Get current viewport size to reset after
+		GLint m_viewport[4];
+		glGetIntegerv(GL_VIEWPORT, m_viewport);
+
+		cascadedShader.use();
+		std::vector<glm::mat4> lightSpaceMatrices = GetLightSpaceMatrices(camera);
+		glBindBuffer(GL_UNIFORM_BUFFER, matricesUBO);
+		for (size_t i = 0; i < lightSpaceMatrices.size(); ++i)
+		{
+			glBufferSubData(GL_UNIFORM_BUFFER, i * sizeof(glm::mat4x4), sizeof(glm::mat4x4), &lightSpaceMatrices[i]);
+		}
+		glBindBuffer(GL_UNIFORM_BUFFER, 0);
+
+		glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
+		glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
+		glFramebufferTexture(GL_FRAMEBUFFER, GL_TEXTURE_2D_ARRAY, depthMap, 0);
+		glClear(GL_DEPTH_BUFFER_BIT);
+		//glActiveTexture(GL_TEXTURE0);
+		//shader.setMat4("model", model.transform);
+		model.Draw(cascadedShader);
+
+		// Reset framebuffer, viewport
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		glViewport(m_viewport[0], m_viewport[1], m_viewport[2], m_viewport[3]);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);*/
+	}
+
+	void DirectionalLight::BindShadowMap(uint32_t slot) const
+	{
+		m_ShadowMapFramebuffer->BindDepthAttachment(slot);
+	}
+
+	void DirectionalLight::SetShadowCascadeLevels(float cameraFarPlane)
+	{
+		// TODO: Dynamic number of cascades
+		m_ShadowCascadeLevels = std::vector<float> { cameraFarPlane / 50.0f, cameraFarPlane / 25.0f, cameraFarPlane / 10.0f, cameraFarPlane / 2.0f };
 	}
 
 	/*
@@ -266,7 +422,7 @@ namespace Walker {
 
 	void DirectionalLight::InitShadowMap()
 	{
-		glGenFramebuffers(1, &depthMapFBO);
+		glGenFramebuffers(1, & FBO);
 		// create depth texture
 		glGenTextures(1, &depthMap);
 		glBindTexture(GL_TEXTURE_2D, depthMap);
