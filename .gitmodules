@@ -1,0 +1,3 @@
+[submodule "WalkerEngine/vendor/spdlog"]
+	path = WalkerEngine/vendor/spdlog
+	url = https://github.com/gabime/spdlog
