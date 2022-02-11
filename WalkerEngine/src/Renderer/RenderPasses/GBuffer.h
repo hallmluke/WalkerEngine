@@ -1,7 +1,7 @@
 #pragma once
 #include <glad/glad.h>
 #include "Renderer/Shader.h"
-#include "Model.h"
+#include "Scene/Model.h"
 
 class GBuffer {
 	/*

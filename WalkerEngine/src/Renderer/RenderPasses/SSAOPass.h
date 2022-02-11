@@ -2,7 +2,7 @@
 #include <random>
 #include <glm/glm.hpp>
 
-#include "Quad.h"
+#include "Math/SampleGeometry/Quad.h"
 #include "Renderer/RenderPass.h"
 #include "Renderer/Shader.h"
 #include "Renderer/Texture.h"

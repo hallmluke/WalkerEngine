@@ -3,18 +3,21 @@
 #include "ImGuiManager.h"
 #include "Renderer/Renderer.h"
 
+#include <glad/glad.h>
+
 // Temporary, for testing
-#include "Model.h"
-#include "Camera.h"
-#include "GBufferPBR.h"
-#include "Quad.h"
+#include "Scene/Model.h"
+#include "Scene/Camera.h"
+#include "Renderer/RenderPasses/GBufferPBRPass.h"
+#include "Math/SampleGeometry/Quad.h"
 #include "Renderer/Shader.h"
-#include "DirectionalLight.h"
+#include "Scene/DirectionalLight.h"
 
 #include "Input.h"
 #include "MouseCodes.h"
 
 #include "GLFW/glfw3.h"
+
 
 namespace Walker {
 
@@ -22,7 +25,10 @@ namespace Walker {
 
 	Application::Application()
 	{
-		m_Window = std::unique_ptr<Window>(Window::Create());
+		WindowProps props;
+		props.Icon = "Icons/skywalker_icon.png";
+
+		m_Window = std::unique_ptr<Window>(Window::Create(props));
 		m_Window->SetEventCallback(BIND_EVENT_FN(Application::OnEvent));
 		s_Instance = this;
 

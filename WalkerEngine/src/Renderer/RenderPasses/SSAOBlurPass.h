@@ -1,5 +1,5 @@
 #pragma once
-#include "Quad.h"
+#include "Math/SampleGeometry/Quad.h"
 //#include "Shader.h"
 
 class SSAOBlurPass {

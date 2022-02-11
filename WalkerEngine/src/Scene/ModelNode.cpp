@@ -21,7 +21,7 @@ namespace Walker {
 
 	void ModelNode::ShowTree(ModelNode*& selectedNode)
 	{
-		int flags = ImGuiTreeNodeFlags_OpenOnArrow | (childNodePtrs.size() == 0 ? ImGuiTreeNodeFlags_Leaf : 0);
+		/*int flags = ImGuiTreeNodeFlags_OpenOnArrow | (childNodePtrs.size() == 0 ? ImGuiTreeNodeFlags_Leaf : 0);
 		flags = flags | (selectedNode == this ? ImGuiTreeNodeFlags_Selected : 0);
 
 		bool expanded = ImGui::TreeNodeEx(name.c_str(), flags);
@@ -36,7 +36,7 @@ namespace Walker {
 			}
 
 			ImGui::TreePop();
-		}
+		}*/
 	}
 
 	void ModelNode::AddChild(std::unique_ptr<ModelNode> modelNode)
@@ -88,7 +88,6 @@ namespace Walker {
 
 	void ModelNode::ApplyTransform(Transform parentTransform)
 	{
-		std::cout << this->name << std::endl;
 		appliedTransform.setAppliedTransform(parentTransform.m_transform);
 
 		for (unsigned int i = 0; i < childNodePtrs.size(); i++) {

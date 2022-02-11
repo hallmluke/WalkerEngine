@@ -1,6 +1,6 @@
 #include "walkerpch.h"
 #include "Skybox.h"
-#include "Cube.h"
+#include "Math/SampleGeometry/Cube.h"
 #include "stb_image.h"
 
 /*

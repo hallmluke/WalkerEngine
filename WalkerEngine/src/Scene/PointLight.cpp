@@ -1,6 +1,6 @@
 #include "walkerpch.h"
 #include "PointLight.h"
-#include "Cube.h"
+#include "Math/SampleGeometry/Cube.h"
 #include "Renderer/Shader.h"
 #include "Model.h"
 #include "imgui/imgui.h";

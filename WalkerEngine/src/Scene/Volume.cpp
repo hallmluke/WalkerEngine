@@ -1,6 +1,6 @@
 #include "walkerpch.h"
 #include "Volume.h"
-#include "Cube.h"
+#include "Math/SampleGeometry/Cube.h"
 #include <glm/glm.hpp>
 #include <glad/glad.h>
 #include "imgui/imgui.h"

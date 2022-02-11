@@ -2,9 +2,9 @@
 
 #include <fstream>
 #include "OpenGLShader.h"
-#include "PointLight.h"
-#include "DirectionalLight.h"
-#include "Camera.h"
+#include "Scene/PointLight.h"
+#include "Scene/DirectionalLight.h"
+#include "Scene/Camera.h"
 
 namespace Walker {
 
@@ -220,32 +220,6 @@ namespace Walker {
         }
         light.BindShadowMap(5);
         SetInt("shadowMap", 5);
-
-        /*if (light.shadowMapEnabled) {
-            if (light.cascadedShadowMapping) {
-                //SetMat4("dirLight.lightSpaceMatrix", light.GetLightSpaceMatrix(camera));
-                //SetFloat("dirLight.shadowBias", light.minimumShadowBias);
-                std::vector<float> cascadeDistances = light.GetShadowCascadeLevels(camera.farPlane);
-                SetMat4("view", camera.GetViewMatrix());
-                SetFloat("farPlane", camera.farPlane);
-                SetInt("cascadeCount", cascadeDistances.size());
-                for (size_t i = 0; i < cascadeDistances.size(); ++i)
-                {
-                    SetFloat("cascadePlaneDistances[" + std::to_string(i) + "]", cascadeDistances[i]);
-                }
-                glActiveTexture(GL_TEXTURE5);
-                glBindTexture(GL_TEXTURE_2D_ARRAY, light.depthMap);
-                SetInt("shadowMap", 5);
-            }
-            else {
-                SetMat4("dirLight.lightSpaceMatrix", light.GetLightSpaceMatrix());
-                SetFloat("dirLight.shadowBias", light.minimumShadowBias);
-
-                glActiveTexture(GL_TEXTURE5);
-                glBindTexture(GL_TEXTURE_2D, light.depthMap);
-                SetInt("dirLight.shadowMap", 5);
-            }
-        }*/
     }
 
     void OpenGLShader::CheckCompileErrors(GLuint shader, std::string type)

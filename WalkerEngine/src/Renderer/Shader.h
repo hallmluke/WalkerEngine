@@ -5,8 +5,8 @@
 #include <vector>
 #include <unordered_map>
 #include <glm/glm.hpp>
-#include "DirectionalLight.h"
-#include "Camera.h"
+#include "Scene/DirectionalLight.h"
+#include "Scene/Camera.h"
 
 namespace Walker {
 

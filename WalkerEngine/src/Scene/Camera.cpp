@@ -1,9 +1,9 @@
 #include "walkerpch.h"
 #include "Camera.h"
 
-#include "Input.h"
-#include "KeyCodes.h"
-#include "MouseCodes.h"
+#include "Core/Input.h"
+#include "Core/KeyCodes.h"
+#include "Core/MouseCodes.h"
 
 namespace Walker {
 

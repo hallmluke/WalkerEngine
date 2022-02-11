@@ -1,7 +1,7 @@
 #pragma once
 #include <vector>
 #include "Renderer/Shader.h"
-#include "Quad.h"
+#include "Math/SampleGeometry/Quad.h"
 
 class Volume {
 /*public:
