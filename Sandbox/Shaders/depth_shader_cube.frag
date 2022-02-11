@@ -10,11 +10,11 @@ uniform sampler2D texture_diffuse1;
 
 void main()
 {
-    if(diffuse_tex) {
-        if(texture(texture_diffuse1, TexCoords).a < 0.05) {
-            discard;
-        }
-    }
+    //if(diffuse_tex) {
+    //    if(texture(texture_diffuse1, TexCoords).a < 0.05) {
+    //        discard;
+    //    }
+   // }
 
     float lightDistance = length(FragPos.xyz - lightPos);
     

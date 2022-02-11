@@ -152,7 +152,7 @@ namespace Walker {
 
     /*void OpenGLShader::SetPointLightProperties(PointLight light)
     {
-        /*SetVec3("pointLight.position", light.position);
+        SetVec3("pointLight.position", light.position);
         SetVec3("pointLight.ambient", glm::vec3(light.ambientIntensity));
         SetVec3("pointLight.diffuse", glm::vec3(light.diffuseIntensity));
         SetVec3("pointLight.specular", glm::vec3(light.specularIntensity));
@@ -169,11 +169,11 @@ namespace Walker {
         }
 
         SetBool("debugShadow", light.debugShadow);
-    }
+    }*/
 
     void OpenGLShader::SetPointLightProperties(std::vector<PointLight*> lights)
     {
-        /*int maxLights = 64;
+        int maxLights = 64;
         int maxedLights = maxLights;
 
         if (lights.size() < maxLights) {
@@ -182,25 +182,26 @@ namespace Walker {
 
         for (int i = 0; i < maxedLights; i++) {
             std::string lightPrefix = "lights[" + std::to_string(i) + "]";
-            SetVec3(lightPrefix + ".position", lights[i]->position);
-            SetVec3(lightPrefix + ".ambient", glm::vec3(lights[i]->ambientIntensity));
-            SetVec3(lightPrefix + ".diffuse", glm::vec3(lights[i]->diffuseIntensity));
-            SetVec3(lightPrefix + ".specular", glm::vec3(lights[i]->specularIntensity));
-            SetFloat(lightPrefix + ".constant", lights[i]->constantAttenuation);
-            SetFloat(lightPrefix + ".linear", lights[i]->linearAttenuation);
-            SetFloat(lightPrefix + ".quadratic", lights[i]->quadraticAttenuation);
+            SetVec3(lightPrefix + ".position", lights[i]->GetPosition());
+            SetVec3(lightPrefix + ".ambient", glm::vec3(lights[i]->GetAmbientIntensity()));
+            SetVec3(lightPrefix + ".diffuse", glm::vec3(lights[i]->GetDiffuseIntensity()));
+            SetVec3(lightPrefix + ".specular", glm::vec3(lights[i]->GetSpecularIntensity()));
+            SetFloat(lightPrefix + ".constant", lights[i]->GetConstantAttenuation());
+            SetFloat(lightPrefix + ".linear", lights[i]->GetLinearAttenuation());
+            SetFloat(lightPrefix + ".quadratic", lights[i]->GetQuadraticAttenuation());
 
-            if (lights[i]->shadowMapEnabled) {
-                glActiveTexture(GL_TEXTURE6);
-                glBindTexture(GL_TEXTURE_CUBE_MAP, lights[i]->depthCubeMap);
+            //if (lights[i]->shadowMapEnabled) {
+                lights[i]->BindShadowMap(6);
+                //glActiveTexture(GL_TEXTURE6);
+                //glBindTexture(GL_TEXTURE_CUBE_MAP, lights[i]->depthCubeMap);
                 SetInt(lightPrefix + ".depthMap", 6);
-                SetFloat(lightPrefix + ".far_plane", lights[i]->farPlane);
-                SetFloat(lightPrefix + ".bias", lights[i]->bias);
-            }
+                SetFloat(lightPrefix + ".far_plane", lights[i]->GetShadowMapFarPlane());
+                SetFloat(lightPrefix + ".bias", 0.05f);
+            //}
         }
 
         SetInt("numberOfLights", maxedLights);
-    }*/
+    }
 
     void OpenGLShader::SetDirectionalLightProperties(DirectionalLight light, Camera camera)
     {

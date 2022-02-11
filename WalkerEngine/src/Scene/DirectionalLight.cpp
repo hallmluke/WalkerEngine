@@ -129,6 +129,7 @@ namespace Walker {
 		}
 
 		m_ShadowMapFramebuffer->Bind();
+		m_ShadowMapShader->Bind();
 		RenderCommand::Clear();
 		model.Draw(m_ShadowMapShader);
 	}

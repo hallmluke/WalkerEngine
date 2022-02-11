@@ -14,7 +14,7 @@ uniform sampler2D gPosition;
 uniform sampler2D gNormal;
 uniform sampler2D gAlbedo;
 uniform sampler2D gMetRoughAO;
-uniform sampler2D ssaoColor;
+//uniform sampler2D ssaoColor;
 
 uniform vec3 camPos;
 
@@ -83,7 +83,7 @@ void main()
     float Metallic = texture(gMetRoughAO, TexCoords).r;
     float Roughness = texture(gMetRoughAO, TexCoords).g;
     float AO = texture(gMetRoughAO, TexCoords).b;
-    float SSAO = texture(ssaoColor, TexCoords).r;
+    //float SSAO = texture(ssaoColor, TexCoords).r;
 
     //vec4 FragPosDirLightSpace = dirLight.lightSpaceMatrix * vec4(FragPos, 1.0);
 
@@ -139,6 +139,7 @@ void main()
         // add to outgoing radiance Lo
         float NdotL = max(dot(N, L), 0.0);
         float shadow = ShadowCalculationPoint(lights[i], FragPos);
+        //float shadow = 0;
         vec3 final = (1 - shadow) * (kD * Albedo / PI + specular) * radiance * NdotL;
         Lo += final;
     }
@@ -148,7 +149,7 @@ void main()
     //float averageAO = (AO + SSAO) / 2;
     vec3 ambient = vec3(0.03) * Albedo;
     if(useAmbientOcclusion) {
-        ambient = ambient * SSAO;
+        //ambient = ambient * SSAO;
     }
     //vec3 ambient = vec3(0.03) * Albedo * averageAO;
     vec3 color = ambient + Lo;

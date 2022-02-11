@@ -99,7 +99,7 @@ namespace Walker {
 				glFramebufferTexture(GL_FRAMEBUFFER, attachmentType, id, 0);
 				break;
 			case GL_TEXTURE_CUBE_MAP:
-				for (uint32_t i = 0; i < 6; ++i) {
+				for (uint32_t i = 0; i < 6; i++) {
 					glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, internalFormat,
 						width, height, 0, format,
 						type, NULL);

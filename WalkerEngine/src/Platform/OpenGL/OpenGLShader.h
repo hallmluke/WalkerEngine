@@ -26,7 +26,7 @@ namespace Walker {
 		virtual void SetDirectionalLightProperties(DirectionalLight light, Camera camera) override;
 		//virtual void SetDirectionalLightProperties(DirectionalLight light, Camera camera) override;
 		//virtual void SetPointLightProperties(PointLight light) override;
-		//virtual void SetPointLightProperties(std::vector<PointLight*> lights) override;
+		virtual void SetPointLightProperties(std::vector<PointLight*> lights) override;
 
 		
 	private:

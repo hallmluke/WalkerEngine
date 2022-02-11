@@ -4,10 +4,6 @@
 
 #include "Renderer/Framebuffer.h"
 #include "Renderer/UniformBuffer.h"
-//#include "Camera.h"
-//#include "Model.h"
-
-
 
 namespace Walker {
 
