@@ -16,7 +16,8 @@ namespace Walker {
             { "gNormal", FramebufferTextureFormat::RGBA16F, FramebufferTextureType::FLOAT, FramebufferTextureTarget::TEXTURE_2D },
             { "gAlbedo", FramebufferTextureFormat::RGBA16F, FramebufferTextureType::UNSIGNED_BYTE, FramebufferTextureTarget::TEXTURE_2D },
             { "gMetRoughAO", FramebufferTextureFormat::RGBA16F, FramebufferTextureType::UNSIGNED_BYTE, FramebufferTextureTarget::TEXTURE_2D },
-            { "Depth", FramebufferTextureFormat::DEPTH32F, FramebufferTextureType::FLOAT, FramebufferTextureTarget::TEXTURE_2D }
+            //{ "Depth", FramebufferTextureFormat::DEPTH32F, FramebufferTextureType::FLOAT, FramebufferTextureTarget::TEXTURE_2D }
+            { "Depth", FramebufferTextureFormat::DEPTH24STENCIL8, FramebufferTextureType::UNSIGNED_INT_24_8, FramebufferTextureTarget::TEXTURE_2D }
         };
         fbSpec.Width = width;
         fbSpec.Height = height;

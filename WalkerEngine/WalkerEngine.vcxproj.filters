@@ -70,6 +70,7 @@
     <ClCompile Include="src\Scene\Skybox.cpp" />
     <ClCompile Include="src\Math\SampleGeometry\Quad.cpp" />
     <ClCompile Include="src\Math\Transform.cpp" />
+    <ClCompile Include="src\Platform\OpenGL\OpenGLTextureCubemap.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\ImGuiManager.h" />
@@ -132,6 +133,7 @@
     <ClInclude Include="src\Math\SampleGeometry\Quad.h" />
     <ClInclude Include="src\Math\SampleGeometry\Cube.h" />
     <ClInclude Include="src\Math\Transform.h" />
+    <ClInclude Include="src\Platform\OpenGL\OpenGLTextureCubemap.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="cpp.hint" />

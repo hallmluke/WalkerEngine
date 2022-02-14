@@ -29,4 +29,10 @@ namespace Walker {
 		static std::shared_ptr<Texture2D> Create(const std::string& path);
 	};
 
+	class TextureCubeMap : public Texture
+	{
+	public:
+		static std::shared_ptr<TextureCubeMap> Create(const std::string& dir);
+	};
+
 }

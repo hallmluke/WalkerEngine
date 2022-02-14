@@ -3,6 +3,7 @@
 
 #include "Renderer/Renderer.h"
 #include "Platform/OpenGL/OpenGLTexture2D.h"
+#include "Platform/OpenGL/OpenGLTextureCubeMap.h"
 
 namespace Walker {
 
@@ -24,6 +25,18 @@ namespace Walker {
 		{
 		case RendererAPI::API::None:    /*W_CORE_ASSERT(false, "RendererAPI::None is currently not supported!");*/ return nullptr;
 		case RendererAPI::API::OpenGL:  return std::make_shared<OpenGLTexture2D>(path);
+		}
+
+		//W_CORE_ASSERT(false, "Unknown RendererAPI!");
+		return nullptr;
+	}
+
+	std::shared_ptr<TextureCubeMap> TextureCubeMap::Create(const std::string& dir)
+	{
+		switch (Renderer::GetAPI())
+		{
+		case RendererAPI::API::None:    /*W_CORE_ASSERT(false, "RendererAPI::None is currently not supported!");*/ return nullptr;
+		case RendererAPI::API::OpenGL:  return std::make_shared<OpenGLTextureCubeMap>(dir);
 		}
 
 		//W_CORE_ASSERT(false, "Unknown RendererAPI!");

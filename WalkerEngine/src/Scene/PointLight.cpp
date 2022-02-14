@@ -83,9 +83,15 @@ namespace Walker {
 	{
 		if (ImGui::Begin(m_Name.c_str())) {
 			ImGui::Text("Position");
-			ImGui::SliderFloat("X", &m_Position.x, -20.0f, 20.0f);
-			ImGui::SliderFloat("Y", &m_Position.y, -20.0f, 20.0f);
-			ImGui::SliderFloat("Z", &m_Position.z, -20.0f, 20.0f);
+			if (ImGui::SliderFloat("X", &m_Position.x, -20.0f, 20.0f)) {
+				UpdateShadowTransforms();
+			}
+			if (ImGui::SliderFloat("Y", &m_Position.y, -20.0f, 20.0f)) {
+				UpdateShadowTransforms();
+			}
+			if (ImGui::SliderFloat("Z", &m_Position.z, -20.0f, 20.0f)) {
+				UpdateShadowTransforms();
+			}
 
 			ImGui::Text("Intensity/Color");
 			ImGui::SliderFloat("Ambient Intensity", &m_AmbientIntensity, 0.01f, 0.5f);
@@ -95,7 +101,7 @@ namespace Walker {
 			ImGui::Text("Falloff");
 			ImGui::SliderFloat("Constant", &m_ConstantAttenuation, 0.05f, 10.0f);
 			ImGui::SliderFloat("Linear", &m_LinearAttenuation, 0.0001f, 4.0f);
-			ImGui::SliderFloat("Quadratic", &m_QuadraticAttenuation, 0.0000001f, 10.0f);
+			ImGui::SliderFloat("Quadratic", &m_QuadraticAttenuation, 0.0000001f, 0.35f);
 
 			//ImGui::Text("Shadow Map");
 			//ImGui::SliderFloat("Bias", &bias, 0.001f, 0.1f);

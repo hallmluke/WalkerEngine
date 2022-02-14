@@ -255,18 +255,6 @@ namespace Walker {
 				Utils::BindTexture(Utils::WalkerFBTextureTargetToGL(m_ColorAttachmentSpecifications[i].Target), multisample, m_ColorAttachments[i]);
 				Utils::AttachColorTexture(m_ColorAttachments[i], m_Specification.Samples, Utils::WalkerFBTextureTargetToGL(m_ColorAttachmentSpecifications[i].Target), Utils::WalkerFBTextureInternalFormatToGL(m_ColorAttachmentSpecifications[i].TextureFormat),
 					Utils::WalkerFBTextureFormatToGL(m_ColorAttachmentSpecifications[i].TextureFormat), Utils::WalkerFBTextureTypeToGL(m_ColorAttachmentSpecifications[i].Type), m_Specification.Width, m_Specification.Height, m_Specification.Depth, i);
-				/*switch (m_ColorAttachmentSpecifications[i].TextureFormat)
-				{
-				case FramebufferTextureFormat::RGBA8:
-					Utils::AttachColorTexture(m_ColorAttachments[i], m_Specification.Samples, GL_RGBA8, GL_RGBA, m_Specification.Width, m_Specification.Height, i);
-					break;
-				case FramebufferTextureFormat::RGBA16F:
-					Utils::AttachColorTexture(m_ColorAttachments[i], m_Specification.Samples, GL_RGBA16F, GL_RGBA, m_Specification.Width, m_Specification.Height, i);
-					break;
-				case FramebufferTextureFormat::RED_INTEGER:
-					Utils::AttachColorTexture(m_ColorAttachments[i], m_Specification.Samples, GL_R32I, GL_RED_INTEGER, m_Specification.Width, m_Specification.Height, i);
-					break;
-				}*/
 			}
 		}
 
@@ -277,15 +265,6 @@ namespace Walker {
 			Utils::AttachDepthTexture(m_DepthAttachment, m_Specification.Samples, Utils::WalkerFBTextureTargetToGL(m_DepthAttachmentSpecification.Target), Utils::WalkerFBTextureInternalFormatToGL(m_DepthAttachmentSpecification.TextureFormat),
 				Utils::WalkerFBTextureFormatToGL(m_DepthAttachmentSpecification.TextureFormat), Utils::WalkerFBTextureTypeToGL(m_DepthAttachmentSpecification.Type), 
 				Utils::WalkerFBDepthTextureFormatToAttachment(m_DepthAttachmentSpecification.TextureFormat), m_Specification.Width, m_Specification.Height, m_Specification.Depth);
-			/*switch (m_DepthAttachmentSpecification.TextureFormat)
-			{
-			case FramebufferTextureFormat::DEPTH24STENCIL8:
-				Utils::AttachDepthTexture(m_DepthAttachment, m_Specification.Samples, GL_DEPTH24_STENCIL8, GL_DEPTH_STENCIL, GL_DEPTH_STENCIL_ATTACHMENT, m_Specification.Width, m_Specification.Height);
-				break;
-			case FramebufferTextureFormat::DEPTH32F:
-				Utils::AttachDepthTexture(m_DepthAttachment, m_Specification.Samples, GL_DEPTH_COMPONENT32F, GL_DEPTH_COMPONENT, GL_DEPTH_ATTACHMENT, m_Specification.Width, m_Specification.Height);
-				break;
-			}*/
 		}
 
 		if (m_ColorAttachments.size() > 1)

@@ -162,6 +162,7 @@ echo F | xcopy /y /d /F "$(OutDir)\WalkerEngine.dll" "$(OutDir)..\Sandbox\Walker
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\Core\Input.cpp" />
+    <ClCompile Include="src\Platform\OpenGL\OpenGLTextureCubemap.cpp" />
     <ClCompile Include="src\Platform\OpenGL\OpenGLUniformBuffer.cpp" />
     <ClCompile Include="src\Renderer\Material.cpp" />
     <ClCompile Include="src\Scene\Mesh.cpp" />
@@ -254,6 +255,7 @@ echo F | xcopy /y /d /F "$(OutDir)\WalkerEngine.dll" "$(OutDir)..\Sandbox\Walker
   <ItemGroup>
     <ClInclude Include="src\Core\Input.h" />
     <ClInclude Include="src\Core\KeyCodes.h" />
+    <ClInclude Include="src\Platform\OpenGL\OpenGLTextureCubemap.h" />
     <ClInclude Include="src\Platform\OpenGL\OpenGLUniformBuffer.h" />
     <ClInclude Include="src\Renderer\Material.h" />
     <ClInclude Include="src\Core\MouseCodes.h" />
