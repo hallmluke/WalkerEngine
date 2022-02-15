@@ -5,6 +5,7 @@
 
 // Temprorary
 #include "Scene/Model.h"
+#include "Scene/Scene.h"
 
 namespace Walker {
 
@@ -16,6 +17,7 @@ namespace Walker {
 		virtual std::vector<RenderPassInput> GetInputs() const override { return m_Inputs; };
 		// Temporary
 		void DrawModel(Model& model, glm::mat4 view, glm::mat4 projection) const;
+		void DrawScene(Scene& scene) const;
 		uint32_t GetFramebufferId() const { return m_Framebuffer->GetId(); }
 		void BindTextures();
 

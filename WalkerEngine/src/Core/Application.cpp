@@ -14,6 +14,7 @@
 #include "Scene/DirectionalLight.h"
 #include "Scene/PointLight.h"
 #include "Scene/Skybox.h"
+#include "Scene/Scene.h"
 
 #include "Input.h"
 #include "MouseCodes.h"
@@ -50,15 +51,16 @@ namespace Walker {
 
 	void Application::Run()
 	{
-		//DirectionalLight dirLight(glm::vec3(0.0f, -1.0f, -0.1f));
+		DirectionalLight dirLight(glm::vec3(0.0f, -1.0f, -0.1f));
 		PointLight pointLight(glm::vec3(1.0f));
 		ImGuiManager imguiManager((GLFWwindow*)m_Window->GetNativeWindow());
-		Model sponzaPBR("SponzaPBR", "Models/SponzaPBR/Sponza.gltf", glm::mat4(1.0f));
-		Camera camera(glm::vec3(1.0f), m_Window->GetWidth(), m_Window->GetHeight());
 		GBufferPBRPass gBufferPBRPass(m_Window->GetWidth(), m_Window->GetHeight());
 		Quad quad;
 		std::vector<PointLight*> lights = { &pointLight };
 		Skybox skybox("Skybox/default");
+		Scene scene;
+		Model sponzaPBR("SponzaPBR", "Models/SponzaPBR/Sponza.gltf", &scene);
+		//Model nano("Nano", "Models/nano/nano_hierarchy.gltf", &scene);
 		
 		std::shared_ptr<Shader> shader = Shader::Create("debug", "Shaders/debug_quad.vert", "Shaders/debug_quad_input.frag");
 		std::shared_ptr<Shader> shader2 = Shader::Create("debug", "Shaders/deferred_shading.vert", "Shaders/pbr_deferred.frag");
@@ -72,10 +74,12 @@ namespace Walker {
 			m_LastFrameTime = time;
 			imguiManager.BeginFrame();
 
-			//dirLight.GenerateCascadedShadowMap(sponzaPBR, camera);
-			pointLight.GenerateShadowMap(sponzaPBR);
+			scene.EntityDebugPanel();
 
-			gBufferPBRPass.DrawModel(sponzaPBR, camera.GetViewMatrix(), camera.GetProjectionMatrix());
+			dirLight.GenerateCascadedShadowMap(scene);
+			pointLight.GenerateShadowMap(scene);
+
+			gBufferPBRPass.DrawScene(scene);
 			
 			glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
@@ -84,8 +88,8 @@ namespace Walker {
 			shader2->SetInt("gNormal", 1);
 			shader2->SetInt("gAlbedo", 2);
 			shader2->SetInt("gMetRoughAO", 3);
-			shader2->SetVec3("camPos", camera.GetPosition());
-			//shader2->SetDirectionalLightProperties(dirLight, camera);
+			shader2->SetVec3("camPos", scene.GetCamera()->GetPosition());
+			shader2->SetDirectionalLightProperties(dirLight, *(scene.GetCamera()));
 			shader2->SetPointLightProperties(lights);
 			gBufferPBRPass.BindTextures();
 			quad.Draw();
@@ -95,7 +99,7 @@ namespace Walker {
 			glBlitFramebuffer(0, 0, m_Window->GetWidth(), m_Window->GetHeight(), 0, 0, m_Window->GetWidth(), m_Window->GetHeight(),
 				GL_DEPTH_BUFFER_BIT, GL_NEAREST);
 
-			skybox.Draw(camera.GetViewMatrix(), camera.GetProjectionMatrix());
+			skybox.Draw(scene.GetCamera()->GetViewMatrix(), scene.GetCamera()->GetProjectionMatrix());
 
 			pointLight.ControlWindow();
 
@@ -105,7 +109,7 @@ namespace Walker {
 			else {
 				m_Window->EnableCursor();
 			}
-			camera.OnUpdate(timestep);
+			scene.GetCamera()->OnUpdate(timestep);
 
 			imguiManager.EndFrame();
 			m_Window->OnUpdate();

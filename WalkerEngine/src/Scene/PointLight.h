@@ -11,6 +11,7 @@ namespace Walker {
 
 	class Shader;
 	class Model;
+	class Scene;
 
 	class PointLight {
 	public:
@@ -27,7 +28,7 @@ namespace Walker {
 		//void DrawDebug(Shader& shader);
 		void ControlWindow();
 
-		void GenerateShadowMap(Model& model);
+		void GenerateShadowMap(Scene& scene);
 		void BindShadowMap(uint32_t slot);
 		float GetShadowMapFarPlane() const { return m_ShadowMapFarPlane; }
 

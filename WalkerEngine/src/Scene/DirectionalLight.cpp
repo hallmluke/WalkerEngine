@@ -119,10 +119,10 @@ namespace Walker {
 		return matrices;
 	}
 
-	void DirectionalLight::GenerateCascadedShadowMap(Model& model, Camera& camera)
+	void DirectionalLight::GenerateCascadedShadowMap(Scene& scene)
 	{
 		// Upload light space matrices to uniform buffer
-		std::vector<glm::mat4> lightSpaceMatrices = GetLightSpaceMatrices(camera);
+		std::vector<glm::mat4> lightSpaceMatrices = GetLightSpaceMatrices(*(scene.GetCamera()));
 		for (size_t i = 0; i < lightSpaceMatrices.size(); ++i)
 		{
 			m_LightMatricesUniformBuffer->SetData(&lightSpaceMatrices[i], sizeof(glm::mat4x4), i * sizeof(glm::mat4x4));
@@ -131,7 +131,7 @@ namespace Walker {
 		m_ShadowMapFramebuffer->Bind();
 		m_ShadowMapShader->Bind();
 		RenderCommand::Clear();
-		model.Draw(m_ShadowMapShader);
+		scene.DrawMeshes(m_ShadowMapShader);
 	}
 
 	void DirectionalLight::BindShadowMap(uint32_t slot) const

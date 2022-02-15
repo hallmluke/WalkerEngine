@@ -3,7 +3,7 @@
 
 namespace Walker {
 
-	ModelNode::ModelNode(const std::string name, std::vector<std::unique_ptr<Mesh>> meshPtrs, glm::mat4 initialTransform) : name(name)
+	ModelNode::ModelNode(const std::string name, std::vector<std::shared_ptr<Mesh>> meshPtrs, glm::mat4 initialTransform) : name(name)
 	{
 		this->meshPtrs = std::move(meshPtrs);
 		SetInitialTransform(initialTransform);

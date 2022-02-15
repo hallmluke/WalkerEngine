@@ -7,16 +7,18 @@
 #include "Mesh.h"
 #include "Renderer/Shader.h"
 #include "ModelNode.h"
+#include "Scene.h"
+#include "Entity.h"
 
 namespace Walker {
     class Model
     {
     public:
         Model(const std::string name, std::string const& path, glm::mat4 initialTransform);
+        Model(const std::string name, std::string const& path, Scene* walkerScene);
 
         void Draw(std::shared_ptr<Shader> shader);
 
-        void ControlWindow();
         void SetGlobalTransformOnNodes();
 
     private:
@@ -27,9 +29,11 @@ namespace Walker {
         std::vector<std::shared_ptr<Material>> m_Materials;
 
         void LoadModel(std::string const& path);
+        void LoadModelECS(std::string const& path, Scene* walkerScene);
 
         std::unique_ptr<ModelNode> ProcessNode(aiNode* node, const aiScene* scene);
-        std::unique_ptr<Mesh> ProcessMesh(aiMesh* mesh, const aiScene* scene);
+        Entity ProcessNodeECS(aiNode* node, const aiScene* scene, Scene* walkerScene);
+        std::shared_ptr<Mesh> ProcessMesh(aiMesh* mesh, const aiScene* scene);
         std::vector<std::shared_ptr<Material>> ProcessMaterials(const aiScene* scene, const std::string directory);
 
     };

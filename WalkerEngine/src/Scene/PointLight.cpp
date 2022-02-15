@@ -4,6 +4,7 @@
 #include "Model.h"
 #include "Renderer/Shader.h"
 #include "imgui/imgui.h"
+#include "Scene.h"
 
 
 namespace Walker {
@@ -34,7 +35,7 @@ namespace Walker {
 		UpdateShadowTransforms();
 	}
 
-	void PointLight::GenerateShadowMap(Model& model)
+	void PointLight::GenerateShadowMap(Scene& scene)
 	{
 		m_ShadowMapFramebuffer->Bind();
 		m_ShadowMapShader->Bind();
@@ -45,7 +46,8 @@ namespace Walker {
 		m_ShadowMapShader->SetFloat("far_plane", m_ShadowMapFarPlane);
 		m_ShadowMapShader->SetVec3("lightPos", m_Position);
 		RenderCommand::Clear();
-		model.Draw(m_ShadowMapShader);
+		//model.Draw(m_ShadowMapShader);
+		scene.DrawMeshes(m_ShadowMapShader);
 	}
 
 	void PointLight::BindShadowMap(uint32_t slot)

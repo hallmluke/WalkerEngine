@@ -45,6 +45,14 @@ namespace Walker {
         model.Draw(m_Shader);
     }
 
+	void GBufferPBRPass::DrawScene(Scene& scene) const
+	{
+        m_Framebuffer->Bind();
+        RenderCommand::Clear();
+        m_Shader->Bind();
+        scene.DrawMeshes(m_Shader);
+	}
+
     void GBufferPBRPass::BindTextures()
     {
         m_Framebuffer->BindColorAttachment(0, 0);

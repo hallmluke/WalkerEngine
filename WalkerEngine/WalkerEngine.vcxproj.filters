@@ -71,6 +71,8 @@
     <ClCompile Include="src\Math\SampleGeometry\Quad.cpp" />
     <ClCompile Include="src\Math\Transform.cpp" />
     <ClCompile Include="src\Platform\OpenGL\OpenGLTextureCubemap.cpp" />
+    <ClCompile Include="src\Scene\Entity.cpp" />
+    <ClCompile Include="src\Scene\Scene.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\ImGuiManager.h" />
@@ -134,6 +136,10 @@
     <ClInclude Include="src\Math\SampleGeometry\Cube.h" />
     <ClInclude Include="src\Math\Transform.h" />
     <ClInclude Include="src\Platform\OpenGL\OpenGLTextureCubemap.h" />
+    <ClInclude Include="vendor\entt\entt.hpp" />
+    <ClInclude Include="src\Scene\Entity.h" />
+    <ClInclude Include="src\Scene\Scene.h" />
+    <ClInclude Include="src\Scene\Components.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="cpp.hint" />

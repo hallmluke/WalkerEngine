@@ -7,9 +7,9 @@
 
 namespace Walker {
 
-	class Camera;
-	class Model;
 	class Shader;
+	class Scene;
+	class Camera;
 
 	class DirectionalLight {
 	public:
@@ -28,7 +28,7 @@ namespace Walker {
 		std::vector<float> GetShadowCascadeLevels() const { return m_ShadowCascadeLevels; };
 		void SetShadowCascadeLevels(const float cameraFarPlane);
 		
-		void GenerateCascadedShadowMap(Model& model, Camera& camera);
+		void GenerateCascadedShadowMap(Scene& scene);
 		void BindShadowMap(uint32_t slot) const;
 
 
