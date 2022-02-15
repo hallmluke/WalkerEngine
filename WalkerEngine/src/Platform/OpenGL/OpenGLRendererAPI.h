@@ -12,6 +12,7 @@ namespace Walker {
 
 		virtual void SetClearColor(const glm::vec4& color) override;
 		virtual void Clear() override;
+		virtual void BindDefaultFramebuffer() override;
 
 		virtual void DrawUnindexed(const std::shared_ptr<VertexArray>& vertexArray, uint32_t vertexCount = 0) override;
 		virtual void DrawIndexed(const std::shared_ptr<VertexArray>& vertexArray, uint32_t indexCount = 0) override;

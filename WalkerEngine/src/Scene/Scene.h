@@ -28,6 +28,7 @@ namespace Walker {
 
 	private:
 		entt::registry m_Registry;
+		std::shared_ptr<DirectionalLight> m_DirectionalLight;
 		std::shared_ptr<Skybox> m_Skybox;
 		std::shared_ptr<Camera> m_ActiveCamera;
 

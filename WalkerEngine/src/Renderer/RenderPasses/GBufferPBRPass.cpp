@@ -66,4 +66,8 @@ namespace Walker {
         return;
     }
 
+    void GBufferPBRPass::BindOutput(uint32_t outputSlot, uint32_t inputSlot) const {
+        m_Framebuffer->BindColorAttachment(outputSlot, inputSlot);
+    }
+
 }

@@ -165,6 +165,7 @@ echo F | xcopy /y /d /F "$(OutDir)\WalkerEngine.dll" "$(OutDir)..\Sandbox\Walker
     <ClCompile Include="src\Platform\OpenGL\OpenGLTextureCubemap.cpp" />
     <ClCompile Include="src\Platform\OpenGL\OpenGLUniformBuffer.cpp" />
     <ClCompile Include="src\Renderer\Material.cpp" />
+    <ClCompile Include="src\Renderer\RenderPasses\DeferredPBRLightingPass.cpp" />
     <ClCompile Include="src\Scene\Entity.cpp" />
     <ClCompile Include="src\Scene\Mesh.cpp" />
     <ClCompile Include="src\Platform\OpenGL\OpenGLFramebuffer.cpp" />
@@ -274,6 +275,7 @@ echo F | xcopy /y /d /F "$(OutDir)\WalkerEngine.dll" "$(OutDir)..\Sandbox\Walker
     <ClInclude Include="src\Renderer\GraphicsContext.h" />
     <ClInclude Include="src\Platform\OpenGL\OpenGLContext.h" />
     <ClInclude Include="src\Core\Application.h" />
+    <ClInclude Include="src\Renderer\RenderPasses\DeferredPBRLightingPass.h" />
     <ClInclude Include="src\Scene\Camera.h" />
     <ClInclude Include="src\Core\Core.h" />
     <ClInclude Include="src\Math\SampleGeometry\Cube.h" />

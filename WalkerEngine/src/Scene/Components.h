@@ -66,6 +66,7 @@ namespace Walker {
 	{
 		std::shared_ptr<PointLight> PointLightPtr;
 
+		PointLightComponent() = default;
 		PointLightComponent(std::shared_ptr<PointLight> pointLight) : PointLightPtr(pointLight) {}
 	};
 }

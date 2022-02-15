@@ -73,6 +73,7 @@
     <ClCompile Include="src\Platform\OpenGL\OpenGLTextureCubemap.cpp" />
     <ClCompile Include="src\Scene\Entity.cpp" />
     <ClCompile Include="src\Scene\Scene.cpp" />
+    <ClCompile Include="src\Renderer\RenderPasses\DeferredPBRLightingPass.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\ImGuiManager.h" />
@@ -140,6 +141,7 @@
     <ClInclude Include="src\Scene\Entity.h" />
     <ClInclude Include="src\Scene\Scene.h" />
     <ClInclude Include="src\Scene\Components.h" />
+    <ClInclude Include="src\Renderer\RenderPasses\DeferredPBRLightingPass.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="cpp.hint" />
