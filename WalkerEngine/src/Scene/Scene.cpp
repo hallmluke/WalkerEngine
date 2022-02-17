@@ -13,6 +13,13 @@ namespace Walker {
 	{
 		// TODO: Remove hardcoding size
 		m_ActiveCamera = std::make_shared<Camera>(glm::vec3(1.0f), 1600, 900);
+		m_DirectionalLight = std::make_shared<DirectionalLight>(glm::vec3(0.0f, -1.0f, -0.1f));
+		m_Skybox = std::make_shared<Skybox>("Skybox/default");
+
+		Entity defaultPointLight = CreateEntity("Default Pointlight");
+		auto& pointLightComponent = defaultPointLight.AddComponent<PointLightComponent>();
+		pointLightComponent.PointLightPtr = std::make_shared<PointLight>(glm::vec3(1.0f));
+
 	}
 
 	Scene::~Scene()
@@ -33,8 +40,10 @@ namespace Walker {
 	{
 		m_Registry.destroy(entity);
 	}
+
 	void Scene::OnUpdate(float timestep)
 	{
+		m_ActiveCamera->OnUpdate(timestep);
 	}
 
 	void Scene::EntityDebugPanel()
@@ -68,6 +77,19 @@ namespace Walker {
 			}
 		}
 		ImGui::End();
+	}
+
+	std::vector<std::shared_ptr<PointLight>> Scene::GetPointLights() const
+	{
+		std::vector<std::shared_ptr<PointLight>> lights;
+		auto view = m_Registry.view<PointLightComponent>();
+
+		for (auto entity : view) {
+			auto& [pointLightComp] = view.get(entity);
+			lights.push_back(pointLightComp.PointLightPtr);
+		}
+
+		return lights;
 	}
 
 	void Scene::DrawMeshes(std::shared_ptr<Shader> shader)

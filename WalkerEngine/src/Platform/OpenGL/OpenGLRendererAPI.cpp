@@ -58,6 +58,11 @@ namespace Walker {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	}
 
+	void OpenGLRendererAPI::BindDefaultFramebuffer()
+	{
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	}
+
 	void OpenGLRendererAPI::DrawUnindexed(const std::shared_ptr<VertexArray>& vertexArray, uint32_t vertexCount)
 	{
 		glDrawArrays(GL_TRIANGLES, 0, vertexCount);

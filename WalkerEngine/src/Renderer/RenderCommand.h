@@ -27,6 +27,11 @@ namespace Walker {
 			s_RendererAPI->Clear();
 		}
 
+		static void BindDefaultFramebuffer()
+		{
+			s_RendererAPI->BindDefaultFramebuffer();
+		}
+
 		static void DrawUnindexed(const std::shared_ptr<VertexArray>& vertexArray, uint32_t count = 0)
 		{
 			s_RendererAPI->DrawUnindexed(vertexArray, count);

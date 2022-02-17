@@ -4,7 +4,7 @@ class Quad {
 public:
 	Quad();
 	void InitBuffers();
-	void Draw();
+	void Draw() const;
 
 private:
 	unsigned int quadVAO = 0;

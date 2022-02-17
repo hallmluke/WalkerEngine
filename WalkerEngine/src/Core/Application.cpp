@@ -5,16 +5,10 @@
 
 #include <glad/glad.h>
 
-// Temporary, for testing
 #include "Scene/Model.h"
-#include "Scene/Camera.h"
-#include "Renderer/RenderPasses/GBufferPBRPass.h"
-#include "Math/SampleGeometry/Quad.h"
-#include "Renderer/Shader.h"
-#include "Scene/DirectionalLight.h"
-#include "Scene/PointLight.h"
 #include "Scene/Skybox.h"
 #include "Scene/Scene.h"
+#include "Renderer/RenderGraph.h"
 
 #include "Input.h"
 #include "MouseCodes.h"
@@ -51,19 +45,11 @@ namespace Walker {
 
 	void Application::Run()
 	{
-		DirectionalLight dirLight(glm::vec3(0.0f, -1.0f, -0.1f));
-		PointLight pointLight(glm::vec3(1.0f));
 		ImGuiManager imguiManager((GLFWwindow*)m_Window->GetNativeWindow());
-		GBufferPBRPass gBufferPBRPass(m_Window->GetWidth(), m_Window->GetHeight());
-		Quad quad;
-		std::vector<PointLight*> lights = { &pointLight };
-		Skybox skybox("Skybox/default");
+		RenderGraph renderGraph(m_Window->GetWidth(), m_Window->GetHeight());
+		//Skybox skybox("Skybox/default");
 		Scene scene;
 		Model sponzaPBR("SponzaPBR", "Models/SponzaPBR/Sponza.gltf", &scene);
-		//Model nano("Nano", "Models/nano/nano_hierarchy.gltf", &scene);
-		
-		std::shared_ptr<Shader> shader = Shader::Create("debug", "Shaders/debug_quad.vert", "Shaders/debug_quad_input.frag");
-		std::shared_ptr<Shader> shader2 = Shader::Create("debug", "Shaders/deferred_shading.vert", "Shaders/pbr_deferred.frag");
 
 		while (m_Running) {
 
@@ -75,33 +61,16 @@ namespace Walker {
 			imguiManager.BeginFrame();
 
 			scene.EntityDebugPanel();
-
-			dirLight.GenerateCascadedShadowMap(scene);
-			pointLight.GenerateShadowMap(scene);
-
-			gBufferPBRPass.DrawScene(scene);
+			renderGraph.DrawScene(scene);
 			
-			glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
-			shader2->Bind();
-			shader2->SetInt("gPosition", 0);
-			shader2->SetInt("gNormal", 1);
-			shader2->SetInt("gAlbedo", 2);
-			shader2->SetInt("gMetRoughAO", 3);
-			shader2->SetVec3("camPos", scene.GetCamera()->GetPosition());
-			shader2->SetDirectionalLightProperties(dirLight, *(scene.GetCamera()));
-			shader2->SetPointLightProperties(lights);
-			gBufferPBRPass.BindTextures();
-			quad.Draw();
-
+			/*
+			TODO: Render graph support for copying depth buffer
 			glBindFramebuffer(GL_READ_FRAMEBUFFER, gBufferPBRPass.GetFramebufferId());
 			glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0); // write to default framebuffer
 			glBlitFramebuffer(0, 0, m_Window->GetWidth(), m_Window->GetHeight(), 0, 0, m_Window->GetWidth(), m_Window->GetHeight(),
-				GL_DEPTH_BUFFER_BIT, GL_NEAREST);
+				GL_DEPTH_BUFFER_BIT, GL_NEAREST);*/
 
-			skybox.Draw(scene.GetCamera()->GetViewMatrix(), scene.GetCamera()->GetProjectionMatrix());
-
-			pointLight.ControlWindow();
+			//skybox.Draw(scene.GetCamera()->GetViewMatrix(), scene.GetCamera()->GetProjectionMatrix());
 
 			if (Input::IsMouseButtonPressed(Mouse::ButtonRight)) {
 				m_Window->DisableCursor();
@@ -109,7 +78,7 @@ namespace Walker {
 			else {
 				m_Window->EnableCursor();
 			}
-			scene.GetCamera()->OnUpdate(timestep);
+			scene.OnUpdate(timestep);
 
 			imguiManager.EndFrame();
 			m_Window->OnUpdate();
