@@ -159,11 +159,13 @@
   <ItemGroup>
     <None Include="Shaders\basic_lighting.frag" />
     <None Include="Shaders\basic_lighting.vert" />
+    <None Include="Shaders\box_blur.frag" />
     <None Include="Shaders\debug_quad.frag" />
     <None Include="Shaders\debug_quad.vert" />
     <None Include="Shaders\debug_quad_input.frag" />
     <None Include="Shaders\deferred_shading.frag" />
     <None Include="Shaders\deferred_shading.vert" />
+    <None Include="Shaders\depth_of_field.frag" />
     <None Include="Shaders\depth_shader.frag" />
     <None Include="Shaders\depth_shader.vert" />
     <None Include="Shaders\depth_shader_cascades.geom" />
