@@ -24,6 +24,10 @@ namespace Walker {
 		}
 	}
 
+	void DeferredPBRLightingPass::BindOutput(uint32_t outputSlot, uint32_t inputSlot) const
+	{
+	}
+
 	void DeferredPBRLightingPass::Draw() const
 	{
 

@@ -1,6 +1,7 @@
 #include "walkerpch.h"
 #include "RenderGraph.h"
 
+#include "Renderer/RenderPasses/ShadowMapPass.h"
 #include "Renderer/RenderPasses/GBufferPBRPass.h"
 #include "Renderer/RenderPasses/DeferredPBRLightingPass.h"
 
@@ -10,6 +11,7 @@ namespace Walker {
 		: m_ViewportWidth(viewportWidth), m_ViewportHeight(viewportHeight)
 	{
 		m_RenderPasses = std::vector<std::shared_ptr<RenderPass>>();
+		std::shared_ptr<RenderPass> shadowMapPass = std::make_shared<ShadowMapPass>();
 		std::shared_ptr<RenderPass> gBufferPBRPass = std::make_shared<GBufferPBRPass>(m_ViewportWidth, m_ViewportHeight);
 		std::shared_ptr<RenderPass> deferredPBRLightingPass = std::make_shared<DeferredPBRLightingPass>(m_ViewportWidth, m_ViewportHeight);
 		Link(gBufferPBRPass->GetOutput("gPosition"), deferredPBRLightingPass->GetInput("gPosition"));
@@ -17,6 +19,7 @@ namespace Walker {
 		Link(gBufferPBRPass->GetOutput("gAlbedo"), deferredPBRLightingPass->GetInput("gAlbedo"));
 		Link(gBufferPBRPass->GetOutput("gMetRoughAO"), deferredPBRLightingPass->GetInput("gMetRoughAO"));
 
+		m_RenderPasses.push_back(shadowMapPass);
 		m_RenderPasses.push_back(gBufferPBRPass);
 		m_RenderPasses.push_back(deferredPBRLightingPass);
 	}

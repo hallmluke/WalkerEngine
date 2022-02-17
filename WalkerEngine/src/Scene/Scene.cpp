@@ -85,8 +85,8 @@ namespace Walker {
 		auto view = m_Registry.view<PointLightComponent>();
 
 		for (auto entity : view) {
-			auto lightComp = view.get<PointLightComponent>(entity);
-			lights.push_back(lightComp.PointLightPtr);
+			auto& [pointLightComp] = view.get(entity);
+			lights.push_back(pointLightComp.PointLightPtr);
 		}
 
 		return lights;

@@ -35,6 +35,12 @@ namespace Walker {
         // Draw some objects
     }
 
+    RenderPassInput GBufferPBRPass::GetInput(std::string name) const
+    {
+        // TODO: Don't make pure virtual, default implementation?
+        return RenderPassInput();
+    }
+
     RenderPassOutput GBufferPBRPass::GetOutput(std::string name) const
     {
         for (auto output : m_Outputs) {
