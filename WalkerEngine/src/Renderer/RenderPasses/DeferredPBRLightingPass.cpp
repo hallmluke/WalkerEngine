@@ -29,6 +29,19 @@ namespace Walker {
 
 	}
 
+	RenderPassInput DeferredPBRLightingPass::GetInput(std::string name) const
+	{
+		for (auto input : m_Inputs) {
+			if (input.Name == name) {
+				return input;
+			}
+		}
+
+		W_CORE_ERROR("No input found with name '{0}'", name);
+
+		return RenderPassInput();
+	}
+
 	RenderPassOutput DeferredPBRLightingPass::GetOutput(std::string name) const
 	{
 		return RenderPassOutput();
@@ -70,7 +83,8 @@ namespace Walker {
 		BindInputs();
 
 		// Set lighting
-		
+		SetDirectionalLightShaderUniforms(scene);
+		SetPointLightShaderUniforms(scene);
 
 		m_Quad.Draw();
 	}
@@ -78,5 +92,54 @@ namespace Walker {
 	void DeferredPBRLightingPass::BindTextures()
 	{
 
+	}
+
+	void DeferredPBRLightingPass::SetDirectionalLightShaderUniforms(Scene& scene) const
+	{
+		std::shared_ptr<DirectionalLight> light = scene.GetDirectionalLight();
+
+		m_Shader->SetVec3("dirLight.direction", light->GetDirection());
+		m_Shader->SetVec3("dirLight.color", light->GetColor());
+		m_Shader->SetVec3("dirLight.ambient", glm::vec3(light->GetAmbientIntensity()));
+		m_Shader->SetVec3("dirLight.diffuse", glm::vec3(light->GetDiffuseIntensity()));
+		m_Shader->SetVec3("dirLight.specular", glm::vec3(light->GetSpecularIntensity()));
+
+		std::vector<float> cascadeDistances = light->GetShadowCascadeLevels();
+		m_Shader->SetMat4("view", scene.GetCamera()->GetViewMatrix());
+		m_Shader->SetFloat("farPlane", scene.GetCamera()->GetFarPlane());
+		m_Shader->SetInt("cascadeCount", cascadeDistances.size());
+		for (size_t i = 0; i < cascadeDistances.size(); ++i)
+		{
+			m_Shader->SetFloat("cascadePlaneDistances[" + std::to_string(i) + "]", cascadeDistances[i]);
+		}
+		light->BindShadowMap(5);
+		m_Shader->SetInt("shadowMap", 5);
+	}
+
+	void DeferredPBRLightingPass::SetPointLightShaderUniforms(Scene& scene) const
+	{
+		size_t maxLights = 64;
+		std::vector<std::shared_ptr<PointLight>> lights = scene.GetPointLights();
+
+		uint32_t maxedLights = std::min(maxLights, lights.size());
+
+		for (int i = 0; i < maxedLights; i++) {
+			std::string lightPrefix = "lights[" + std::to_string(i) + "]";
+			m_Shader->SetVec3(lightPrefix + ".position", lights[i]->GetPosition());
+			m_Shader->SetVec3(lightPrefix + ".ambient", glm::vec3(lights[i]->GetAmbientIntensity()));
+			m_Shader->SetVec3(lightPrefix + ".diffuse", glm::vec3(lights[i]->GetDiffuseIntensity()));
+			m_Shader->SetVec3(lightPrefix + ".specular", glm::vec3(lights[i]->GetSpecularIntensity()));
+			m_Shader->SetFloat(lightPrefix + ".constant", lights[i]->GetConstantAttenuation());
+			m_Shader->SetFloat(lightPrefix + ".linear", lights[i]->GetLinearAttenuation());
+			m_Shader->SetFloat(lightPrefix + ".quadratic", lights[i]->GetQuadraticAttenuation());
+
+			int pointLightStartSlot = 6;
+			lights[i]->BindShadowMap(pointLightStartSlot + i);
+			m_Shader->SetInt(lightPrefix + ".depthMap", pointLightStartSlot + i);
+			m_Shader->SetFloat(lightPrefix + ".far_plane", lights[i]->GetShadowMapFarPlane());
+			m_Shader->SetFloat(lightPrefix + ".bias", 0.05f);
+		}
+
+		m_Shader->SetInt("numberOfLights", maxedLights);
 	}
 }

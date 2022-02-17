@@ -15,6 +15,7 @@
 #include "Scene/PointLight.h"
 #include "Scene/Skybox.h"
 #include "Scene/Scene.h"
+#include "Renderer/RenderGraph.h"
 
 #include "Input.h"
 #include "MouseCodes.h"
@@ -55,6 +56,7 @@ namespace Walker {
 		//PointLight pointLight(glm::vec3(1.0f));
 		ImGuiManager imguiManager((GLFWwindow*)m_Window->GetNativeWindow());
 		//GBufferPBRPass gBufferPBRPass(m_Window->GetWidth(), m_Window->GetHeight());
+		RenderGraph renderGraph(m_Window->GetWidth(), m_Window->GetHeight());
 		Quad quad;
 		//std::vector<PointLight*> lights = { &pointLight };
 		//Skybox skybox("Skybox/default");

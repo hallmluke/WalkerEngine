@@ -35,6 +35,24 @@ namespace Walker {
         // Draw some objects
     }
 
+    RenderPassOutput GBufferPBRPass::GetOutput(std::string name) const
+    {
+        for (auto output : m_Outputs) {
+            if (output.Name == name) {
+                return output;
+            }
+        }
+        
+        W_CORE_ERROR("No output found for with name '{0}'", name);
+
+        return RenderPassOutput();
+    }
+
+    void GBufferPBRPass::LinkToInput(std::string inputName, RenderPassOutput output)
+    {
+        // TODO: All of these functions probably don't need to be pure virtual...
+    }
+
     void GBufferPBRPass::DrawModel(Model& model, glm::mat4 view, glm::mat4 projection) const
     {
         m_Framebuffer->Bind();

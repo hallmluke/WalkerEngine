@@ -9,16 +9,19 @@
 
 namespace Walker {
 
-	class GBufferPBRPass : RenderPass {
+	class GBufferPBRPass : public RenderPass {
 	public:
 		GBufferPBRPass(uint32_t width, uint32_t height);
 		virtual void BindInputs() const override;
 		virtual void BindOutput(uint32_t outputSlot, uint32_t inputSlot) const override;
 		virtual void Draw() const override;
 		virtual std::vector<RenderPassInput> GetInputs() const override { return m_Inputs; };
+		virtual RenderPassOutput GetOutput(std::string name) const override;
+
+		virtual void LinkToInput(std::string inputName, RenderPassOutput output) override;
 		// Temporary
 		void DrawModel(Model& model, glm::mat4 view, glm::mat4 projection) const;
-		void DrawScene(Scene& scene) const;
+		virtual void DrawScene(Scene& scene) const override;
 		uint32_t GetFramebufferId() const { return m_Framebuffer->GetId(); }
 		void BindTextures();
 

@@ -79,6 +79,19 @@ namespace Walker {
 		ImGui::End();
 	}
 
+	std::vector<std::shared_ptr<PointLight>> Scene::GetPointLights() const
+	{
+		std::vector<std::shared_ptr<PointLight>> lights;
+		auto view = m_Registry.view<PointLightComponent>();
+
+		for (auto entity : view) {
+			auto lightComp = view.get<PointLightComponent>(entity);
+			lights.push_back(lightComp.PointLightPtr);
+		}
+
+		return lights;
+	}
+
 	void Scene::DrawMeshes(std::shared_ptr<Shader> shader)
 	{
 		shader->SetMat4("view", m_ActiveCamera->GetViewMatrix());

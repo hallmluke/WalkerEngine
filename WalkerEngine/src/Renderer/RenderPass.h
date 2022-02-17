@@ -26,12 +26,15 @@ namespace Walker {
 
 	class RenderPass {
 	public:
+		RenderPass() = default;
 		virtual ~RenderPass() = default;
 		virtual void BindInputs() const = 0;
 		virtual void BindOutput(uint32_t outputSlot, uint32_t inputSlot) const = 0;
 		virtual void Draw() const = 0;
+		virtual void DrawScene(Scene& scene) const = 0;
 
 		virtual std::vector<RenderPassInput> GetInputs() const = 0;
+		virtual RenderPassInput GetInput(std::string name) const = 0;
 		virtual RenderPassOutput GetOutput(std::string name) const = 0;
 
 		virtual void LinkToInput(std::string inputName, RenderPassOutput output) = 0;
