@@ -10,22 +10,30 @@ uniform float u_MinDistance;
 uniform float u_MaxDistance;
 
 uniform mat4 view;
+uniform mat4 projection;
+
+uniform vec3 mouse;
 
 out vec4 fragColor;
+
+in vec2 TexCoords;
 
 void main() {
 	
   vec2 texSize  = textureSize(u_InFocusColor, 0).xy;
   vec2 texCoord = gl_FragCoord.xy / texSize;
 
-  vec4 positionViewSpace = (view * vec4(texture(u_Position, texCoord).xyz, 1.0));
+  vec4 positionViewSpace = (view * vec4(texture(u_Position, TexCoords).xyz, 1.0));
 
   vec4 inFocusColor = texture(u_InFocusColor, texCoord);
   vec4 outFocusColor = texture(u_OutOfFocusColor, texCoord);
 
-  float blur = smoothstep(u_MinDistance, u_MaxDistance, positionViewSpace.z);
+  float focusPoint = -(view * vec4(texture(u_Position, mouse.xy).xyz, 1.0)).z;
+
+  float blur = smoothstep(u_MinDistance, u_MaxDistance, abs(-positionViewSpace.z - focusPoint));
 
   fragColor = mix(inFocusColor, outFocusColor, blur);
+
   outColor = fragColor;
 
 }

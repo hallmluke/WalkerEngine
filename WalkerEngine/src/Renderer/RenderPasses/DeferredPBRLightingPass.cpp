@@ -1,10 +1,20 @@
 #include "walkerpch.h"
 #include "DeferredPBRLightingPass.h"
+#include "Renderer/RenderCommand.h"
 
 namespace Walker {
 
 	DeferredPBRLightingPass::DeferredPBRLightingPass(uint32_t width, uint32_t height)
 	{
+		FramebufferSpecification fbSpec;
+		fbSpec.Attachments = {
+			{ "gColor", FramebufferTextureFormat::RGBA16F, FramebufferTextureType::UNSIGNED_BYTE, FramebufferTextureTarget::TEXTURE_2D }
+		};
+
+		fbSpec.Width = width;
+		fbSpec.Height = height;
+		fbSpec.Samples = 1;
+		m_Framebuffer = Framebuffer::Create(fbSpec);
 		m_Shader = Shader::Create("Deferred PBR Lighting Pass", "Shaders/deferred_shading.vert", "Shaders/pbr_deferred.frag");
 	}
 
@@ -26,6 +36,7 @@ namespace Walker {
 
 	void DeferredPBRLightingPass::BindOutput(uint32_t outputSlot, uint32_t inputSlot) const
 	{
+		m_Framebuffer->BindColorAttachment(outputSlot, inputSlot);
 	}
 
 	void DeferredPBRLightingPass::Draw() const
@@ -48,6 +59,14 @@ namespace Walker {
 
 	RenderPassOutput DeferredPBRLightingPass::GetOutput(std::string name) const
 	{
+		for (auto output : m_Outputs) {
+			if (output.Name == name) {
+				return output;
+			}
+		}
+
+		W_CORE_ERROR("No output found for with name '{0}'", name);
+
 		return RenderPassOutput();
 	}
 
@@ -75,7 +94,8 @@ namespace Walker {
 	void DeferredPBRLightingPass::DrawScene(Scene& scene) const
 	{
 		// TODO: Automatically bind correct framebuffer based on render graph
-		RenderCommand::BindDefaultFramebuffer();
+		//RenderCommand::BindDefaultFramebuffer();
+		m_Framebuffer->Bind();
 		m_Shader->Bind();
 
 		for (auto input : m_Inputs) {

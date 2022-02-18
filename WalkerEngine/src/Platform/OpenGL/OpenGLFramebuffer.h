@@ -33,7 +33,7 @@ namespace Walker {
 		FramebufferSpecification m_Specification;
 
 		std::vector<FramebufferTextureSpecification> m_ColorAttachmentSpecifications;
-		FramebufferTextureSpecification m_DepthAttachmentSpecification = { "Depth", FramebufferTextureFormat::DEPTH32F, FramebufferTextureType::FLOAT, FramebufferTextureTarget::TEXTURE_2D };
+		FramebufferTextureSpecification m_DepthAttachmentSpecification = { "Depth", FramebufferTextureFormat::None, FramebufferTextureType::None, FramebufferTextureTarget::None };
 
 		std::vector<uint32_t> m_ColorAttachments;
 		uint32_t m_DepthAttachment = 0;

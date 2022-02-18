@@ -76,6 +76,8 @@
     <ClCompile Include="src\Renderer\RenderPasses\DeferredPBRLightingPass.cpp" />
     <ClCompile Include="src\Renderer\RenderGraph.cpp" />
     <ClCompile Include="src\Renderer\RenderPasses\ShadowMapPass.cpp" />
+    <ClCompile Include="src\Renderer\RenderPasses\DepthOfFieldPass.cpp" />
+    <ClCompile Include="src\Renderer\RenderPasses\BoxBlurPass.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\ImGuiManager.h" />
@@ -146,6 +148,8 @@
     <ClInclude Include="src\Renderer\RenderPasses\DeferredPBRLightingPass.h" />
     <ClInclude Include="src\Renderer\RenderGraph.h" />
     <ClInclude Include="src\Renderer\RenderPasses\ShadowMapPass.h" />
+    <ClInclude Include="src\Renderer\RenderPasses\DepthOfFieldPass.h" />
+    <ClInclude Include="src\Renderer\RenderPasses\BoxBlurPass.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="cpp.hint" />
