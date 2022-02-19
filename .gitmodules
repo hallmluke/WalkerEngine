@@ -13,3 +13,4 @@
 [submodule "WalkerEngine/vendor/ImGui"]
 	path = WalkerEngine/vendor/ImGui
 	url = git@github.com:ocornut/imgui.git
+	branch = docking
