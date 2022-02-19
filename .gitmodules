@@ -4,3 +4,12 @@
 [submodule "WalkerEngine/vendor/GLFW3"]
 	path = WalkerEngine/vendor/GLFW3
 	url = https://github.com/glfw/glfw.git
+[submodule "WalkerEngine/vendor/Assimp"]
+	path = WalkerEngine/vendor/Assimp
+	url = git@github.com:assimp/assimp.git
+[submodule "WalkerEngine/vendor/GLM"]
+	path = WalkerEngine/vendor/GLM
+	url = git@github.com:g-truc/glm.git
+[submodule "WalkerEngine/vendor/ImGui"]
+	path = WalkerEngine/vendor/ImGui
+	url = git@github.com:ocornut/imgui.git
