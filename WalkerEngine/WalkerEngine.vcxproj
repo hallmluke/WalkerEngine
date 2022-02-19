@@ -23,19 +23,19 @@
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
-    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <CharacterSet>Unicode</CharacterSet>
     <PlatformToolset>v142</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
-    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <CharacterSet>Unicode</CharacterSet>
     <PlatformToolset>v142</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Dist|x64'" Label="Configuration">
-    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <CharacterSet>Unicode</CharacterSet>
     <PlatformToolset>v142</PlatformToolset>
@@ -88,7 +88,7 @@
       <AdditionalIncludeDirectories>src;vendor\spdlog\include;vendor;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
-      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <PrecompiledHeaderFile>walkerpch.h</PrecompiledHeaderFile>
     </ClCompile>
@@ -99,23 +99,25 @@
       <AdditionalDependencies>glfw3.lib;assimp-vc142-mtd.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>
-echo F | xcopy /y /d /F "$(ProjectDir)dlls\assimp-vc142-mtd.dll" "$(OutDir)..\Sandbox\assimp-vc142-mtd.dll"
-echo F | xcopy /y /d /F "$(OutDir)\WalkerEngine.dll" "$(OutDir)..\Sandbox\WalkerEngine.dll"</Command>
+      <Command>echo F | xcopy /y /d /F "$(ProjectDir)dlls\assimp-vc142-mtd.dll" "$(OutDir)..\Sandbox\assimp-vc142-mtd.dll"
+echo F | xcopy /y /d /F "$(OutDir)\WalkerEngine.dll" "$(OutDir)..\Sandbox\WalkerEngine.dll"
+
+echo F | xcopy /y /d /F "$(ProjectDir)dlls\assimp-vc142-mtd.dll" "$(OutDir)..\WalkerEditor\assimp-vc142-mtd.dll"
+echo F | xcopy /y /d /F "$(OutDir)\WalkerEngine.dll" "$(OutDir)..\WalkerEditor\WalkerEngine.dll"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>W_PLATFORM_WINDOWS;W_BUILD_DLL;W_Release;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>W_PLATFORM_WINDOWS;W_BUILD_DLL;W_Release;GLFW_INCLUDE_NONE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>src;vendor\spdlog\include;vendor;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <MinimalRebuild>false</MinimalRebuild>
       <StringPooling>true</StringPooling>
-      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <PrecompiledHeaderFile>walkerpch.h</PrecompiledHeaderFile>
     </ClCompile>
@@ -127,9 +129,11 @@ echo F | xcopy /y /d /F "$(OutDir)\WalkerEngine.dll" "$(OutDir)..\Sandbox\Walker
       <AdditionalDependencies>glfw3.lib;assimp-vc142-mtd.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>
-echo F | xcopy /y /d /F "$(ProjectDir)dlls\assimp-vc142-mtd.dll" "$(OutDir)..\Sandbox\assimp-vc142-mtd.dll"
-echo F | xcopy /y /d /F "$(OutDir)\WalkerEngine.dll" "$(OutDir)..\Sandbox\WalkerEngine.dll"</Command>
+      <Command>echo F | xcopy /y /d /F "$(ProjectDir)dlls\assimp-vc142-mtd.dll" "$(OutDir)..\Sandbox\assimp-vc142-mtd.dll"
+echo F | xcopy /y /d /F "$(OutDir)\WalkerEngine.dll" "$(OutDir)..\Sandbox\WalkerEngine.dll"
+
+echo F | xcopy /y /d /F "$(ProjectDir)dlls\assimp-vc142-mtd.dll" "$(OutDir)..\WalkerEditor\assimp-vc142-mtd.dll"
+echo F | xcopy /y /d /F "$(OutDir)\WalkerEngine.dll" "$(OutDir)..\WalkerEditor\WalkerEngine.dll"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Dist|x64'">
@@ -143,7 +147,7 @@ echo F | xcopy /y /d /F "$(OutDir)\WalkerEngine.dll" "$(OutDir)..\Sandbox\Walker
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <MinimalRebuild>false</MinimalRebuild>
       <StringPooling>true</StringPooling>
-      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <PrecompiledHeaderFile>walkerpch.h</PrecompiledHeaderFile>
     </ClCompile>
@@ -155,13 +159,17 @@ echo F | xcopy /y /d /F "$(OutDir)\WalkerEngine.dll" "$(OutDir)..\Sandbox\Walker
       <AdditionalDependencies>glfw3.lib;assimp-vc142-mtd.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>
-echo F | xcopy /y /d /F "$(ProjectDir)dlls\assimp-vc142-mtd.dll" "$(OutDir)..\Sandbox\assimp-vc142-mtd.dll"
-echo F | xcopy /y /d /F "$(OutDir)\WalkerEngine.dll" "$(OutDir)..\Sandbox\WalkerEngine.dll"</Command>
+      <Command>echo F | xcopy /y /d /F "$(ProjectDir)dlls\assimp-vc142-mtd.dll" "$(OutDir)..\Sandbox\assimp-vc142-mtd.dll"
+echo F | xcopy /y /d /F "$(OutDir)\WalkerEngine.dll" "$(OutDir)..\Sandbox\WalkerEngine.dll"
+
+echo F | xcopy /y /d /F "$(ProjectDir)dlls\assimp-vc142-mtd.dll" "$(OutDir)..\WalkerEditor\assimp-vc142-mtd.dll"
+echo F | xcopy /y /d /F "$(OutDir)\WalkerEngine.dll" "$(OutDir)..\WalkerEditor\WalkerEngine.dll"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\Core\Input.cpp" />
+    <ClCompile Include="src\Core\Layer.cpp" />
+    <ClCompile Include="src\Core\LayerStack.cpp" />
     <ClCompile Include="src\Platform\OpenGL\OpenGLTextureCubemap.cpp" />
     <ClCompile Include="src\Platform\OpenGL\OpenGLUniformBuffer.cpp" />
     <ClCompile Include="src\Renderer\Material.cpp" />
@@ -211,37 +219,37 @@ echo F | xcopy /y /d /F "$(OutDir)\WalkerEngine.dll" "$(OutDir)..\Sandbox\Walker
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Dist|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="src\imgui\imgui.cpp">
+    <ClCompile Include="vendor\imgui\imgui.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Dist|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="src\imgui\imgui_demo.cpp">
+    <ClCompile Include="vendor\imgui\imgui_demo.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Dist|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="src\imgui\imgui_draw.cpp">
+    <ClCompile Include="vendor\imgui\imgui_draw.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Dist|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="src\imgui\imgui_impl_glfw.cpp">
+    <ClCompile Include="vendor\imgui\imgui_impl_glfw.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Dist|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="src\imgui\imgui_impl_opengl3.cpp">
+    <ClCompile Include="vendor\imgui\imgui_impl_opengl3.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Dist|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="src\imgui\imgui_tables.cpp">
+    <ClCompile Include="vendor\imgui\imgui_tables.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Dist|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="src\imgui\imgui_widgets.cpp">
+    <ClCompile Include="vendor\imgui\imgui_widgets.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Dist|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
@@ -262,6 +270,8 @@ echo F | xcopy /y /d /F "$(OutDir)\WalkerEngine.dll" "$(OutDir)..\Sandbox\Walker
   <ItemGroup>
     <ClInclude Include="src\Core\Input.h" />
     <ClInclude Include="src\Core\KeyCodes.h" />
+    <ClInclude Include="src\Core\Layer.h" />
+    <ClInclude Include="src\Core\LayerStack.h" />
     <ClInclude Include="src\Platform\OpenGL\OpenGLTextureCubemap.h" />
     <ClInclude Include="src\Platform\OpenGL\OpenGLUniformBuffer.h" />
     <ClInclude Include="src\Renderer\Material.h" />
@@ -297,15 +307,15 @@ echo F | xcopy /y /d /F "$(OutDir)\WalkerEngine.dll" "$(OutDir)..\Sandbox\Walker
     <ClInclude Include="src\Renderer\RenderPasses\GBuffer.h" />
     <ClInclude Include="src\Renderer\RenderPasses\GBufferPBRPass.h" />
     <ClInclude Include="src\ImGuiManager.h" />
-    <ClInclude Include="src\imgui\imconfig.h" />
-    <ClInclude Include="src\imgui\imgui.h" />
-    <ClInclude Include="src\imgui\imgui_impl_glfw.h" />
-    <ClInclude Include="src\imgui\imgui_impl_opengl3.h" />
-    <ClInclude Include="src\imgui\imgui_impl_opengl3_loader.h" />
-    <ClInclude Include="src\imgui\imgui_internal.h" />
-    <ClInclude Include="src\imgui\imstb_rectpack.h" />
-    <ClInclude Include="src\imgui\imstb_textedit.h" />
-    <ClInclude Include="src\imgui\imstb_truetype.h" />
+    <ClInclude Include="vendor\imgui\imconfig.h" />
+    <ClInclude Include="vendor\imgui\imgui.h" />
+    <ClInclude Include="vendor\imgui\imgui_impl_glfw.h" />
+    <ClInclude Include="vendor\imgui\imgui_impl_opengl3.h" />
+    <ClInclude Include="vendor\imgui\imgui_impl_opengl3_loader.h" />
+    <ClInclude Include="vendor\imgui\imgui_internal.h" />
+    <ClInclude Include="vendor\imgui\imstb_rectpack.h" />
+    <ClInclude Include="vendor\imgui\imstb_textedit.h" />
+    <ClInclude Include="vendor\imgui\imstb_truetype.h" />
     <ClInclude Include="src\Core\Log.h" />
     <ClInclude Include="src\Scene\Entity.h" />
     <ClInclude Include="src\Scene\Mesh.h" />

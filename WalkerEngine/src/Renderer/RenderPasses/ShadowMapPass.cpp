@@ -36,4 +36,9 @@ namespace Walker {
 			light->GenerateShadowMap(scene);
 		}
 	}
+	uint32_t ShadowMapPass::GetFinalOutputRendererId() const
+	{
+		// No final output
+		return uint32_t();
+	}
 }

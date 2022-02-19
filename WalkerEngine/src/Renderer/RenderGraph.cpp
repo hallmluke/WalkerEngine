@@ -37,6 +37,12 @@ namespace Walker {
 	RenderGraph::~RenderGraph()
 	{
 	}
+
+	uint32_t RenderGraph::GetOutputRendererId() const
+	{
+		auto LastRenderPass = m_RenderPasses[m_RenderPasses.size() - 1];
+		return LastRenderPass->GetFinalOutputRendererId();
+	}
 	/*void RenderGraph::AddRenderPass(RenderPass renderPass)
 	{
 	}*/

@@ -39,5 +39,8 @@ namespace Walker {
 		virtual RenderPassOutput GetOutput(std::string name) const = 0;
 
 		virtual void LinkToInput(std::string inputName, RenderPassOutput output) = 0;
+
+		// Temp
+		virtual uint32_t GetFinalOutputRendererId() const = 0;
 	};
 }

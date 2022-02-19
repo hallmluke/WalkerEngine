@@ -23,6 +23,8 @@ namespace Walker {
 
 		virtual void DrawScene(Scene& scene) const override;
 
+		virtual uint32_t GetFinalOutputRendererId() const override;
+
 	private:
 		std::shared_ptr<Framebuffer> m_Framebuffer;
 		std::shared_ptr<Shader> m_Shader;

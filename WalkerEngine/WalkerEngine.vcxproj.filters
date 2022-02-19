@@ -9,27 +9,6 @@
     <ClCompile Include="src\ImGuiManager.cpp" />
     <ClCompile Include="src\Renderer\Shader.cpp" />
     <ClCompile Include="src\glad.c" />
-    <ClCompile Include="src\imgui\imgui.cpp">
-      <Filter>imgui</Filter>
-    </ClCompile>
-    <ClCompile Include="src\imgui\imgui_demo.cpp">
-      <Filter>imgui</Filter>
-    </ClCompile>
-    <ClCompile Include="src\imgui\imgui_draw.cpp">
-      <Filter>imgui</Filter>
-    </ClCompile>
-    <ClCompile Include="src\imgui\imgui_impl_glfw.cpp">
-      <Filter>imgui</Filter>
-    </ClCompile>
-    <ClCompile Include="src\imgui\imgui_impl_opengl3.cpp">
-      <Filter>imgui</Filter>
-    </ClCompile>
-    <ClCompile Include="src\imgui\imgui_tables.cpp">
-      <Filter>imgui</Filter>
-    </ClCompile>
-    <ClCompile Include="src\imgui\imgui_widgets.cpp">
-      <Filter>imgui</Filter>
-    </ClCompile>
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\stb_image.cpp" />
     <ClCompile Include="src\walkerpch.cpp" />
@@ -78,20 +57,34 @@
     <ClCompile Include="src\Renderer\RenderPasses\ShadowMapPass.cpp" />
     <ClCompile Include="src\Renderer\RenderPasses\DepthOfFieldPass.cpp" />
     <ClCompile Include="src\Renderer\RenderPasses\BoxBlurPass.cpp" />
+    <ClCompile Include="src\Core\Layer.cpp" />
+    <ClCompile Include="src\Core\LayerStack.cpp" />
+    <ClCompile Include="vendor\imgui\imgui.cpp">
+      <Filter>imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="vendor\imgui\imgui_demo.cpp">
+      <Filter>imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="vendor\imgui\imgui_draw.cpp">
+      <Filter>imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="vendor\imgui\imgui_impl_glfw.cpp">
+      <Filter>imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="vendor\imgui\imgui_impl_opengl3.cpp">
+      <Filter>imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="vendor\imgui\imgui_tables.cpp">
+      <Filter>imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="vendor\imgui\imgui_widgets.cpp">
+      <Filter>imgui</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\ImGuiManager.h" />
     <ClInclude Include="src\Renderer\Shader.h" />
     <ClInclude Include="src\Walker.h" />
-    <ClInclude Include="src\imgui\imconfig.h" />
-    <ClInclude Include="src\imgui\imgui.h" />
-    <ClInclude Include="src\imgui\imgui_impl_glfw.h" />
-    <ClInclude Include="src\imgui\imgui_impl_opengl3.h" />
-    <ClInclude Include="src\imgui\imgui_impl_opengl3_loader.h" />
-    <ClInclude Include="src\imgui\imgui_internal.h" />
-    <ClInclude Include="src\imgui\imstb_rectpack.h" />
-    <ClInclude Include="src\imgui\imstb_textedit.h" />
-    <ClInclude Include="src\imgui\imstb_truetype.h" />
     <ClInclude Include="src\Events\Event.h" />
     <ClInclude Include="src\Events\KeyboardEvent.h" />
     <ClInclude Include="src\Events\MouseEvent.h" />
@@ -150,6 +143,17 @@
     <ClInclude Include="src\Renderer\RenderPasses\ShadowMapPass.h" />
     <ClInclude Include="src\Renderer\RenderPasses\DepthOfFieldPass.h" />
     <ClInclude Include="src\Renderer\RenderPasses\BoxBlurPass.h" />
+    <ClInclude Include="src\Core\Layer.h" />
+    <ClInclude Include="src\Core\LayerStack.h" />
+    <ClInclude Include="vendor\imgui\imconfig.h" />
+    <ClInclude Include="vendor\imgui\imgui.h" />
+    <ClInclude Include="vendor\imgui\imgui_impl_glfw.h" />
+    <ClInclude Include="vendor\imgui\imgui_impl_opengl3.h" />
+    <ClInclude Include="vendor\imgui\imgui_impl_opengl3_loader.h" />
+    <ClInclude Include="vendor\imgui\imgui_internal.h" />
+    <ClInclude Include="vendor\imgui\imstb_rectpack.h" />
+    <ClInclude Include="vendor\imgui\imstb_textedit.h" />
+    <ClInclude Include="vendor\imgui\imstb_truetype.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="cpp.hint" />

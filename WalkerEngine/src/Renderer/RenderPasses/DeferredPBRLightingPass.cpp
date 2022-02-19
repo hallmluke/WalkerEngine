@@ -91,6 +91,11 @@ namespace Walker {
 		}
 	}
 
+	uint32_t DeferredPBRLightingPass::GetFinalOutputRendererId() const
+	{
+		return m_Framebuffer->GetColorAttachmentRendererID();
+	}
+
 	void DeferredPBRLightingPass::DrawScene(Scene& scene) const
 	{
 		// TODO: Automatically bind correct framebuffer based on render graph

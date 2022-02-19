@@ -20,9 +20,10 @@ namespace Walker {
 
 	Application* Application::s_Instance = nullptr;
 
-	Application::Application()
+	Application::Application(const std::string& name)
 	{
 		WindowProps props;
+		props.Title = name;
 		props.Icon = "Icons/skywalker_icon.png";
 
 		m_Window = std::unique_ptr<Window>(Window::Create(props));
@@ -43,13 +44,25 @@ namespace Walker {
 		//W_CORE_TRACE("{0}", e.ToString());
 	}
 
+	void Application::PushLayer(Layer* layer)
+	{
+		m_LayerStack.PushLayer(layer);
+		layer->OnAttach();
+	}
+
+	void Application::PushOverlay(Layer* layer)
+	{
+		m_LayerStack.PushOverlay(layer);
+		layer->OnAttach();
+	}
+
 	void Application::Run()
 	{
 		ImGuiManager imguiManager((GLFWwindow*)m_Window->GetNativeWindow());
 		RenderGraph renderGraph(m_Window->GetWidth(), m_Window->GetHeight());
 		//Skybox skybox("Skybox/default");
 		Scene scene;
-		Model sponzaPBR("SponzaPBR", "Models/SponzaPBR/Sponza.gltf", &scene);
+		//Model sponzaPBR("SponzaPBR", "Models/SponzaPBR/Sponza.gltf", &scene);
 
 		while (m_Running) {
 
@@ -60,7 +73,7 @@ namespace Walker {
 			m_LastFrameTime = time;
 			imguiManager.BeginFrame();
 
-			scene.EntityDebugPanel();
+			//scene.EntityDebugPanel();
 			renderGraph.DrawScene(scene);
 			
 			/*
@@ -71,6 +84,12 @@ namespace Walker {
 				GL_DEPTH_BUFFER_BIT, GL_NEAREST);*/
 
 			//skybox.Draw(scene.GetCamera()->GetViewMatrix(), scene.GetCamera()->GetProjectionMatrix());
+
+			for (Layer* layer : m_LayerStack) {
+				layer->OnUpdate(timestep);
+				layer->OnImGuiRender();
+			}
+
 
 			if (Input::IsMouseButtonPressed(Mouse::ButtonRight)) {
 				m_Window->DisableCursor();

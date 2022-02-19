@@ -116,4 +116,9 @@ namespace Walker {
 		m_Quad.Draw();
 	}
 
+	uint32_t DepthOfFieldPass::GetFinalOutputRendererId() const
+	{
+		return m_Framebuffer->GetColorAttachmentRendererID();
+	}
+
 }

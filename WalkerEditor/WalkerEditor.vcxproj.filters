@@ -1,0 +1,63 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="WalkerEditor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="EditorLayer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Shaders\basic_lighting.frag" />
+    <None Include="Shaders\basic_lighting.vert" />
+    <None Include="Shaders\debug_quad.frag" />
+    <None Include="Shaders\debug_quad.vert" />
+    <None Include="Shaders\deferred_shading.frag" />
+    <None Include="Shaders\deferred_shading.vert" />
+    <None Include="Shaders\depth_shader.frag" />
+    <None Include="Shaders\depth_shader.vert" />
+    <None Include="Shaders\depth_shader_cascades.geom" />
+    <None Include="Shaders\depth_shader_cascades.vert" />
+    <None Include="Shaders\depth_shader_cube.frag" />
+    <None Include="Shaders\depth_shader_cube.geom" />
+    <None Include="Shaders\depth_shader_cube.vert" />
+    <None Include="Shaders\g_buffer.frag" />
+    <None Include="Shaders\g_buffer.vert" />
+    <None Include="Shaders\g_buffer_pbr.frag" />
+    <None Include="Shaders\geometry_shader.geom" />
+    <None Include="Shaders\light_cube.frag" />
+    <None Include="Shaders\light_cube.vert" />
+    <None Include="Shaders\pbr_deferred.frag" />
+    <None Include="Shaders\raymarch.frag" />
+    <None Include="Shaders\raymarch.vert" />
+    <None Include="Shaders\skybox.frag" />
+    <None Include="Shaders\skybox.vert" />
+    <None Include="Shaders\ssao_blur_pass.frag" />
+    <None Include="Shaders\ssao_pass.frag" />
+    <None Include="Shaders\ssao_pass.vert" />
+    <None Include="Shaders\debug_quad_input.frag" />
+    <None Include="Shaders\test.frag" />
+    <None Include="Shaders\box_blur.frag" />
+    <None Include="Shaders\depth_of_field.frag" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="EditorLayer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

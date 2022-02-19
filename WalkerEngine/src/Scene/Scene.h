@@ -9,7 +9,7 @@ namespace Walker {
 
 	class Entity;
 
-	class Scene
+	class WALKER_API Scene
 	{
 	public:
 		Scene();

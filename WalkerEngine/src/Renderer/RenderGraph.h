@@ -4,10 +4,12 @@
 
 namespace Walker {
 
-	class RenderGraph {
+	class WALKER_API RenderGraph {
 	public:
 		RenderGraph(uint32_t viewportWidth, uint32_t viewportHeight);
 		~RenderGraph();
+
+		uint32_t GetOutputRendererId() const;
 
 		//void AddRenderPass(RenderPass renderPass);
 		std::vector<std::shared_ptr<RenderPass>> GetRenderPasses() { return m_RenderPasses; }
@@ -17,7 +19,7 @@ namespace Walker {
 
 	private:
 		std::vector<std::shared_ptr<RenderPass>> m_RenderPasses;
-		std::vector<std::unique_ptr<Scene>> m_R;
+		//std::vector<std::unique_ptr<Scene>> m_R;
 		uint32_t m_ViewportWidth, m_ViewportHeight;
 	};
 }

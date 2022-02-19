@@ -85,6 +85,11 @@ namespace Walker {
         m_Framebuffer->BindColorAttachment(3, 3);
     }
 
+	uint32_t GBufferPBRPass::GetFinalOutputRendererId() const
+	{
+        return m_Framebuffer->GetColorAttachmentRendererID();
+	}
+
     void GBufferPBRPass::BindInputs() const {
         // No inputs
         return;
