@@ -4,7 +4,7 @@
 
 namespace Walker {
 
-	class WALKER_API RenderGraph {
+	class RenderGraph {
 	public:
 		RenderGraph(uint32_t viewportWidth, uint32_t viewportHeight);
 		~RenderGraph();

@@ -3,8 +3,6 @@
 #include "ImGuiManager.h"
 #include "Renderer/Renderer.h"
 
-#include <glad/glad.h>
-
 #include "Scene/Model.h"
 #include "Scene/Skybox.h"
 #include "Scene/Scene.h"

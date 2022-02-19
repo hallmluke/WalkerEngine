@@ -3,4 +3,4 @@ project(WalkerEngine)
 
 add_subdirectory(WalkerEngine)
 add_subdirectory(WalkerEditor)
-add_subdirectory(Sandbox)
+#add_subdirectory(Sandbox)

@@ -1,6 +1,6 @@
 #pragma once
 
-#include <entt/entt.hpp>
+#include <entt.hpp>
 #include "Camera.h"
 #include "Skybox.h"
 #include "Renderer/Shader.h"
@@ -9,7 +9,7 @@ namespace Walker {
 
 	class Entity;
 
-	class WALKER_API Scene
+	class Scene
 	{
 	public:
 		Scene();

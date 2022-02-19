@@ -4,7 +4,7 @@
 
 namespace Walker {
 
-	class WALKER_API Layer
+	class Layer
 	{
 	public:
 		Layer(const std::string& name = "Layer");

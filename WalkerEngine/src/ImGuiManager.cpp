@@ -11,7 +11,6 @@ ImGuiManager::ImGuiManager(GLFWwindow* window)
 
     // Setup Dear ImGui style
     ImGui::StyleColorsDark();
-
     io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
     io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
 

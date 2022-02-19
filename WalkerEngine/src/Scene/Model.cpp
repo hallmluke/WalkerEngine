@@ -5,6 +5,7 @@
 #include "Renderer/Material.h"
 #include "Components.h"
 //#include <assimp/pbrmaterial.h>
+#include <assimp/material.h>
 
 namespace Walker {
 
