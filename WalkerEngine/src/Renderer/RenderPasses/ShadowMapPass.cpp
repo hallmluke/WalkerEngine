@@ -41,4 +41,8 @@ namespace Walker {
 		// No final output
 		return uint32_t();
 	}
+	void ShadowMapPass::Resize(uint32_t width, uint32_t height)
+	{
+		// Resizing view shouldn't affect shadow maps
+	}
 }

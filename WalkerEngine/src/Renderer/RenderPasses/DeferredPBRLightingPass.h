@@ -29,6 +29,8 @@ namespace Walker {
 		uint32_t GetFramebufferId() const { return m_Framebuffer->GetId(); }
 		void BindTextures();
 
+		virtual void Resize(uint32_t width, uint32_t height) override;
+
 	private:
 		std::shared_ptr<Framebuffer> m_Framebuffer;
 		std::shared_ptr<Shader> m_Shader;

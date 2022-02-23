@@ -36,5 +36,6 @@ namespace Walker {
 		std::shared_ptr<Camera> m_ActiveCamera;
 
 		friend class Entity;
+		friend class SceneHierarchyPanel;
 	};
 }

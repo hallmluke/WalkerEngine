@@ -75,6 +75,8 @@ namespace Walker {
 
 		void UpdateShadowTransforms();
 
+		friend class SceneHierarchyPanel;
+
 		/*bool initialized = false;
 		void InitBuffers();
 

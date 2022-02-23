@@ -19,6 +19,8 @@ namespace Walker {
 
 		virtual uint32_t GetFinalOutputRendererId() const override;
 
+		virtual void Resize(uint32_t width, uint32_t height) override;
+
 	private:
 		std::vector<RenderPassInput> m_Inputs = {};
 		// TODO: For shadow map pass, outputs should by dynamic based on the scene

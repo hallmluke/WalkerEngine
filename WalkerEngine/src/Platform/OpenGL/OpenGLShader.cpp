@@ -1,6 +1,7 @@
 #include "walkerpch.h"
 
 #include <fstream>
+#include <filesystem>
 #include "OpenGLShader.h"
 #include "Scene/PointLight.h"
 #include "Scene/DirectionalLight.h"
@@ -18,6 +19,12 @@ namespace Walker {
         std::ifstream vShaderFile;
         std::ifstream fShaderFile;
         std::ifstream gShaderFile;
+
+        // TODO: More robust filesystem management
+        //std::filesystem::path Path = std::filesystem::current_path();
+        //std::string pathString{Path.generic_string()};
+
+        //W_CORE_INFO("Current path: {0}", pathString);
 
         // ensure ifstream objects can throw exceptions:
         vShaderFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);

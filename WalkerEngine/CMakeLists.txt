@@ -43,8 +43,12 @@ set_property(TARGET Glad PROPERTY FOLDER External)
 add_subdirectory(vendor/ImGui)
 set_property(TARGET ImGui PROPERTY FOLDER External)
 
+add_subdirectory(vendor/stb)
+set_property(TARGET stb PROPERTY FOLDER External)
 
+target_include_directories(${PROJECT_NAME} PUBLIC vendor/GLFW3 vendor/spdlog vendor/Assimp vendor/GLM vendor/ImGui vendor/entt/include vendor/glad/include vendor/stb/include)
 
-target_include_directories(${PROJECT_NAME} PUBLIC vendor/GLFW3 vendor/spdlog vendor/Assimp vendor/GLM vendor/ImGui vendor/entt/include vendor/glad/include)
+target_link_libraries(${PROJECT_NAME} PUBLIC glfw spdlog assimp ImGui Glad stb)
 
-target_link_libraries(${PROJECT_NAME} PUBLIC glfw spdlog assimp ImGui Glad)
+#TODO: Precompiled headers
+#target_precompile_headers(WalkerEngine PRIVATE "$<$<COMPILE_LANGUAGE:CXX>:${CMAKE_CURRENT_SOURCE_DIR}/src/walkerpch.h>")

@@ -62,4 +62,13 @@ namespace Walker {
 	{
 		input.RenderPass->LinkToInput(input.Name, output);
 	}
+	void RenderGraph::Resize(uint32_t width, uint32_t height)
+	{
+		m_ViewportWidth = width;
+		m_ViewportHeight = height;
+
+		for (auto renderPass : m_RenderPasses) {
+			renderPass->Resize(width, height);
+		}
+	}
 }

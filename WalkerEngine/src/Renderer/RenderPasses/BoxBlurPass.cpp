@@ -109,4 +109,8 @@ namespace Walker {
 	{
 		return m_Framebuffer->GetColorAttachmentRendererID();
 	}
+	void BoxBlurPass::Resize(uint32_t width, uint32_t height)
+	{
+		m_Framebuffer->Resize(width, height);
+	}
 }

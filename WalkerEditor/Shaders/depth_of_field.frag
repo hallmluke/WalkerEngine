@@ -1,6 +1,6 @@
 #version 460 core
 
-layout (location = 0) out vec4 outColor;
+layout (location = 0) out vec4 gColor;
 
 uniform sampler2D u_Position;
 uniform sampler2D u_InFocusColor;
@@ -28,12 +28,13 @@ void main() {
   vec4 inFocusColor = texture(u_InFocusColor, texCoord);
   vec4 outFocusColor = texture(u_OutOfFocusColor, texCoord);
 
-  float focusPoint = -(view * vec4(texture(u_Position, mouse.xy).xyz, 1.0)).z;
+  vec2 center = vec2(0.5, 0.5);
+  float focusPoint = -(view * vec4(texture(u_Position, center).xyz, 1.0)).z;
 
   float blur = smoothstep(u_MinDistance, u_MaxDistance, abs(-positionViewSpace.z - focusPoint));
 
   fragColor = mix(inFocusColor, outFocusColor, blur);
 
-  outColor = fragColor;
+  gColor = fragColor;
 
 }

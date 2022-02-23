@@ -9,14 +9,14 @@ namespace Walker {
 	{
 		FramebufferSpecification fbSpec;
 		fbSpec.Attachments = {
-			{ "color", FramebufferTextureFormat::RGBA16F, FramebufferTextureType::UNSIGNED_BYTE, FramebufferTextureTarget::TEXTURE_2D }
+			{ "gColor", FramebufferTextureFormat::RGBA16F, FramebufferTextureType::UNSIGNED_BYTE, FramebufferTextureTarget::TEXTURE_2D }
 		};
 
 		fbSpec.Width = width;
 		fbSpec.Height = height;
 		fbSpec.Samples = 1;
 		m_Framebuffer = Framebuffer::Create(fbSpec);
-		m_Shader = Shader::Create("DepthOfField", "Shaders/deferred_shading.vert", "Shaders/depth_of_field.frag");
+		m_Shader = Shader::Create("Depth Of Field", "Shaders/deferred_shading.vert", "Shaders/depth_of_field.frag");
 	}
 
 	void DepthOfFieldPass::BindInputs() const
@@ -93,11 +93,13 @@ namespace Walker {
 
 	void DepthOfFieldPass::DrawScene(Scene& scene) const
 	{
-		glm::vec2 mouse = Input::GetMousePosition();
-		mouse.x /= m_Framebuffer->GetSpecification().Width;
-		mouse.y /= m_Framebuffer->GetSpecification().Height;
+		// TODO: Configurable for certain behavior
+		//glm::vec2 mouse = Input::GetMousePosition();
+		//mouse.x /= m_Framebuffer->GetSpecification().Width;
+		//mouse.y /= m_Framebuffer->GetSpecification().Height;
 
-		RenderCommand::BindDefaultFramebuffer();
+		//RenderCommand::BindDefaultFramebuffer();
+		m_Framebuffer->Bind();
 		m_Shader->Bind();
 
 		for (auto input : m_Inputs) {
@@ -109,7 +111,7 @@ namespace Walker {
 		m_Shader->SetFloat("u_MaxDistance", 5.0f);
 		m_Shader->SetMat4("view", scene.GetCamera()->GetViewMatrix());
 		m_Shader->SetMat4("projection", scene.GetCamera()->GetProjectionMatrix());
-		m_Shader->SetVec3("mouse", glm::vec3(mouse.x, 1 - mouse.y, 1));
+		//m_Shader->SetVec3("mouse", glm::vec3(mouse.x, 1 - mouse.y, 1));
 
 		BindInputs();
 
@@ -119,6 +121,11 @@ namespace Walker {
 	uint32_t DepthOfFieldPass::GetFinalOutputRendererId() const
 	{
 		return m_Framebuffer->GetColorAttachmentRendererID();
+	}
+
+	void DepthOfFieldPass::Resize(uint32_t width, uint32_t height)
+	{
+		m_Framebuffer->Resize(width, height);
 	}
 
 }

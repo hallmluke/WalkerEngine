@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Walker.h"
+#include "Panels/SceneHierarchyPanel.h"
 
 
 namespace Walker {
@@ -21,5 +22,12 @@ namespace Walker {
 	private:
 		std::shared_ptr<Scene> m_ActiveScene;
 		std::shared_ptr<RenderGraph> m_RenderGraph;
+
+		bool m_ViewportFocused = false, m_ViewportHovered = false;
+		glm::vec2 m_ViewportSize = { 0.0f, 0.0f };
+		glm::vec2 m_ViewportBounds[2];
+
+		// Panels
+		SceneHierarchyPanel m_SceneHierarchyPanel;
 	};
 }

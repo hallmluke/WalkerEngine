@@ -90,6 +90,11 @@ namespace Walker {
         return m_Framebuffer->GetColorAttachmentRendererID();
 	}
 
+	void GBufferPBRPass::Resize(uint32_t width, uint32_t height)
+	{
+        m_Framebuffer->Resize(width, height);
+	}
+
     void GBufferPBRPass::BindInputs() const {
         // No inputs
         return;

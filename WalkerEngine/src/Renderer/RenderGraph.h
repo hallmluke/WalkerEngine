@@ -17,6 +17,11 @@ namespace Walker {
 		void DrawScene(Scene& scene) const;
 		void Link(RenderPassOutput output, RenderPassInput input);
 
+		void Resize(uint32_t width, uint32_t height);
+
+		uint32_t GetWidth() const { return m_ViewportWidth; }
+		uint32_t GetHeight() const { return m_ViewportHeight; }
+
 	private:
 		std::vector<std::shared_ptr<RenderPass>> m_RenderPasses;
 		//std::vector<std::unique_ptr<Scene>> m_R;

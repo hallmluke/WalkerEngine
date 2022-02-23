@@ -123,6 +123,11 @@ namespace Walker {
 
 	}
 
+	void DeferredPBRLightingPass::Resize(uint32_t width, uint32_t height)
+	{
+		m_Framebuffer->Resize(width, height);
+	}
+
 	void DeferredPBRLightingPass::SetDirectionalLightShaderUniforms(Scene& scene) const
 	{
 		std::shared_ptr<DirectionalLight> light = scene.GetDirectionalLight();
