@@ -27,6 +27,8 @@ namespace Walker {
         // render the mesh
         void Draw(std::shared_ptr<Shader> shader, glm::mat4 transform);
 
+        std::shared_ptr<Material> GetMaterial() const { return m_Material; }
+
     private:
         std::string m_Name;
         std::vector<Vertex> m_Vertices;

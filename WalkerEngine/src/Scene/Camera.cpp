@@ -175,6 +175,13 @@ namespace Walker {
         return m_ProjectionMatrix;
     }
 
+    void Camera::ResizeViewport(uint32_t width, uint32_t height)
+    {
+        m_ViewportWidth = width;
+        m_ViewportHeight = height;
+        UpdateProjectionMatrix();
+    }
+
     const glm::mat4& Camera::GetViewProjectionMatrix() const
     {
         return m_ViewProjMatrix;

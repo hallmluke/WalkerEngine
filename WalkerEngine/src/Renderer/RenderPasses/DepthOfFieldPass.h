@@ -23,11 +23,15 @@ namespace Walker {
 
 		virtual void DrawScene(Scene& scene) const override;
 
+		virtual uint32_t GetFinalOutputRendererId() const override;
+
+		virtual void Resize(uint32_t width, uint32_t height) override;
+
 	private:
 		std::shared_ptr<Framebuffer> m_Framebuffer;
 		std::shared_ptr<Shader> m_Shader;
 		std::vector<RenderPassInput> m_Inputs = { {"u_Position", 0, this }, {"u_InFocusColor", 1, this }, {"u_OutOfFocusColor", 2, this } };
-		std::vector<RenderPassOutput> m_Outputs = { {"outColor", 0, this } };
+		std::vector<RenderPassOutput> m_Outputs = { {"gColor", 0, this } };
 		std::unordered_map<std::string, RenderPassOutput> m_Links;
 		Quad m_Quad;
 	};

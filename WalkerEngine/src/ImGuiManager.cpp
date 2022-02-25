@@ -11,9 +11,9 @@ ImGuiManager::ImGuiManager(GLFWwindow* window)
 
     // Setup Dear ImGui style
     ImGui::StyleColorsDark();
-
     io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
     io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
+    io.ConfigDragClickToInputText = true;
 
     // Setup Platform/Renderer backends
     ImGui_ImplGlfw_InitForOpenGL(window, true);
@@ -36,8 +36,8 @@ void ImGuiManager::BeginFrame()
     ImGui_ImplGlfw_NewFrame();
     ImGui::NewFrame();
 
-    ImGui::ShowDemoWindow();
-    ImGui::ShowMetricsWindow();
+    //ImGui::ShowDemoWindow();
+    //ImGui::ShowMetricsWindow();
 }
 
 void ImGuiManager::EndFrame()

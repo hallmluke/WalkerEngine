@@ -21,6 +21,13 @@ namespace Walker {
 		Material(aiMaterial* mat, std::string textureDirectory);
 
 		std::string GetName() const { return m_Name; }
+
+		
+		glm::vec3& GetBaseColor() { return m_BaseColor; }
+		// TODO: Textures should be dynamic, based on shader uniforms
+		std::shared_ptr<Texture> GetAlbedo() const { return m_Albedo; }
+		std::shared_ptr<Texture> GetNormal() const { return m_Normal; }
+		std::shared_ptr<Texture> GetMetallicRoughness() const { return m_MetallicRoughness; }
 		
 		// Temporary
 		void BindTextures();

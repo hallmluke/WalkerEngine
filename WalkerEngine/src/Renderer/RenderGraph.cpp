@@ -37,6 +37,12 @@ namespace Walker {
 	RenderGraph::~RenderGraph()
 	{
 	}
+
+	uint32_t RenderGraph::GetOutputRendererId() const
+	{
+		auto LastRenderPass = m_RenderPasses[m_RenderPasses.size() - 1];
+		return LastRenderPass->GetFinalOutputRendererId();
+	}
 	/*void RenderGraph::AddRenderPass(RenderPass renderPass)
 	{
 	}*/
@@ -55,5 +61,14 @@ namespace Walker {
 	void RenderGraph::Link(RenderPassOutput output, RenderPassInput input)
 	{
 		input.RenderPass->LinkToInput(input.Name, output);
+	}
+	void RenderGraph::Resize(uint32_t width, uint32_t height)
+	{
+		m_ViewportWidth = width;
+		m_ViewportHeight = height;
+
+		for (auto renderPass : m_RenderPasses) {
+			renderPass->Resize(width, height);
+		}
 	}
 }

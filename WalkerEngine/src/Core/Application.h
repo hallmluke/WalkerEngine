@@ -3,16 +3,20 @@
 #include "Window.h"
 #include "Events/Event.h"
 #include "Events/WindowEvent.h"
+#include "Core/LayerStack.h"
 
 namespace Walker {
 
-	class WALKER_API Application
+	class Application
 	{
 	public:
-		Application();
+		Application(const std::string& name);
 		virtual ~Application();
 
 		void OnEvent(Event& e);
+
+		void PushLayer(Layer* layer);
+		void PushOverlay(Layer* layer);
 
 		void Run();
 
@@ -26,6 +30,7 @@ namespace Walker {
 		bool m_Running = true;
 		static Application* s_Instance;
 		float m_LastFrameTime = 0;
+		LayerStack m_LayerStack;
 	};
 
 	Application* CreateApplication();

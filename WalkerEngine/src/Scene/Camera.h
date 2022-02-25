@@ -23,6 +23,7 @@ namespace Walker {
         void UpdateProjectionMatrix();
         void UpdateProjectionMatrix(float nearPlane, float farPlane);
         const glm::mat4& GetProjectionMatrix() const;
+        void ResizeViewport(uint32_t width, uint32_t height);
 
         const glm::mat4& GetViewProjectionMatrix() const;
 

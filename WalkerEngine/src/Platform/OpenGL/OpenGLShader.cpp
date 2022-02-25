@@ -1,6 +1,7 @@
 #include "walkerpch.h"
 
 #include <fstream>
+#include <filesystem>
 #include "OpenGLShader.h"
 #include "Scene/PointLight.h"
 #include "Scene/DirectionalLight.h"
@@ -18,6 +19,12 @@ namespace Walker {
         std::ifstream vShaderFile;
         std::ifstream fShaderFile;
         std::ifstream gShaderFile;
+
+        // TODO: More robust filesystem management
+        //std::filesystem::path Path = std::filesystem::current_path();
+        //std::string pathString{Path.generic_string()};
+
+        //W_CORE_INFO("Current path: {0}", pathString);
 
         // ensure ifstream objects can throw exceptions:
         vShaderFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
@@ -170,58 +177,6 @@ namespace Walker {
 
         SetBool("debugShadow", light.debugShadow);
     }*/
-
-    void OpenGLShader::SetPointLightProperties(std::vector<PointLight*> lights)
-    {
-        int maxLights = 64;
-        int maxedLights = maxLights;
-
-        if (lights.size() < maxLights) {
-            maxedLights = lights.size();
-        }
-
-        for (int i = 0; i < maxedLights; i++) {
-            std::string lightPrefix = "lights[" + std::to_string(i) + "]";
-            SetVec3(lightPrefix + ".position", lights[i]->GetPosition());
-            SetVec3(lightPrefix + ".ambient", glm::vec3(lights[i]->GetAmbientIntensity()));
-            SetVec3(lightPrefix + ".diffuse", glm::vec3(lights[i]->GetDiffuseIntensity()));
-            SetVec3(lightPrefix + ".specular", glm::vec3(lights[i]->GetSpecularIntensity()));
-            SetFloat(lightPrefix + ".constant", lights[i]->GetConstantAttenuation());
-            SetFloat(lightPrefix + ".linear", lights[i]->GetLinearAttenuation());
-            SetFloat(lightPrefix + ".quadratic", lights[i]->GetQuadraticAttenuation());
-
-            //if (lights[i]->shadowMapEnabled) {
-                lights[i]->BindShadowMap(6);
-                //glActiveTexture(GL_TEXTURE6);
-                //glBindTexture(GL_TEXTURE_CUBE_MAP, lights[i]->depthCubeMap);
-                SetInt(lightPrefix + ".depthMap", 6);
-                SetFloat(lightPrefix + ".far_plane", lights[i]->GetShadowMapFarPlane());
-                SetFloat(lightPrefix + ".bias", 0.05f);
-            //}
-        }
-
-        SetInt("numberOfLights", maxedLights);
-    }
-
-    void OpenGLShader::SetDirectionalLightProperties(DirectionalLight light, Camera camera)
-    {
-        SetVec3("dirLight.direction", light.GetDirection());
-        SetVec3("dirLight.color", light.GetColor());
-        SetVec3("dirLight.ambient", glm::vec3(light.GetAmbientIntensity()));
-        SetVec3("dirLight.diffuse", glm::vec3(light.GetDiffuseIntensity()));
-        SetVec3("dirLight.specular", glm::vec3(light.GetSpecularIntensity()));
-
-        std::vector<float> cascadeDistances = light.GetShadowCascadeLevels();
-        SetMat4("view", camera.GetViewMatrix());
-        SetFloat("farPlane", camera.GetFarPlane());
-        SetInt("cascadeCount", cascadeDistances.size());
-        for (size_t i = 0; i < cascadeDistances.size(); ++i)
-        {
-            SetFloat("cascadePlaneDistances[" + std::to_string(i) + "]", cascadeDistances[i]);
-        }
-        light.BindShadowMap(5);
-        SetInt("shadowMap", 5);
-    }
 
     void OpenGLShader::CheckCompileErrors(GLuint shader, std::string type)
     {

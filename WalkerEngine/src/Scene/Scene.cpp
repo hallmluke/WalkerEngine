@@ -18,7 +18,6 @@ namespace Walker {
 
 		Entity defaultPointLight = CreateEntity("Default Pointlight");
 		auto& pointLightComponent = defaultPointLight.AddComponent<PointLightComponent>();
-		pointLightComponent.PointLightPtr = std::make_shared<PointLight>(glm::vec3(1.0f));
 
 	}
 
@@ -79,15 +78,19 @@ namespace Walker {
 		ImGui::End();
 	}
 
-	std::vector<std::shared_ptr<PointLight>> Scene::GetPointLights() const
+	std::vector<std::shared_ptr<PointLight>> Scene::GetPointLights(std::vector<glm::vec3>& positions)
 	{
 		std::vector<std::shared_ptr<PointLight>> lights;
-		auto view = m_Registry.view<PointLightComponent>();
+		std::vector<glm::vec3> pos;
+		auto view = m_Registry.view<PointLightComponent, TransformComponent>();
 
 		for (auto entity : view) {
-			auto& [pointLightComp] = view.get(entity);
+			auto [pointLightComp, transformComp] = view.get<PointLightComponent, TransformComponent>(entity);
 			lights.push_back(pointLightComp.PointLightPtr);
+			pos.push_back(transformComp.Translation);
 		}
+
+		positions = pos;
 
 		return lights;
 	}
