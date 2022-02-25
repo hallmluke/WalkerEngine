@@ -15,6 +15,9 @@ ImGuiManager::ImGuiManager(GLFWwindow* window)
     io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
     io.ConfigDragClickToInputText = true;
 
+    io.Fonts->AddFontFromFileTTF("Fonts/Inter/static/Inter-Bold.ttf", 16.0f);
+    io.FontDefault = io.Fonts->AddFontFromFileTTF("Fonts/Inter/static/Inter-Regular.ttf", 16.0f);
+
     // Setup Platform/Renderer backends
     ImGui_ImplGlfw_InitForOpenGL(window, true);
     const char* glsl_version = "#version 130";
