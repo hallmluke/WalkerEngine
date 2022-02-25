@@ -30,11 +30,33 @@ namespace Walker {
 			m_SelectionContext = {};
 		}
 
+		if (ImGui::BeginPopupContextWindow(0, 1, false))
+		{
+			if (ImGui::MenuItem("Create Empty Entity"))
+			{
+				m_Context->CreateEntity("Empty Entity");
+			}
+
+			ImGui::EndPopup();
+		}
+
 		ImGui::End();
 
 		ImGui::Begin("Properties");
 		if (m_SelectionContext) {
 			DrawComponents(m_SelectionContext);
+
+			if (ImGui::Button("Add Component")) {
+				ImGui::OpenPopup("AddComponent");
+			}
+
+			if (ImGui::BeginPopup("AddComponent")) {
+				if (ImGui::MenuItem("Point Light")) {
+					m_SelectionContext.AddComponent<PointLightComponent>();
+					ImGui::CloseCurrentPopup();
+				}
+				ImGui::EndPopup();
+			}
 		}
 		ImGui::End();
 	}
@@ -57,6 +79,17 @@ namespace Walker {
 			m_SelectionContext = entity;
 		}
 
+		bool entityDeleted = false;
+
+		if (ImGui::BeginPopupContextItem())
+		{
+			if (ImGui::MenuItem("Delete Entity")) {
+				entityDeleted = true;
+			}
+
+			ImGui::EndPopup();
+		}
+
 		if (opened) {
 
 			if (relation.Children > 0 && relation.First) {
@@ -68,6 +101,13 @@ namespace Walker {
 
 		if (relation.Next) {
 			DrawEntityNode(relation.Next);
+		}
+
+		if (entityDeleted) {
+			m_Context->DestroyEntity(entity);
+			if (m_SelectionContext == entity) {
+				m_SelectionContext = {};
+			}
 		}
 	}
 
@@ -83,9 +123,6 @@ namespace Walker {
 		ImGui::Text(label.c_str());
 		ImGui::NextColumn();
 
-		//ImGui::PushItemWidth(-1);
-		//ImGui::PushItemWidth(-1);
-		//ImGui::PushItemWidth(-1);
 		ImGui::PushMultiItemsWidths(3, ImGui::CalcItemWidth());
 		ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2{ 0, 0 });
 

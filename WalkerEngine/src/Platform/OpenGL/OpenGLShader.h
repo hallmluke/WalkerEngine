@@ -23,10 +23,6 @@ namespace Walker {
 		virtual void SetMat4(const std::string& name, glm::mat4 value) override;
 		virtual void SetVec3(const std::string& name, float x, float y, float z) override;
 		virtual void SetVec3(const std::string& name, glm::vec3 value) override;
-		virtual void SetDirectionalLightProperties(DirectionalLight light, Camera camera) override;
-		//virtual void SetDirectionalLightProperties(DirectionalLight light, Camera camera) override;
-		//virtual void SetPointLightProperties(PointLight light) override;
-		virtual void SetPointLightProperties(std::vector<PointLight*> lights) override;
 
 		
 	private:

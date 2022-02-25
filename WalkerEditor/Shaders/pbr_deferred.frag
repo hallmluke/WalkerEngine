@@ -50,7 +50,7 @@ struct PointLight {
 };
 
 
-const int MAX_LIGHTS = 1;
+const int MAX_LIGHTS = 8;
 uniform int numberOfLights;
 uniform PointLight lights[MAX_LIGHTS];
 uniform DirLight dirLight;

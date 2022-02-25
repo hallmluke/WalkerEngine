@@ -152,26 +152,42 @@ namespace Walker {
 
 	void DeferredPBRLightingPass::SetPointLightShaderUniforms(Scene& scene) const
 	{
-		size_t maxLights = 64;
-		std::vector<std::shared_ptr<PointLight>> lights = scene.GetPointLights();
+		size_t maxLights = 12;
+		std::vector<glm::vec3> positions;
+		auto lights = scene.GetPointLights(positions);
 
 		uint32_t maxedLights = std::min(maxLights, lights.size());
 
-		for (int i = 0; i < maxedLights; i++) {
+		for (int i = 0; i < maxLights; i++) {
 			std::string lightPrefix = "lights[" + std::to_string(i) + "]";
-			m_Shader->SetVec3(lightPrefix + ".position", lights[i]->GetPosition());
-			m_Shader->SetVec3(lightPrefix + ".ambient", glm::vec3(lights[i]->GetAmbientIntensity()));
-			m_Shader->SetVec3(lightPrefix + ".diffuse", glm::vec3(lights[i]->GetDiffuseIntensity()));
-			m_Shader->SetVec3(lightPrefix + ".specular", glm::vec3(lights[i]->GetSpecularIntensity()));
-			m_Shader->SetFloat(lightPrefix + ".constant", lights[i]->GetConstantAttenuation());
-			m_Shader->SetFloat(lightPrefix + ".linear", lights[i]->GetLinearAttenuation());
-			m_Shader->SetFloat(lightPrefix + ".quadratic", lights[i]->GetQuadraticAttenuation());
-
 			int pointLightStartSlot = 6;
-			lights[i]->BindShadowMap(pointLightStartSlot + i);
-			m_Shader->SetInt(lightPrefix + ".depthMap", pointLightStartSlot + i);
-			m_Shader->SetFloat(lightPrefix + ".far_plane", lights[i]->GetShadowMapFarPlane());
-			m_Shader->SetFloat(lightPrefix + ".bias", 0.05f);
+			if (i < maxedLights) {
+				auto light = lights[i];
+				auto position = positions[i];
+				m_Shader->SetVec3(lightPrefix + ".position", position);
+				m_Shader->SetVec3(lightPrefix + ".ambient", glm::vec3(light->GetAmbientIntensity()));
+				m_Shader->SetVec3(lightPrefix + ".diffuse", glm::vec3(light->GetDiffuseIntensity()));
+				m_Shader->SetVec3(lightPrefix + ".specular", glm::vec3(light->GetSpecularIntensity()));
+				m_Shader->SetFloat(lightPrefix + ".constant", light->GetConstantAttenuation());
+				m_Shader->SetFloat(lightPrefix + ".linear", light->GetLinearAttenuation());
+				m_Shader->SetFloat(lightPrefix + ".quadratic", light->GetQuadraticAttenuation());
+
+				
+				light->BindShadowMap(pointLightStartSlot + i);
+				m_Shader->SetInt(lightPrefix + ".depthMap", pointLightStartSlot + i);
+				m_Shader->SetFloat(lightPrefix + ".far_plane", light->GetShadowMapFarPlane());
+				m_Shader->SetFloat(lightPrefix + ".bias", 0.05f);
+			}
+			// TODO: This is done to avoid issues with a samplerCube bound to a 2d texture, figure out a better way to do this
+			else if(lights.size() > 0) {
+				//auto light = lights[lights.size() - 1];
+				//light->BindShadowMap(pointLightStartSlot + i);
+				m_Shader->SetInt(lightPrefix + ".depthMap", pointLightStartSlot + lights.size() - 1);
+				//m_Shader->SetInt(lightPrefix + ".depthMap", 0);
+			}
+			else {
+				m_Shader->SetInt(lightPrefix + ".depthMap", pointLightStartSlot);
+			}
 		}
 
 		m_Shader->SetInt("numberOfLights", maxedLights);

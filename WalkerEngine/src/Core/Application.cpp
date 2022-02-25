@@ -57,9 +57,9 @@ namespace Walker {
 	void Application::Run()
 	{
 		ImGuiManager imguiManager((GLFWwindow*)m_Window->GetNativeWindow());
-		RenderGraph renderGraph(m_Window->GetWidth(), m_Window->GetHeight());
+		//RenderGraph renderGraph(m_Window->GetWidth(), m_Window->GetHeight());
 		//Skybox skybox("Skybox/default");
-		Scene scene;
+		//Scene scene;
 		//Model sponzaPBR("SponzaPBR", "Models/SponzaPBR/Sponza.gltf", &scene);
 
 		while (m_Running) {
@@ -72,7 +72,7 @@ namespace Walker {
 			imguiManager.BeginFrame();
 
 			//scene.EntityDebugPanel();
-			renderGraph.DrawScene(scene);
+			//renderGraph.DrawScene(scene);
 			
 			/*
 			TODO: Render graph support for copying depth buffer
@@ -95,7 +95,7 @@ namespace Walker {
 			else {
 				m_Window->EnableCursor();
 			}
-			scene.OnUpdate(timestep);
+			//scene.OnUpdate(timestep);
 
 			imguiManager.EndFrame();
 			m_Window->OnUpdate();

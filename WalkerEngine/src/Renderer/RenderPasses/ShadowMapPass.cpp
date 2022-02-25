@@ -29,11 +29,12 @@ namespace Walker {
 	void ShadowMapPass::DrawScene(Scene& scene) const
 	{
 		scene.GetDirectionalLight()->GenerateCascadedShadowMap(scene);
-		std::vector<std::shared_ptr<PointLight>> lights = scene.GetPointLights();
+		std::vector<glm::vec3> positions;
+		std::vector<std::shared_ptr<PointLight>> lights = scene.GetPointLights(positions);
 
 		// TODO: Implement max per frame with caching?
-		for (auto light : lights) {
-			light->GenerateShadowMap(scene);
+		for (int i = 0; i < lights.size(); i++) {
+			lights[i]->GenerateShadowMap(scene, positions[i]);
 		}
 	}
 	uint32_t ShadowMapPass::GetFinalOutputRendererId() const

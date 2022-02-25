@@ -23,7 +23,7 @@ namespace Walker {
 
 		std::shared_ptr<Camera> GetCamera() { return m_ActiveCamera; }
 
-		std::vector<std::shared_ptr<PointLight>> GetPointLights() const;
+		std::vector<std::shared_ptr<PointLight>> GetPointLights(std::vector<glm::vec3>& positions);
 		std::shared_ptr<DirectionalLight> GetDirectionalLight() const { return m_DirectionalLight; }
 
 		// Temp

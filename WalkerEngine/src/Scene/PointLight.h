@@ -15,9 +15,9 @@ namespace Walker {
 
 	class PointLight {
 	public:
-		PointLight(glm::vec3 pos);
+		PointLight();
 
-		glm::vec3 GetPosition() const { return m_Position; }
+		//glm::vec3 GetPosition() const { return m_Position; }
 		float GetAmbientIntensity() const { return m_AmbientIntensity; }
 		float GetDiffuseIntensity() const { return m_DiffuseIntensity; }
 		float GetSpecularIntensity() const { return m_SpecularIntensity; }
@@ -26,9 +26,8 @@ namespace Walker {
 		float GetLinearAttenuation() const { return m_LinearAttenuation; }
 		float GetQuadraticAttenuation() const { return m_QuadraticAttenuation; }
 		//void DrawDebug(Shader& shader);
-		void ControlWindow();
 
-		void GenerateShadowMap(Scene& scene);
+		void GenerateShadowMap(Scene& scene, glm::vec3 position);
 		void BindShadowMap(uint32_t slot);
 		float GetShadowMapFarPlane() const { return m_ShadowMapFarPlane; }
 
@@ -53,7 +52,7 @@ namespace Walker {
 	private:
 		std::string m_Name;
 
-		glm::vec3 m_Position;
+		//glm::vec3 m_Position;
 		float m_AmbientIntensity;
 		float m_DiffuseIntensity;
 		float m_SpecularIntensity;
@@ -73,7 +72,7 @@ namespace Walker {
 		std::vector<glm::mat4> m_ShadowTransforms;
 		std::shared_ptr<Shader> m_ShadowMapShader;
 
-		void UpdateShadowTransforms();
+		void UpdateShadowTransforms(glm::vec3 position);
 
 		friend class SceneHierarchyPanel;
 
