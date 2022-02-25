@@ -18,3 +18,27 @@ bld/
 
 WalkerEngine/Models/Cerberus/
 WalkerEngine/Models/bathroom/
+Sandbox/Models
+
+CMakeLists.txt.user
+CMakeCache.txt
+CMakeFiles
+CMakeScripts
+Testing
+Makefile
+cmake_install.cmake
+install_manifest.txt
+compile_commands.json
+CTestTestfile.cmake
+_deps
+*.cmake
+spdlog.pc
+
+*.vcxproj
+*.vcxproj.filters
+*.vcxproj.user
+*.sln
+**/*.vcxproj
+**/*.vcxproj.filters
+**/*.vcxproj.user
+**/*.sln
