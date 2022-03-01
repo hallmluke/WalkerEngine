@@ -50,7 +50,7 @@ namespace Walker {
 		void GenerateShadowMap(Shader& shader, Model& model);*/
 
 	private:
-		std::string m_Name;
+		//std::string m_Name;
 
 		//glm::vec3 m_Position;
 		float m_AmbientIntensity;
@@ -75,6 +75,7 @@ namespace Walker {
 		void UpdateShadowTransforms(glm::vec3 position);
 
 		friend class SceneHierarchyPanel;
+		friend class SceneSerializer;
 
 		/*bool initialized = false;
 		void InitBuffers();

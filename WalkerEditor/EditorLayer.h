@@ -2,6 +2,7 @@
 
 #include "Walker.h"
 #include "Panels/SceneHierarchyPanel.h"
+#include "Panels/MaterialPanel.h"
 
 
 namespace Walker {
@@ -29,5 +30,6 @@ namespace Walker {
 
 		// Panels
 		SceneHierarchyPanel m_SceneHierarchyPanel;
+		MaterialPanel m_MaterialPanel;
 	};
 }

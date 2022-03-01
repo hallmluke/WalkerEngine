@@ -14,3 +14,6 @@
 	path = WalkerEngine/vendor/ImGui
 	url = git@github.com:ocornut/imgui.git
 	branch = docking
+[submodule "WalkerEngine/vendor/yaml-cpp"]
+	path = WalkerEngine/vendor/yaml-cpp
+	url = git@github.com:jbeder/yaml-cpp.git

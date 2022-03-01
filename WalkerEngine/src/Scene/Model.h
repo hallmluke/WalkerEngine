@@ -34,7 +34,7 @@ namespace Walker {
         std::unique_ptr<ModelNode> ProcessNode(aiNode* node, const aiScene* scene);
         Entity ProcessNodeECS(aiNode* node, const aiScene* scene, Scene* walkerScene);
         std::shared_ptr<Mesh> ProcessMesh(aiMesh* mesh, const aiScene* scene);
-        std::vector<std::shared_ptr<Material>> ProcessMaterials(const aiScene* scene, const std::string directory);
+        std::vector<std::shared_ptr<Material>> ProcessMaterials(const aiScene* scene, Scene* walkerScene, const std::string directory);
 
     };
 }

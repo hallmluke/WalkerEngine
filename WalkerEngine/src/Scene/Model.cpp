@@ -47,7 +47,7 @@ namespace Walker {
         std::string directory = path.substr(0, path.find_last_of('/') + 1);
 
 
-        m_Materials = ProcessMaterials(scene, directory);
+        //m_Materials = ProcessMaterials(scene, directory);
         
         m_RootNode = ProcessNode(scene->mRootNode, scene);
         W_CORE_INFO("Completed importing model");
@@ -68,7 +68,7 @@ namespace Walker {
         std::string directory = path.substr(0, path.find_last_of('/') + 1);
 
 
-        m_Materials = ProcessMaterials(scene, directory);
+        m_Materials = ProcessMaterials(scene, walkerScene, directory);
         ProcessNodeECS(scene->mRootNode, scene, walkerScene);
     }
 
@@ -228,11 +228,12 @@ namespace Walker {
         return std::make_shared<Mesh>(mesh->mName.C_Str(), vertices, indices, m_Materials[mesh->mMaterialIndex]);
     }
 
-    std::vector<std::shared_ptr<Material>> Model::ProcessMaterials(const aiScene* scene, const std::string directory)
+    std::vector<std::shared_ptr<Material>> Model::ProcessMaterials(const aiScene* scene, Scene* walkerScene, const std::string directory)
     {
         std::vector<std::shared_ptr<Material>> materials = std::vector<std::shared_ptr<Material>>();
         for (uint32_t i = 0; i < scene->mNumMaterials; i++) {
             materials.push_back(std::make_shared<Material>(scene->mMaterials[i], directory));
+            walkerScene->AddMaterial(materials[i]);
         }
 
         return materials;

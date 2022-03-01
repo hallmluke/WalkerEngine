@@ -3,6 +3,7 @@
 #include <entt.hpp>
 
 #include "Scene.h"
+#include "IDComponent.h"
 
 namespace Walker {
 
@@ -44,6 +45,8 @@ namespace Walker {
 		{
 			return m_Scene->m_Registry.valid(m_EntityHandle);
 		}
+
+		UUID GetUUID() { return GetComponent<IDComponent>().ID; }
 
 		operator bool() const { return m_EntityHandle != entt::null; }
 		operator entt::entity() const { return m_EntityHandle; }

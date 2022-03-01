@@ -46,9 +46,18 @@ set_property(TARGET ImGui PROPERTY FOLDER External)
 add_subdirectory(vendor/stb)
 set_property(TARGET stb PROPERTY FOLDER External)
 
-target_include_directories(${PROJECT_NAME} PUBLIC vendor/GLFW3 vendor/spdlog vendor/Assimp vendor/GLM vendor/ImGui vendor/entt/include vendor/glad/include vendor/stb/include)
+set(YAML_BUILD_SHARED_LIBS ON CACHE BOOL "Use static lib for yaml-cpp")
+add_subdirectory(vendor/yaml-cpp)
+set_property(TARGET yaml-cpp PROPERTY FOLDER External)
+set_property(TARGET format PROPERTY FOLDER External)
+set_property(TARGET parse PROPERTY FOLDER External)
+set_property(TARGET read PROPERTY FOLDER External)
+set_property(TARGET run-tests PROPERTY FOLDER External)
+set_property(TARGET sandbox PROPERTY FOLDER External)
 
-target_link_libraries(${PROJECT_NAME} PUBLIC glfw spdlog assimp ImGui Glad stb)
+target_include_directories(${PROJECT_NAME} PUBLIC vendor/GLFW3 vendor/spdlog vendor/Assimp vendor/GLM vendor/ImGui vendor/entt/include vendor/glad/include vendor/stb/include vendor/yaml-cpp/include)
+
+target_link_libraries(${PROJECT_NAME} PUBLIC glfw spdlog assimp ImGui Glad stb yaml-cpp)
 
 #TODO: Precompiled headers
 #target_precompile_headers(WalkerEngine PRIVATE "$<$<COMPILE_LANGUAGE:CXX>:${CMAKE_CURRENT_SOURCE_DIR}/src/walkerpch.h>")

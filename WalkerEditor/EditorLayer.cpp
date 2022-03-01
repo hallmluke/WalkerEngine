@@ -1,6 +1,8 @@
 #include "EditorLayer.h"
 #include "imgui.h"
 
+#include "Scene/SceneSerializer.h"
+
 namespace Walker {
 
 	EditorLayer::EditorLayer() : Layer("EditorLayer")
@@ -9,10 +11,16 @@ namespace Walker {
 	void EditorLayer::OnAttach()
 	{
 		m_ActiveScene = std::make_shared<Scene>();
-		std::shared_ptr<Model> sponzaPBR = std::make_shared<Model>("SponzaPBR", "Models/SponzaPBR/Sponza.gltf", m_ActiveScene.get());
+		//std::shared_ptr<Model> sponzaPBR = std::make_shared<Model>("SponzaPBR", "Models/SponzaPBR/Sponza.gltf", m_ActiveScene.get());
 		m_RenderGraph = std::make_shared<RenderGraph>(1280, 720);
 
+		SceneSerializer serializer(m_ActiveScene);
+		//serializer.Serialize("Scenes/ExampleYAML.walker");
+		//serializer.Serialize("Scenes/Example.walker");
+		serializer.Deserialize("Scenes/Example.walker");
+		//W_CORE_TRACE("Finished deserializing!");
 		m_SceneHierarchyPanel.SetContext(m_ActiveScene);
+		m_MaterialPanel.SetContext(m_ActiveScene);
 	}
 	void EditorLayer::OnDetach()
 	{
@@ -79,6 +87,7 @@ namespace Walker {
 		}
 
 		m_SceneHierarchyPanel.OnImGuiRender();
+		m_MaterialPanel.OnImGuiRender();
 
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{ 0, 0 });
 		ImGui::Begin("Viewport");

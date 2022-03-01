@@ -1,0 +1,1377 @@
+Scene: Untitled
+Materials:
+  - Material: 2449643089053901962
+    m_Name: Material
+    m_AlbedoPath: Models/SponzaPBR/2775690330959970771.jpg
+    m_NormalPath: Models/SponzaPBR/2374361008830720677.jpg
+    m_MetallicRoughnessPath: Models/SponzaPBR/7815564343179553343.jpg
+  - Material: 3012110950933569487
+    m_Name: Material
+    m_AlbedoPath: Models/SponzaPBR/5061699253647017043.png
+    m_NormalPath: Models/SponzaPBR/8773302468495022225.jpg
+    m_MetallicRoughnessPath: Models/SponzaPBR/11872827283454512094.jpg
+  - Material: 17582370508171699189
+    m_Name: Material
+    m_AlbedoPath: Models/SponzaPBR/8006627369776289000.png
+    m_NormalPath: Models/SponzaPBR/12501374198249454378.jpg
+    m_MetallicRoughnessPath: Models/SponzaPBR/715093869573992647.jpg
+  - Material: 4497329178161474918
+    m_Name: Material
+    m_AlbedoPath: Models/SponzaPBR/7268504077753552595.jpg
+    m_NormalPath: Models/SponzaPBR/4477655471536070370.jpg
+    m_MetallicRoughnessPath: Models/SponzaPBR/8503262930880235456.jpg
+  - Material: 18013182895559949905
+    m_Name: Material
+    m_AlbedoPath: ""
+    m_NormalPath: ""
+    m_MetallicRoughnessPath: ""
+  - Material: 4627629737179067496
+    m_Name: Material
+    m_AlbedoPath: Models/SponzaPBR/14650633544276105767.jpg
+    m_NormalPath: Models/SponzaPBR/2051777328469649772.jpg
+    m_MetallicRoughnessPath: Models/SponzaPBR/4871783166746854860.jpg
+  - Material: 5988541047275335958
+    m_Name: Material
+    m_AlbedoPath: Models/SponzaPBR/8750083169368950601.jpg
+    m_NormalPath: Models/SponzaPBR/13982482287905699490.jpg
+    m_MetallicRoughnessPath: Models/SponzaPBR/16885566240357350108.jpg
+  - Material: 14626004394384715142
+    m_Name: Material
+    m_AlbedoPath: Models/SponzaPBR/15295713303328085182.jpg
+    m_NormalPath: Models/SponzaPBR/10388182081421875623.jpg
+    m_MetallicRoughnessPath: Models/SponzaPBR/9916269861720640319.jpg
+  - Material: 14766525842936441146
+    m_Name: Material
+    m_AlbedoPath: Models/SponzaPBR/5792855332885324923.jpg
+    m_NormalPath: Models/SponzaPBR/16299174074766089871.jpg
+    m_MetallicRoughnessPath: Models/SponzaPBR/11968150294050148237.jpg
+  - Material: 12204042442222166703
+    m_Name: Material
+    m_AlbedoPath: Models/SponzaPBR/6047387724914829168.jpg
+    m_NormalPath: Models/SponzaPBR/15722799267630235092.jpg
+    m_MetallicRoughnessPath: Models/SponzaPBR/8051790464816141987.jpg
+  - Material: 6588626709739020796
+    m_Name: Material
+    m_AlbedoPath: Models/SponzaPBR/5823059166183034438.jpg
+    m_NormalPath: Models/SponzaPBR/14267839433702832875.jpg
+    m_MetallicRoughnessPath: Models/SponzaPBR/13824894030729245199.jpg
+  - Material: 12423199548032153853
+    m_Name: Material
+    m_AlbedoPath: Models/SponzaPBR/4975155472559461469.jpg
+    m_NormalPath: Models/SponzaPBR/2299742237651021498.jpg
+    m_MetallicRoughnessPath: Models/SponzaPBR/3371964815757888145.jpg
+  - Material: 6415081413539496680
+    m_Name: Material
+    m_AlbedoPath: Models/SponzaPBR/7441062115984513793.jpg
+    m_NormalPath: Models/SponzaPBR/6667038893015345571.jpg
+    m_MetallicRoughnessPath: Models/SponzaPBR/8114461559286000061.jpg
+  - Material: 14301963477530160419
+    m_Name: Material
+    m_AlbedoPath: Models/SponzaPBR/11490520546946913238.jpg
+    m_NormalPath: Models/SponzaPBR/3628158980083700836.jpg
+    m_MetallicRoughnessPath: Models/SponzaPBR/3455394979645218238.jpg
+  - Material: 14545648009221254490
+    m_Name: Material
+    m_AlbedoPath: Models/SponzaPBR/6151467286084645207.jpg
+    m_NormalPath: Models/SponzaPBR/7645212358685992005.jpg
+    m_MetallicRoughnessPath: Models/SponzaPBR/8783994986360286082.jpg
+  - Material: 8867549349083031421
+    m_Name: Material
+    m_AlbedoPath: Models/SponzaPBR/white.png
+    m_NormalPath: ""
+    m_MetallicRoughnessPath: ""
+  - Material: 11792036383988354775
+    m_Name: Material
+    m_AlbedoPath: Models/SponzaPBR/11474523244911310074.jpg
+    m_NormalPath: Models/SponzaPBR/4601176305987539675.jpg
+    m_MetallicRoughnessPath: Models/SponzaPBR/466164707995436622.jpg
+  - Material: 6154319826947282062
+    m_Name: Material
+    m_AlbedoPath: Models/SponzaPBR/4675343432951571524.jpg
+    m_NormalPath: Models/SponzaPBR/7056944414013900257.jpg
+    m_MetallicRoughnessPath: Models/SponzaPBR/7815564343179553343.jpg
+  - Material: 15223184779843381996
+    m_Name: Material
+    m_AlbedoPath: Models/SponzaPBR/2185409758123873465.jpg
+    m_NormalPath: Models/SponzaPBR/332936164838540657.jpg
+    m_MetallicRoughnessPath: Models/SponzaPBR/7815564343179553343.jpg
+  - Material: 632639578429734999
+    m_Name: Material
+    m_AlbedoPath: Models/SponzaPBR/17876391417123941155.jpg
+    m_NormalPath: Models/SponzaPBR/6593109234861095314.jpg
+    m_MetallicRoughnessPath: Models/SponzaPBR/466164707995436622.jpg
+  - Material: 14921648943981718230
+    m_Name: Material
+    m_AlbedoPath: Models/SponzaPBR/9288698199695299068.jpg
+    m_NormalPath: Models/SponzaPBR/4910669866631290573.jpg
+    m_MetallicRoughnessPath: Models/SponzaPBR/466164707995436622.jpg
+  - Material: 13905735659310639646
+    m_Name: Material
+    m_AlbedoPath: Models/SponzaPBR/16275776544635328252.png
+    m_NormalPath: Models/SponzaPBR/14170708867020035030.jpg
+    m_MetallicRoughnessPath: Models/SponzaPBR/1219024358953944284.jpg
+  - Material: 5408192150610095659
+    m_Name: Material
+    m_AlbedoPath: Models/SponzaPBR/8481240838833932244.jpg
+    m_NormalPath: Models/SponzaPBR/10381718147657362067.jpg
+    m_MetallicRoughnessPath: Models/SponzaPBR/17556969131407844942.jpg
+  - Material: 11170413393620816802
+    m_Name: Material
+    m_AlbedoPath: Models/SponzaPBR/755318871556304029.jpg
+    m_NormalPath: Models/SponzaPBR/3827035219084910048.jpg
+    m_MetallicRoughnessPath: Models/SponzaPBR/2411100444841994089.jpg
+  - Material: 12282574968113344277
+    m_Name: Material
+    m_AlbedoPath: Models/SponzaPBR/2969916736137545357.jpg
+    m_NormalPath: Models/SponzaPBR/14118779221266351425.jpg
+    m_MetallicRoughnessPath: Models/SponzaPBR/8747919177698443163.jpg
+  - Material: 6893311289436980355
+    m_Name: Material
+    m_AlbedoPath: Models/SponzaPBR/6772804448157695701.jpg
+    m_NormalPath: Models/SponzaPBR/759203620573749278.jpg
+    m_MetallicRoughnessPath: Models/SponzaPBR/13196865903111448057.jpg
+Entities:
+  - Entity: 3035108876019402274
+    TagComponent:
+      Tag: nodes[0]
+    TransformComponent:
+      Translation: [0, 0, 0]
+      Rotation: [0, -0, 0]
+      Scale: [0.00800000038, 0.00800000038, 0.00800000038]
+    Children:
+      - Entity: 17767566307721020267
+        TagComponent:
+          Tag: meshes[0]-0
+        TransformComponent:
+          Translation: [0, 0, 0]
+          Rotation: [0, 0, 0]
+          Scale: [1, 1, 1]
+        MeshComponent:
+          BinPath: Scenes/mesh17767566307721020267.wmesh
+          VertexCount: 3175
+          IndexCount: 10920
+          m_Material: 3012110950933569487
+      - Entity: 4080381274783242288
+        TagComponent:
+          Tag: meshes[0]-1
+        TransformComponent:
+          Translation: [0, 0, 0]
+          Rotation: [0, 0, 0]
+          Scale: [1, 1, 1]
+        MeshComponent:
+          BinPath: Scenes/mesh4080381274783242288.wmesh
+          VertexCount: 533
+          IndexCount: 1404
+          m_Material: 17582370508171699189
+      - Entity: 227433260228281329
+        TagComponent:
+          Tag: meshes[0]-2
+        TransformComponent:
+          Translation: [0, 0, 0]
+          Rotation: [0, 0, 0]
+          Scale: [1, 1, 1]
+        MeshComponent:
+          BinPath: Scenes/mesh227433260228281329.wmesh
+          VertexCount: 1231
+          IndexCount: 6633
+          m_Material: 4497329178161474918
+      - Entity: 5475537718719767001
+        TagComponent:
+          Tag: meshes[0]-3
+        TransformComponent:
+          Translation: [0, 0, 0]
+          Rotation: [0, 0, 0]
+          Scale: [1, 1, 1]
+        MeshComponent:
+          BinPath: Scenes/mesh5475537718719767001.wmesh
+          VertexCount: 753
+          IndexCount: 4086
+          m_Material: 5988541047275335958
+      - Entity: 18069043264381049074
+        TagComponent:
+          Tag: meshes[0]-4
+        TransformComponent:
+          Translation: [0, 0, 0]
+          Rotation: [0, 0, 0]
+          Scale: [1, 1, 1]
+        MeshComponent:
+          BinPath: Scenes/mesh18069043264381049074.wmesh
+          VertexCount: 128
+          IndexCount: 324
+          m_Material: 14766525842936441146
+      - Entity: 17476992274714411040
+        TagComponent:
+          Tag: meshes[0]-5
+        TransformComponent:
+          Translation: [0, 0, 0]
+          Rotation: [0, 0, 0]
+          Scale: [1, 1, 1]
+        MeshComponent:
+          BinPath: Scenes/mesh17476992274714411040.wmesh
+          VertexCount: 560
+          IndexCount: 840
+          m_Material: 4627629737179067496
+      - Entity: 11676096590525472214
+        TagComponent:
+          Tag: meshes[0]-6
+        TransformComponent:
+          Translation: [0, 0, 0]
+          Rotation: [0, 0, 0]
+          Scale: [1, 1, 1]
+        MeshComponent:
+          BinPath: Scenes/mesh11676096590525472214.wmesh
+          VertexCount: 1864
+          IndexCount: 6996
+          m_Material: 14626004394384715142
+      - Entity: 2468363884183348834
+        TagComponent:
+          Tag: meshes[0]-7
+        TransformComponent:
+          Translation: [0, 0, 0]
+          Rotation: [0, 0, 0]
+          Scale: [1, 1, 1]
+        MeshComponent:
+          BinPath: Scenes/mesh2468363884183348834.wmesh
+          VertexCount: 1708
+          IndexCount: 4368
+          m_Material: 12204042442222166703
+      - Entity: 17893080031084087480
+        TagComponent:
+          Tag: meshes[0]-8
+        TransformComponent:
+          Translation: [0, 0, 0]
+          Rotation: [0, 0, 0]
+          Scale: [1, 1, 1]
+        MeshComponent:
+          BinPath: Scenes/mesh17893080031084087480.wmesh
+          VertexCount: 3192
+          IndexCount: 8688
+          m_Material: 4627629737179067496
+      - Entity: 15284034610493067268
+        TagComponent:
+          Tag: meshes[0]-9
+        TransformComponent:
+          Translation: [0, 0, 0]
+          Rotation: [0, 0, 0]
+          Scale: [1, 1, 1]
+        MeshComponent:
+          BinPath: Scenes/mesh15284034610493067268.wmesh
+          VertexCount: 16
+          IndexCount: 48
+          m_Material: 6588626709739020796
+      - Entity: 16952768620935251080
+        TagComponent:
+          Tag: meshes[0]-10
+        TransformComponent:
+          Translation: [0, 0, 0]
+          Rotation: [0, 0, 0]
+          Scale: [1, 1, 1]
+        MeshComponent:
+          BinPath: Scenes/mesh16952768620935251080.wmesh
+          VertexCount: 1864
+          IndexCount: 6996
+          m_Material: 14626004394384715142
+      - Entity: 233683030495960114
+        TagComponent:
+          Tag: meshes[0]-11
+        TransformComponent:
+          Translation: [0, 0, 0]
+          Rotation: [0, 0, 0]
+          Scale: [1, 1, 1]
+        MeshComponent:
+          BinPath: Scenes/mesh233683030495960114.wmesh
+          VertexCount: 1172
+          IndexCount: 3288
+          m_Material: 4627629737179067496
+      - Entity: 17510557689836571485
+        TagComponent:
+          Tag: meshes[0]-12
+        TransformComponent:
+          Translation: [0, 0, 0]
+          Rotation: [0, 0, 0]
+          Scale: [1, 1, 1]
+        MeshComponent:
+          BinPath: Scenes/mesh17510557689836571485.wmesh
+          VertexCount: 6368
+          IndexCount: 11040
+          m_Material: 6415081413539496680
+      - Entity: 14260065773342568441
+        TagComponent:
+          Tag: meshes[0]-13
+        TransformComponent:
+          Translation: [0, 0, 0]
+          Rotation: [0, 0, 0]
+          Scale: [1, 1, 1]
+        MeshComponent:
+          BinPath: Scenes/mesh14260065773342568441.wmesh
+          VertexCount: 216
+          IndexCount: 612
+          m_Material: 14766525842936441146
+      - Entity: 2664596292979553284
+        TagComponent:
+          Tag: meshes[0]-14
+        TransformComponent:
+          Translation: [0, 0, 0]
+          Rotation: [0, 0, 0]
+          Scale: [1, 1, 1]
+        MeshComponent:
+          BinPath: Scenes/mesh2664596292979553284.wmesh
+          VertexCount: 212
+          IndexCount: 612
+          m_Material: 14626004394384715142
+      - Entity: 15152646782041437546
+        TagComponent:
+          Tag: meshes[0]-15
+        TransformComponent:
+          Translation: [0, 0, 0]
+          Rotation: [0, 0, 0]
+          Scale: [1, 1, 1]
+        MeshComponent:
+          BinPath: Scenes/mesh15152646782041437546.wmesh
+          VertexCount: 138
+          IndexCount: 444
+          m_Material: 14766525842936441146
+      - Entity: 10856862687999537186
+        TagComponent:
+          Tag: meshes[0]-16
+        TransformComponent:
+          Translation: [0, 0, 0]
+          Rotation: [0, 0, 0]
+          Scale: [1, 1, 1]
+        MeshComponent:
+          BinPath: Scenes/mesh10856862687999537186.wmesh
+          VertexCount: 126
+          IndexCount: 480
+          m_Material: 4627629737179067496
+      - Entity: 12753602578526646560
+        TagComponent:
+          Tag: meshes[0]-17
+        TransformComponent:
+          Translation: [0, 0, 0]
+          Rotation: [0, 0, 0]
+          Scale: [1, 1, 1]
+        MeshComponent:
+          BinPath: Scenes/mesh12753602578526646560.wmesh
+          VertexCount: 122
+          IndexCount: 336
+          m_Material: 14626004394384715142
+      - Entity: 14062406075208791152
+        TagComponent:
+          Tag: meshes[0]-18
+        TransformComponent:
+          Translation: [0, 0, 0]
+          Rotation: [0, 0, 0]
+          Scale: [1, 1, 1]
+        MeshComponent:
+          BinPath: Scenes/mesh14062406075208791152.wmesh
+          VertexCount: 126
+          IndexCount: 480
+          m_Material: 4627629737179067496
+      - Entity: 11148950108830128077
+        TagComponent:
+          Tag: meshes[0]-19
+        TransformComponent:
+          Translation: [0, 0, 0]
+          Rotation: [0, 0, 0]
+          Scale: [1, 1, 1]
+        MeshComponent:
+          BinPath: Scenes/mesh11148950108830128077.wmesh
+          VertexCount: 122
+          IndexCount: 336
+          m_Material: 14626004394384715142
+      - Entity: 11095735487632546896
+        TagComponent:
+          Tag: meshes[0]-20
+        TransformComponent:
+          Translation: [0, 0, 0]
+          Rotation: [0, 0, 0]
+          Scale: [1, 1, 1]
+        MeshComponent:
+          BinPath: Scenes/mesh11095735487632546896.wmesh
+          VertexCount: 126
+          IndexCount: 480
+          m_Material: 4627629737179067496
+      - Entity: 9281936624590523904
+        TagComponent:
+          Tag: meshes[0]-21
+        TransformComponent:
+          Translation: [0, 0, 0]
+          Rotation: [0, 0, 0]
+          Scale: [1, 1, 1]
+        MeshComponent:
+          BinPath: Scenes/mesh9281936624590523904.wmesh
+          VertexCount: 122
+          IndexCount: 336
+          m_Material: 14626004394384715142
+      - Entity: 16223857698379648494
+        TagComponent:
+          Tag: meshes[0]-22
+        TransformComponent:
+          Translation: [0, 0, 0]
+          Rotation: [0, 0, 0]
+          Scale: [1, 1, 1]
+        MeshComponent:
+          BinPath: Scenes/mesh16223857698379648494.wmesh
+          VertexCount: 126
+          IndexCount: 480
+          m_Material: 4627629737179067496
+      - Entity: 13036391364972033244
+        TagComponent:
+          Tag: meshes[0]-23
+        TransformComponent:
+          Translation: [0, 0, 0]
+          Rotation: [0, 0, 0]
+          Scale: [1, 1, 1]
+        MeshComponent:
+          BinPath: Scenes/mesh13036391364972033244.wmesh
+          VertexCount: 122
+          IndexCount: 336
+          m_Material: 14626004394384715142
+      - Entity: 17016531118997947270
+        TagComponent:
+          Tag: meshes[0]-24
+        TransformComponent:
+          Translation: [0, 0, 0]
+          Rotation: [0, 0, 0]
+          Scale: [1, 1, 1]
+        MeshComponent:
+          BinPath: Scenes/mesh17016531118997947270.wmesh
+          VertexCount: 126
+          IndexCount: 480
+          m_Material: 4627629737179067496
+      - Entity: 530661700568425877
+        TagComponent:
+          Tag: meshes[0]-25
+        TransformComponent:
+          Translation: [0, 0, 0]
+          Rotation: [0, 0, 0]
+          Scale: [1, 1, 1]
+        MeshComponent:
+          BinPath: Scenes/mesh530661700568425877.wmesh
+          VertexCount: 122
+          IndexCount: 336
+          m_Material: 14626004394384715142
+      - Entity: 4881207824612168337
+        TagComponent:
+          Tag: meshes[0]-26
+        TransformComponent:
+          Translation: [0, 0, 0]
+          Rotation: [0, 0, 0]
+          Scale: [1, 1, 1]
+        MeshComponent:
+          BinPath: Scenes/mesh4881207824612168337.wmesh
+          VertexCount: 126
+          IndexCount: 480
+          m_Material: 4627629737179067496
+      - Entity: 13983825156575922252
+        TagComponent:
+          Tag: meshes[0]-27
+        TransformComponent:
+          Translation: [0, 0, 0]
+          Rotation: [0, 0, 0]
+          Scale: [1, 1, 1]
+        MeshComponent:
+          BinPath: Scenes/mesh13983825156575922252.wmesh
+          VertexCount: 122
+          IndexCount: 336
+          m_Material: 14626004394384715142
+      - Entity: 2683771836711490171
+        TagComponent:
+          Tag: meshes[0]-28
+        TransformComponent:
+          Translation: [0, 0, 0]
+          Rotation: [0, 0, 0]
+          Scale: [1, 1, 1]
+        MeshComponent:
+          BinPath: Scenes/mesh2683771836711490171.wmesh
+          VertexCount: 126
+          IndexCount: 480
+          m_Material: 4627629737179067496
+      - Entity: 5900877660774913626
+        TagComponent:
+          Tag: meshes[0]-29
+        TransformComponent:
+          Translation: [0, 0, 0]
+          Rotation: [0, 0, 0]
+          Scale: [1, 1, 1]
+        MeshComponent:
+          BinPath: Scenes/mesh5900877660774913626.wmesh
+          VertexCount: 122
+          IndexCount: 336
+          m_Material: 14626004394384715142
+      - Entity: 1771601167706703604
+        TagComponent:
+          Tag: meshes[0]-30
+        TransformComponent:
+          Translation: [0, 0, 0]
+          Rotation: [0, 0, 0]
+          Scale: [1, 1, 1]
+        MeshComponent:
+          BinPath: Scenes/mesh1771601167706703604.wmesh
+          VertexCount: 126
+          IndexCount: 480
+          m_Material: 4627629737179067496
+      - Entity: 14510507124010666248
+        TagComponent:
+          Tag: meshes[0]-31
+        TransformComponent:
+          Translation: [0, 0, 0]
+          Rotation: [0, 0, 0]
+          Scale: [1, 1, 1]
+        MeshComponent:
+          BinPath: Scenes/mesh14510507124010666248.wmesh
+          VertexCount: 122
+          IndexCount: 336
+          m_Material: 14626004394384715142
+      - Entity: 7586950494694116450
+        TagComponent:
+          Tag: meshes[0]-32
+        TransformComponent:
+          Translation: [0, 0, 0]
+          Rotation: [0, 0, 0]
+          Scale: [1, 1, 1]
+        MeshComponent:
+          BinPath: Scenes/mesh7586950494694116450.wmesh
+          VertexCount: 126
+          IndexCount: 480
+          m_Material: 4627629737179067496
+      - Entity: 253111369865932636
+        TagComponent:
+          Tag: meshes[0]-33
+        TransformComponent:
+          Translation: [0, 0, 0]
+          Rotation: [0, 0, 0]
+          Scale: [1, 1, 1]
+        MeshComponent:
+          BinPath: Scenes/mesh253111369865932636.wmesh
+          VertexCount: 122
+          IndexCount: 336
+          m_Material: 14626004394384715142
+      - Entity: 17391627836936487688
+        TagComponent:
+          Tag: meshes[0]-34
+        TransformComponent:
+          Translation: [0, 0, 0]
+          Rotation: [0, 0, 0]
+          Scale: [1, 1, 1]
+        MeshComponent:
+          BinPath: Scenes/mesh17391627836936487688.wmesh
+          VertexCount: 880
+          IndexCount: 1320
+          m_Material: 4627629737179067496
+      - Entity: 5723977329640308678
+        TagComponent:
+          Tag: meshes[0]-35
+        TransformComponent:
+          Translation: [0, 0, 0]
+          Rotation: [0, 0, 0]
+          Scale: [1, 1, 1]
+        MeshComponent:
+          BinPath: Scenes/mesh5723977329640308678.wmesh
+          VertexCount: 56
+          IndexCount: 96
+          m_Material: 14766525842936441146
+      - Entity: 1634148018318930563
+        TagComponent:
+          Tag: meshes[0]-36
+        TransformComponent:
+          Translation: [0, 0, 0]
+          Rotation: [0, 0, 0]
+          Scale: [1, 1, 1]
+        MeshComponent:
+          BinPath: Scenes/mesh1634148018318930563.wmesh
+          VertexCount: 560
+          IndexCount: 840
+          m_Material: 4627629737179067496
+      - Entity: 3068056685738300263
+        TagComponent:
+          Tag: meshes[0]-37
+        TransformComponent:
+          Translation: [0, 0, 0]
+          Rotation: [0, 0, 0]
+          Scale: [1, 1, 1]
+        MeshComponent:
+          BinPath: Scenes/mesh3068056685738300263.wmesh
+          VertexCount: 66
+          IndexCount: 162
+          m_Material: 14766525842936441146
+      - Entity: 122892419124564857
+        TagComponent:
+          Tag: meshes[0]-38
+        TransformComponent:
+          Translation: [0, 0, 0]
+          Rotation: [0, 0, 0]
+          Scale: [1, 1, 1]
+        MeshComponent:
+          BinPath: Scenes/mesh122892419124564857.wmesh
+          VertexCount: 314
+          IndexCount: 726
+          m_Material: 14301963477530160419
+      - Entity: 5040263888854382678
+        TagComponent:
+          Tag: meshes[0]-39
+        TransformComponent:
+          Translation: [0, 0, 0]
+          Rotation: [0, 0, 0]
+          Scale: [1, 1, 1]
+        MeshComponent:
+          BinPath: Scenes/mesh5040263888854382678.wmesh
+          VertexCount: 48
+          IndexCount: 72
+          m_Material: 14766525842936441146
+      - Entity: 5357002058807297532
+        TagComponent:
+          Tag: meshes[0]-40
+        TransformComponent:
+          Translation: [0, 0, 0]
+          Rotation: [0, 0, 0]
+          Scale: [1, 1, 1]
+        MeshComponent:
+          BinPath: Scenes/mesh5357002058807297532.wmesh
+          VertexCount: 98
+          IndexCount: 246
+          m_Material: 14301963477530160419
+      - Entity: 9290489138588880664
+        TagComponent:
+          Tag: meshes[0]-41
+        TransformComponent:
+          Translation: [0, 0, 0]
+          Rotation: [0, 0, 0]
+          Scale: [1, 1, 1]
+        MeshComponent:
+          BinPath: Scenes/mesh9290489138588880664.wmesh
+          VertexCount: 48
+          IndexCount: 72
+          m_Material: 14766525842936441146
+      - Entity: 8402290378596613226
+        TagComponent:
+          Tag: meshes[0]-42
+        TransformComponent:
+          Translation: [0, 0, 0]
+          Rotation: [0, 0, 0]
+          Scale: [1, 1, 1]
+        MeshComponent:
+          BinPath: Scenes/mesh8402290378596613226.wmesh
+          VertexCount: 688
+          IndexCount: 1668
+          m_Material: 14301963477530160419
+      - Entity: 11081844058661381085
+        TagComponent:
+          Tag: meshes[0]-43
+        TransformComponent:
+          Translation: [0, 0, 0]
+          Rotation: [0, 0, 0]
+          Scale: [1, 1, 1]
+        MeshComponent:
+          BinPath: Scenes/mesh11081844058661381085.wmesh
+          VertexCount: 92
+          IndexCount: 150
+          m_Material: 14766525842936441146
+      - Entity: 1829998973507071732
+        TagComponent:
+          Tag: meshes[0]-44
+        TransformComponent:
+          Translation: [0, 0, 0]
+          Rotation: [0, 0, 0]
+          Scale: [1, 1, 1]
+        MeshComponent:
+          BinPath: Scenes/mesh1829998973507071732.wmesh
+          VertexCount: 5904
+          IndexCount: 10224
+          m_Material: 6415081413539496680
+      - Entity: 4810265916085811828
+        TagComponent:
+          Tag: meshes[0]-45
+        TransformComponent:
+          Translation: [0, 0, 0]
+          Rotation: [0, 0, 0]
+          Scale: [1, 1, 1]
+        MeshComponent:
+          BinPath: Scenes/mesh4810265916085811828.wmesh
+          VertexCount: 92
+          IndexCount: 150
+          m_Material: 14766525842936441146
+      - Entity: 10086617083938534887
+        TagComponent:
+          Tag: meshes[0]-46
+        TransformComponent:
+          Translation: [0, 0, 0]
+          Rotation: [0, 0, 0]
+          Scale: [1, 1, 1]
+        MeshComponent:
+          BinPath: Scenes/mesh10086617083938534887.wmesh
+          VertexCount: 7
+          IndexCount: 15
+          m_Material: 6588626709739020796
+      - Entity: 11151003112027673273
+        TagComponent:
+          Tag: meshes[0]-47
+        TransformComponent:
+          Translation: [0, 0, 0]
+          Rotation: [0, 0, 0]
+          Scale: [1, 1, 1]
+        MeshComponent:
+          BinPath: Scenes/mesh11151003112027673273.wmesh
+          VertexCount: 1824
+          IndexCount: 4080
+          m_Material: 12204042442222166703
+      - Entity: 5732835397780781845
+        TagComponent:
+          Tag: meshes[0]-48
+        TransformComponent:
+          Translation: [0, 0, 0]
+          Rotation: [0, 0, 0]
+          Scale: [1, 1, 1]
+        MeshComponent:
+          BinPath: Scenes/mesh5732835397780781845.wmesh
+          VertexCount: 3764
+          IndexCount: 11208
+          m_Material: 4627629737179067496
+      - Entity: 4498524730285140412
+        TagComponent:
+          Tag: meshes[0]-49
+        TransformComponent:
+          Translation: [0, 0, 0]
+          Rotation: [0, 0, 0]
+          Scale: [1, 1, 1]
+        MeshComponent:
+          BinPath: Scenes/mesh4498524730285140412.wmesh
+          VertexCount: 23038
+          IndexCount: 69624
+          m_Material: 14545648009221254490
+      - Entity: 1820780562303723125
+        TagComponent:
+          Tag: meshes[0]-50
+        TransformComponent:
+          Translation: [0, 0, 0]
+          Rotation: [0, 0, 0]
+          Scale: [1, 1, 1]
+        MeshComponent:
+          BinPath: Scenes/mesh1820780562303723125.wmesh
+          VertexCount: 36
+          IndexCount: 54
+          m_Material: 8867549349083031421
+      - Entity: 18034160261109426584
+        TagComponent:
+          Tag: meshes[0]-51
+        TransformComponent:
+          Translation: [0, 0, 0]
+          Rotation: [0, 0, 0]
+          Scale: [1, 1, 1]
+        MeshComponent:
+          BinPath: Scenes/mesh18034160261109426584.wmesh
+          VertexCount: 120
+          IndexCount: 192
+          m_Material: 14766525842936441146
+      - Entity: 6815958490037952614
+        TagComponent:
+          Tag: meshes[0]-52
+        TransformComponent:
+          Translation: [0, 0, 0]
+          Rotation: [0, 0, 0]
+          Scale: [1, 1, 1]
+        MeshComponent:
+          BinPath: Scenes/mesh6815958490037952614.wmesh
+          VertexCount: 3952
+          IndexCount: 16368
+          m_Material: 12423199548032153853
+      - Entity: 10212726584409525103
+        TagComponent:
+          Tag: meshes[0]-53
+        TransformComponent:
+          Translation: [0, 0, 0]
+          Rotation: [0, 0, 0]
+          Scale: [1, 1, 1]
+        MeshComponent:
+          BinPath: Scenes/mesh10212726584409525103.wmesh
+          VertexCount: 20987
+          IndexCount: 83388
+          m_Material: 3012110950933569487
+      - Entity: 17054686890321679415
+        TagComponent:
+          Tag: meshes[0]-54
+        TransformComponent:
+          Translation: [0, 0, 0]
+          Rotation: [0, 0, 0]
+          Scale: [1, 1, 1]
+        MeshComponent:
+          BinPath: Scenes/mesh17054686890321679415.wmesh
+          VertexCount: 3260
+          IndexCount: 16512
+          m_Material: 6154319826947282062
+      - Entity: 2042825798133731572
+        TagComponent:
+          Tag: meshes[0]-55
+        TransformComponent:
+          Translation: [0, 0, 0]
+          Rotation: [0, 0, 0]
+          Scale: [1, 1, 1]
+        MeshComponent:
+          BinPath: Scenes/mesh2042825798133731572.wmesh
+          VertexCount: 3260
+          IndexCount: 16512
+          m_Material: 2449643089053901962
+      - Entity: 14416001450733335014
+        TagComponent:
+          Tag: meshes[0]-56
+        TransformComponent:
+          Translation: [0, 0, 0]
+          Rotation: [0, 0, 0]
+          Scale: [1, 1, 1]
+        MeshComponent:
+          BinPath: Scenes/mesh14416001450733335014.wmesh
+          VertexCount: 3260
+          IndexCount: 16512
+          m_Material: 15223184779843381996
+      - Entity: 16053610580433816590
+        TagComponent:
+          Tag: meshes[0]-57
+        TransformComponent:
+          Translation: [0, 0, 0]
+          Rotation: [0, 0, 0]
+          Scale: [1, 1, 1]
+        MeshComponent:
+          BinPath: Scenes/mesh16053610580433816590.wmesh
+          VertexCount: 3260
+          IndexCount: 16512
+          m_Material: 6154319826947282062
+      - Entity: 18139395716461801156
+        TagComponent:
+          Tag: meshes[0]-58
+        TransformComponent:
+          Translation: [0, 0, 0]
+          Rotation: [0, 0, 0]
+          Scale: [1, 1, 1]
+        MeshComponent:
+          BinPath: Scenes/mesh18139395716461801156.wmesh
+          VertexCount: 3260
+          IndexCount: 16512
+          m_Material: 2449643089053901962
+      - Entity: 511810016941737467
+        TagComponent:
+          Tag: meshes[0]-59
+        TransformComponent:
+          Translation: [0, 0, 0]
+          Rotation: [0, 0, 0]
+          Scale: [1, 1, 1]
+        MeshComponent:
+          BinPath: Scenes/mesh511810016941737467.wmesh
+          VertexCount: 3260
+          IndexCount: 16512
+          m_Material: 6154319826947282062
+      - Entity: 6414554483313069098
+        TagComponent:
+          Tag: meshes[0]-60
+        TransformComponent:
+          Translation: [0, 0, 0]
+          Rotation: [0, 0, 0]
+          Scale: [1, 1, 1]
+        MeshComponent:
+          BinPath: Scenes/mesh6414554483313069098.wmesh
+          VertexCount: 3260
+          IndexCount: 16512
+          m_Material: 15223184779843381996
+      - Entity: 14810389248801198128
+        TagComponent:
+          Tag: meshes[0]-61
+        TransformComponent:
+          Translation: [0, 0, 0]
+          Rotation: [0, 0, 0]
+          Scale: [1, 1, 1]
+        MeshComponent:
+          BinPath: Scenes/mesh14810389248801198128.wmesh
+          VertexCount: 3260
+          IndexCount: 16512
+          m_Material: 2449643089053901962
+      - Entity: 11975642691233710861
+        TagComponent:
+          Tag: meshes[0]-62
+        TransformComponent:
+          Translation: [0, 0, 0]
+          Rotation: [0, 0, 0]
+          Scale: [1, 1, 1]
+        MeshComponent:
+          BinPath: Scenes/mesh11975642691233710861.wmesh
+          VertexCount: 8340
+          IndexCount: 33120
+          m_Material: 12423199548032153853
+      - Entity: 10404501306946742176
+        TagComponent:
+          Tag: meshes[0]-63
+        TransformComponent:
+          Translation: [0, 0, 0]
+          Rotation: [0, 0, 0]
+          Scale: [1, 1, 1]
+        MeshComponent:
+          BinPath: Scenes/mesh10404501306946742176.wmesh
+          VertexCount: 2615
+          IndexCount: 14592
+          m_Material: 632639578429734999
+      - Entity: 5036818094811531320
+        TagComponent:
+          Tag: meshes[0]-64
+        TransformComponent:
+          Translation: [0, 0, 0]
+          Rotation: [0, 0, 0]
+          Scale: [1, 1, 1]
+        MeshComponent:
+          BinPath: Scenes/mesh5036818094811531320.wmesh
+          VertexCount: 2509
+          IndexCount: 13824
+          m_Material: 11792036383988354775
+      - Entity: 10483575363369266507
+        TagComponent:
+          Tag: meshes[0]-65
+        TransformComponent:
+          Translation: [0, 0, 0]
+          Rotation: [0, 0, 0]
+          Scale: [1, 1, 1]
+        MeshComponent:
+          BinPath: Scenes/mesh10483575363369266507.wmesh
+          VertexCount: 2615
+          IndexCount: 14592
+          m_Material: 14921648943981718230
+      - Entity: 3326804421315287631
+        TagComponent:
+          Tag: meshes[0]-66
+        TransformComponent:
+          Translation: [0, 0, 0]
+          Rotation: [0, 0, 0]
+          Scale: [1, 1, 1]
+        MeshComponent:
+          BinPath: Scenes/mesh3326804421315287631.wmesh
+          VertexCount: 2615
+          IndexCount: 14592
+          m_Material: 11792036383988354775
+      - Entity: 14104322167608923558
+        TagComponent:
+          Tag: meshes[0]-67
+        TransformComponent:
+          Translation: [0, 0, 0]
+          Rotation: [0, 0, 0]
+          Scale: [1, 1, 1]
+        MeshComponent:
+          BinPath: Scenes/mesh14104322167608923558.wmesh
+          VertexCount: 2509
+          IndexCount: 13824
+          m_Material: 14921648943981718230
+      - Entity: 3097712002014147009
+        TagComponent:
+          Tag: meshes[0]-68
+        TransformComponent:
+          Translation: [0, 0, 0]
+          Rotation: [0, 0, 0]
+          Scale: [1, 1, 1]
+        MeshComponent:
+          BinPath: Scenes/mesh3097712002014147009.wmesh
+          VertexCount: 2615
+          IndexCount: 14592
+          m_Material: 11792036383988354775
+      - Entity: 12695069536005313151
+        TagComponent:
+          Tag: meshes[0]-69
+        TransformComponent:
+          Translation: [0, 0, 0]
+          Rotation: [0, 0, 0]
+          Scale: [1, 1, 1]
+        MeshComponent:
+          BinPath: Scenes/mesh12695069536005313151.wmesh
+          VertexCount: 2509
+          IndexCount: 13824
+          m_Material: 632639578429734999
+      - Entity: 10786116332314765063
+        TagComponent:
+          Tag: meshes[0]-70
+        TransformComponent:
+          Translation: [0, 0, 0]
+          Rotation: [0, 0, 0]
+          Scale: [1, 1, 1]
+        MeshComponent:
+          BinPath: Scenes/mesh10786116332314765063.wmesh
+          VertexCount: 2615
+          IndexCount: 14592
+          m_Material: 14921648943981718230
+      - Entity: 10395452274394854367
+        TagComponent:
+          Tag: meshes[0]-71
+        TransformComponent:
+          Translation: [0, 0, 0]
+          Rotation: [0, 0, 0]
+          Scale: [1, 1, 1]
+        MeshComponent:
+          BinPath: Scenes/mesh10395452274394854367.wmesh
+          VertexCount: 2509
+          IndexCount: 13824
+          m_Material: 11792036383988354775
+      - Entity: 2728150328660420723
+        TagComponent:
+          Tag: meshes[0]-72
+        TransformComponent:
+          Translation: [0, 0, 0]
+          Rotation: [0, 0, 0]
+          Scale: [1, 1, 1]
+        MeshComponent:
+          BinPath: Scenes/mesh2728150328660420723.wmesh
+          VertexCount: 2615
+          IndexCount: 14592
+          m_Material: 632639578429734999
+      - Entity: 4446588436940398862
+        TagComponent:
+          Tag: meshes[0]-73
+        TransformComponent:
+          Translation: [0, 0, 0]
+          Rotation: [0, 0, 0]
+          Scale: [1, 1, 1]
+        MeshComponent:
+          BinPath: Scenes/mesh4446588436940398862.wmesh
+          VertexCount: 16
+          IndexCount: 24
+          m_Material: 13905735659310639646
+      - Entity: 5244399475799693747
+        TagComponent:
+          Tag: meshes[0]-74
+        TransformComponent:
+          Translation: [0, 0, 0]
+          Rotation: [0, 0, 0]
+          Scale: [1, 1, 1]
+        MeshComponent:
+          BinPath: Scenes/mesh5244399475799693747.wmesh
+          VertexCount: 2957
+          IndexCount: 14871
+          m_Material: 11170413393620816802
+      - Entity: 9113617659686222316
+        TagComponent:
+          Tag: meshes[0]-75
+        TransformComponent:
+          Translation: [0, 0, 0]
+          Rotation: [0, 0, 0]
+          Scale: [1, 1, 1]
+        MeshComponent:
+          BinPath: Scenes/mesh9113617659686222316.wmesh
+          VertexCount: 16
+          IndexCount: 24
+          m_Material: 13905735659310639646
+      - Entity: 212421319126879861
+        TagComponent:
+          Tag: meshes[0]-76
+        TransformComponent:
+          Translation: [0, 0, 0]
+          Rotation: [0, 0, 0]
+          Scale: [1, 1, 1]
+        MeshComponent:
+          BinPath: Scenes/mesh212421319126879861.wmesh
+          VertexCount: 2957
+          IndexCount: 14871
+          m_Material: 11170413393620816802
+      - Entity: 6461382781091827833
+        TagComponent:
+          Tag: meshes[0]-77
+        TransformComponent:
+          Translation: [0, 0, 0]
+          Rotation: [0, 0, 0]
+          Scale: [1, 1, 1]
+        MeshComponent:
+          BinPath: Scenes/mesh6461382781091827833.wmesh
+          VertexCount: 16
+          IndexCount: 24
+          m_Material: 13905735659310639646
+      - Entity: 11182493933853876447
+        TagComponent:
+          Tag: meshes[0]-78
+        TransformComponent:
+          Translation: [0, 0, 0]
+          Rotation: [0, 0, 0]
+          Scale: [1, 1, 1]
+        MeshComponent:
+          BinPath: Scenes/mesh11182493933853876447.wmesh
+          VertexCount: 2957
+          IndexCount: 14871
+          m_Material: 11170413393620816802
+      - Entity: 14484084771911517351
+        TagComponent:
+          Tag: meshes[0]-79
+        TransformComponent:
+          Translation: [0, 0, 0]
+          Rotation: [0, 0, 0]
+          Scale: [1, 1, 1]
+        MeshComponent:
+          BinPath: Scenes/mesh14484084771911517351.wmesh
+          VertexCount: 16
+          IndexCount: 24
+          m_Material: 13905735659310639646
+      - Entity: 9944799492568496072
+        TagComponent:
+          Tag: meshes[0]-80
+        TransformComponent:
+          Translation: [0, 0, 0]
+          Rotation: [0, 0, 0]
+          Scale: [1, 1, 1]
+        MeshComponent:
+          BinPath: Scenes/mesh9944799492568496072.wmesh
+          VertexCount: 2957
+          IndexCount: 14871
+          m_Material: 11170413393620816802
+      - Entity: 7999795369721871831
+        TagComponent:
+          Tag: meshes[0]-81
+        TransformComponent:
+          Translation: [0, 0, 0]
+          Rotation: [0, 0, 0]
+          Scale: [1, 1, 1]
+        MeshComponent:
+          BinPath: Scenes/mesh7999795369721871831.wmesh
+          VertexCount: 533
+          IndexCount: 1404
+          m_Material: 17582370508171699189
+      - Entity: 17999132325755607070
+        TagComponent:
+          Tag: meshes[0]-82
+        TransformComponent:
+          Translation: [0, 0, 0]
+          Rotation: [0, 0, 0]
+          Scale: [1, 1, 1]
+        MeshComponent:
+          BinPath: Scenes/mesh17999132325755607070.wmesh
+          VertexCount: 1231
+          IndexCount: 6633
+          m_Material: 4497329178161474918
+      - Entity: 9710403856475519983
+        TagComponent:
+          Tag: meshes[0]-83
+        TransformComponent:
+          Translation: [0, 0, 0]
+          Rotation: [0, 0, 0]
+          Scale: [1, 1, 1]
+        MeshComponent:
+          BinPath: Scenes/mesh9710403856475519983.wmesh
+          VertexCount: 533
+          IndexCount: 1404
+          m_Material: 17582370508171699189
+      - Entity: 18097841320113413128
+        TagComponent:
+          Tag: meshes[0]-84
+        TransformComponent:
+          Translation: [0, 0, 0]
+          Rotation: [0, 0, 0]
+          Scale: [1, 1, 1]
+        MeshComponent:
+          BinPath: Scenes/mesh18097841320113413128.wmesh
+          VertexCount: 1231
+          IndexCount: 6633
+          m_Material: 4497329178161474918
+      - Entity: 9266576323633568178
+        TagComponent:
+          Tag: meshes[0]-85
+        TransformComponent:
+          Translation: [0, 0, 0]
+          Rotation: [0, 0, 0]
+          Scale: [1, 1, 1]
+        MeshComponent:
+          BinPath: Scenes/mesh9266576323633568178.wmesh
+          VertexCount: 533
+          IndexCount: 1404
+          m_Material: 17582370508171699189
+      - Entity: 14292555176984254841
+        TagComponent:
+          Tag: meshes[0]-86
+        TransformComponent:
+          Translation: [0, 0, 0]
+          Rotation: [0, 0, 0]
+          Scale: [1, 1, 1]
+        MeshComponent:
+          BinPath: Scenes/mesh14292555176984254841.wmesh
+          VertexCount: 1231
+          IndexCount: 6633
+          m_Material: 4497329178161474918
+      - Entity: 5862001595044511304
+        TagComponent:
+          Tag: meshes[0]-87
+        TransformComponent:
+          Translation: [0, 0, 0]
+          Rotation: [0, 0, 0]
+          Scale: [1, 1, 1]
+        MeshComponent:
+          BinPath: Scenes/mesh5862001595044511304.wmesh
+          VertexCount: 450
+          IndexCount: 1200
+          m_Material: 17582370508171699189
+      - Entity: 2497440224000584184
+        TagComponent:
+          Tag: meshes[0]-88
+        TransformComponent:
+          Translation: [0, 0, 0]
+          Rotation: [0, 0, 0]
+          Scale: [1, 1, 1]
+        MeshComponent:
+          BinPath: Scenes/mesh2497440224000584184.wmesh
+          VertexCount: 1231
+          IndexCount: 6633
+          m_Material: 4497329178161474918
+      - Entity: 16828307759823334739
+        TagComponent:
+          Tag: meshes[0]-89
+        TransformComponent:
+          Translation: [0, 0, 0]
+          Rotation: [0, 0, 0]
+          Scale: [1, 1, 1]
+        MeshComponent:
+          BinPath: Scenes/mesh16828307759823334739.wmesh
+          VertexCount: 450
+          IndexCount: 1200
+          m_Material: 17582370508171699189
+      - Entity: 16552073326277036613
+        TagComponent:
+          Tag: meshes[0]-90
+        TransformComponent:
+          Translation: [0, 0, 0]
+          Rotation: [0, 0, 0]
+          Scale: [1, 1, 1]
+        MeshComponent:
+          BinPath: Scenes/mesh16552073326277036613.wmesh
+          VertexCount: 1231
+          IndexCount: 6633
+          m_Material: 4497329178161474918
+      - Entity: 10895856968095663071
+        TagComponent:
+          Tag: meshes[0]-91
+        TransformComponent:
+          Translation: [0, 0, 0]
+          Rotation: [0, 0, 0]
+          Scale: [1, 1, 1]
+        MeshComponent:
+          BinPath: Scenes/mesh10895856968095663071.wmesh
+          VertexCount: 450
+          IndexCount: 1200
+          m_Material: 17582370508171699189
+      - Entity: 7057910153693017604
+        TagComponent:
+          Tag: meshes[0]-92
+        TransformComponent:
+          Translation: [0, 0, 0]
+          Rotation: [0, 0, 0]
+          Scale: [1, 1, 1]
+        MeshComponent:
+          BinPath: Scenes/mesh7057910153693017604.wmesh
+          VertexCount: 1231
+          IndexCount: 6633
+          m_Material: 4497329178161474918
+      - Entity: 6394269581494901231
+        TagComponent:
+          Tag: meshes[0]-93
+        TransformComponent:
+          Translation: [0, 0, 0]
+          Rotation: [0, 0, 0]
+          Scale: [1, 1, 1]
+        MeshComponent:
+          BinPath: Scenes/mesh6394269581494901231.wmesh
+          VertexCount: 450
+          IndexCount: 1200
+          m_Material: 17582370508171699189
+      - Entity: 17714503435228849081
+        TagComponent:
+          Tag: meshes[0]-94
+        TransformComponent:
+          Translation: [0, 0, 0]
+          Rotation: [0, 0, 0]
+          Scale: [1, 1, 1]
+        MeshComponent:
+          BinPath: Scenes/mesh17714503435228849081.wmesh
+          VertexCount: 1231
+          IndexCount: 6633
+          m_Material: 4497329178161474918
+      - Entity: 2102936046886970777
+        TagComponent:
+          Tag: meshes[0]-95
+        TransformComponent:
+          Translation: [0, 0, 0]
+          Rotation: [0, 0, 0]
+          Scale: [1, 1, 1]
+        MeshComponent:
+          BinPath: Scenes/mesh2102936046886970777.wmesh
+          VertexCount: 5308
+          IndexCount: 27552
+          m_Material: 5408192150610095659
+      - Entity: 1065495517744019911
+        TagComponent:
+          Tag: meshes[0]-96
+        TransformComponent:
+          Translation: [0, 0, 0]
+          Rotation: [0, 0, 0]
+          Scale: [1, 1, 1]
+        MeshComponent:
+          BinPath: Scenes/mesh1065495517744019911.wmesh
+          VertexCount: 866
+          IndexCount: 4563
+          m_Material: 6893311289436980355
+      - Entity: 1084181934162876979
+        TagComponent:
+          Tag: meshes[0]-97
+        TransformComponent:
+          Translation: [0, 0, 0]
+          Rotation: [0, 0, 0]
+          Scale: [1, 1, 1]
+        MeshComponent:
+          BinPath: Scenes/mesh1084181934162876979.wmesh
+          VertexCount: 753
+          IndexCount: 4086
+          m_Material: 5988541047275335958
+      - Entity: 4614400167835044559
+        TagComponent:
+          Tag: meshes[0]-98
+        TransformComponent:
+          Translation: [0, 0, 0]
+          Rotation: [0, 0, 0]
+          Scale: [1, 1, 1]
+        MeshComponent:
+          BinPath: Scenes/mesh4614400167835044559.wmesh
+          VertexCount: 866
+          IndexCount: 4563
+          m_Material: 6893311289436980355
+      - Entity: 14488881324488666045
+        TagComponent:
+          Tag: meshes[0]-99
+        TransformComponent:
+          Translation: [0, 0, 0]
+          Rotation: [0, 0, 0]
+          Scale: [1, 1, 1]
+        MeshComponent:
+          BinPath: Scenes/mesh14488881324488666045.wmesh
+          VertexCount: 753
+          IndexCount: 4086
+          m_Material: 5988541047275335958
+      - Entity: 9696578645027291075
+        TagComponent:
+          Tag: meshes[0]-100
+        TransformComponent:
+          Translation: [0, 0, 0]
+          Rotation: [0, 0, 0]
+          Scale: [1, 1, 1]
+        MeshComponent:
+          BinPath: Scenes/mesh9696578645027291075.wmesh
+          VertexCount: 50
+          IndexCount: 84
+          m_Material: 14766525842936441146
+      - Entity: 10173724098323891313
+        TagComponent:
+          Tag: meshes[0]-101
+        TransformComponent:
+          Translation: [0, 0, 0]
+          Rotation: [0, 0, 0]
+          Scale: [1, 1, 1]
+        MeshComponent:
+          BinPath: Scenes/mesh10173724098323891313.wmesh
+          VertexCount: 11890
+          IndexCount: 43452
+          m_Material: 12282574968113344277
+      - Entity: 9320685910345221930
+        TagComponent:
+          Tag: meshes[0]-102
+        TransformComponent:
+          Translation: [0, 0, 0]
+          Rotation: [0, 0, 0]
+          Scale: [1, 1, 1]
+        MeshComponent:
+          BinPath: Scenes/mesh9320685910345221930.wmesh
+          VertexCount: 20
+          IndexCount: 30
+          m_Material: 14766525842936441146

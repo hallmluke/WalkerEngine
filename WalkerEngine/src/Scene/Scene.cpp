@@ -2,6 +2,7 @@
 #include "Scene.h"
 #include "Entity.h"
 #include "Components.h"
+#include "IDComponent.h"
 
 #include "imgui/imgui.h"
 #include "glm/gtx/string_cast.hpp"
@@ -27,7 +28,13 @@ namespace Walker {
 
 	Entity Scene::CreateEntity(const std::string& name)
 	{
+		return CreateEntityWithUUID(UUID(), name);
+	}
+
+	Entity Scene::CreateEntityWithUUID(UUID uuid, const std::string& name)
+	{
 		Entity entity = { m_Registry.create(), this };
+		entity.AddComponent<IDComponent>(uuid);
 		entity.AddComponent<TransformComponent>();
 		auto& tag = entity.AddComponent<TagComponent>();
 		tag.Tag = name.empty() ? "Entity" : name;
@@ -37,6 +44,46 @@ namespace Walker {
 
 	void Scene::DestroyEntity(Entity entity)
 	{
+		auto& tag = entity.GetComponent<TagComponent>();
+
+		W_CORE_TRACE("Deleting entity {0}", tag.Tag);
+		auto& rel = entity.GetComponent<RelationshipComponent>();
+
+		// Kill all children
+		if (rel.Children > 0) {
+			Entity child = rel.First;
+			Entity next;
+
+			while (child) {
+				next = child.GetComponent<RelationshipComponent>().Next;
+				DestroyEntity(child);
+				child = next;
+			}
+		}
+
+		if (rel.Previous && m_Registry.valid(rel.Previous)) {
+			auto& prevRel = rel.Previous.GetComponent<RelationshipComponent>();
+			prevRel.Next = rel.Next;
+
+			//auto& prevTag = rel.Previous.GetComponent<TagComponent>();
+			//auto& nextTag = rel.Next.GetComponent<TagComponent>();
+
+			//W_CORE_TRACE("Setting {0}.Next = {1}", prevTag.Tag, nextTag.Tag);
+		}
+
+		if (rel.Next && m_Registry.valid(rel.Next)) {
+			auto& nextRel = rel.Next.GetComponent<RelationshipComponent>();
+			nextRel.Previous = rel.Previous;
+		}
+
+		if (rel.Parent) {
+			auto& parentRel = rel.Parent.GetComponent<RelationshipComponent>();
+			parentRel.Children--;
+			if (parentRel.First == entity) {
+				parentRel.First = rel.Next;
+			}
+		}
+
 		m_Registry.destroy(entity);
 	}
 
@@ -93,6 +140,16 @@ namespace Walker {
 		positions = pos;
 
 		return lights;
+	}
+
+	void Scene::AddMaterial(std::shared_ptr<Material> material)
+	{
+		m_MaterialLibrary.Add(material);
+	}
+
+	std::shared_ptr<Material> Scene::GetMaterial(UUID uuid)
+	{
+		return m_MaterialLibrary.Get(uuid);
 	}
 
 	void Scene::DrawMeshes(std::shared_ptr<Shader> shader)

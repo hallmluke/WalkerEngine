@@ -11,7 +11,7 @@ namespace Walker {
 
 	PointLight::PointLight()
 	{
-		m_Name = "Point Light";
+		//m_Name = "Point Light";
 		m_AmbientIntensity = 0.1f;
 		m_DiffuseIntensity = 0.8f;
 		m_SpecularIntensity = 1.0f;

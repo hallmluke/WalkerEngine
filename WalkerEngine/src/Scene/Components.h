@@ -9,6 +9,7 @@
 
 #include "Mesh.h"
 #include "PointLight.h"
+#include "Core/UUID.h"
 
 namespace Walker {
 
