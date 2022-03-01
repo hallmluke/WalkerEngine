@@ -130,8 +130,8 @@ namespace Walker {
 
 	static void SerializeMeshBinary(const std::string& filepath, std::shared_ptr<Mesh> meshPtr) {
 
-		std::fstream file;
-		file.open(filepath, std::ios::app | std::ios::binary);
+		std::ofstream file;
+		file.open(filepath, std::ios::binary);
 
 		for (auto vertex : meshPtr->GetVertices()) {
 			file.write(reinterpret_cast<char*>(&vertex), sizeof(vertex));
@@ -258,12 +258,14 @@ namespace Walker {
 				out << YAML::Key << "Children";
 				out << YAML::BeginSeq;
 
-				Entity& child = rel.First;
+				Entity child = rel.First;
 
 				while (child) {
 					SerializeEntity(out, child, sceneFilePath);
 					child = child.GetComponent<RelationshipComponent>().Next;
 				}
+
+				out << YAML::EndSeq;
 			}
 		}
 
@@ -325,6 +327,7 @@ namespace Walker {
 				return;
 
 			auto& rel = entity.GetComponent<RelationshipComponent>();
+			auto& tag = entity.GetComponent<TagComponent>();
 
 			if (!rel.Parent) {
 				SerializeEntity(out, entity, filepath);
@@ -360,7 +363,6 @@ namespace Walker {
 			return false;
 
 		std::string sceneName = data["Scene"].as<std::string>();
-		W_CORE_TRACE("Deserializing scene '{0}'", sceneName);
 
 		auto materials = data["Materials"];
 		if (materials) {
@@ -368,8 +370,6 @@ namespace Walker {
 				uint64_t uuid = mat["Material"].as<uint64_t>();
 
 				std::shared_ptr<Material> material = std::make_shared<Material>(uuid);
-
-				W_CORE_TRACE("Deserializing material with ID = {0}", uuid);
 
 				material->m_Name = mat["m_Name"].as<std::string>();
 				material->m_AlbedoPath = mat["m_AlbedoPath"].as<std::string>();
@@ -408,8 +408,6 @@ namespace Walker {
 		if (tagComponent)
 			name = tagComponent["Tag"].as<std::string>();
 
-		W_CORE_TRACE("Deserialized entity with ID = {0}, name = {1}", uuid, name);
-
 		Entity deserializedEntity = m_Scene->CreateEntityWithUUID(uuid, name);
 
 		auto transformComponent = entity["TransformComponent"];
@@ -421,8 +419,6 @@ namespace Walker {
 			tc.Rotation = transformComponent["Rotation"].as<glm::vec3>();
 			tc.Scale = transformComponent["Scale"].as<glm::vec3>();
 		}
-
-		W_CORE_TRACE("Deserialized transform");
 
 		auto meshComponent = entity["MeshComponent"];
 		if (meshComponent) {
@@ -437,27 +433,21 @@ namespace Walker {
 
 			std::shared_ptr<Material> mat = m_Scene->GetMaterial(meshComponent["m_Material"].as<uint64_t>());
 
-			W_CORE_TRACE("Retrieved material for mesh");
-
 			std::shared_ptr<Mesh> meshPtr = std::make_shared<Mesh>("Mesh", vertices, indices, mat);
 
 			deserializedEntity.AddComponent<MeshComponent>(meshPtr);
 		}
-
-		W_CORE_TRACE("Deserialized mesh");
 
 		auto pointLightComponent = entity["PointLightComponent"];
 		if (pointLightComponent) {
 
 			std::shared_ptr<PointLight> pl = std::make_shared<PointLight>();
 			pl->m_AmbientIntensity = pointLightComponent["m_AmbientIntensity"].as<float>();
-			W_CORE_TRACE("1");
 			pl->m_DiffuseIntensity = pointLightComponent["m_DiffuseIntensity"].as<float>();
 			pl->m_SpecularIntensity = pointLightComponent["m_SpecularIntensity"].as<float>();
 			pl->m_ConstantAttenuation = pointLightComponent["m_ConstantAttenuation"].as<float>();
 			pl->m_LinearAttenuation = pointLightComponent["m_LinearAttenuation"].as<float>();
 			pl->m_QuadraticAttenuation = pointLightComponent["m_QuadraticAttenuation"].as<float>();
-			W_CORE_TRACE("2");
 			auto& plc = deserializedEntity.AddComponent<PointLightComponent>(pl);
 		}
 

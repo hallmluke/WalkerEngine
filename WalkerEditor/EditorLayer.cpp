@@ -11,14 +11,9 @@ namespace Walker {
 	void EditorLayer::OnAttach()
 	{
 		m_ActiveScene = std::make_shared<Scene>();
-		//std::shared_ptr<Model> sponzaPBR = std::make_shared<Model>("SponzaPBR", "Models/SponzaPBR/Sponza.gltf", m_ActiveScene.get());
+		std::shared_ptr<Model> sponzaPBR = std::make_shared<Model>("SponzaPBR", "Models/SponzaPBR/Sponza.gltf", m_ActiveScene.get());
 		m_RenderGraph = std::make_shared<RenderGraph>(1280, 720);
 
-		SceneSerializer serializer(m_ActiveScene);
-		//serializer.Serialize("Scenes/ExampleYAML.walker");
-		//serializer.Serialize("Scenes/Example.walker");
-		serializer.Deserialize("Scenes/Example.walker");
-		//W_CORE_TRACE("Finished deserializing!");
 		m_SceneHierarchyPanel.SetContext(m_ActiveScene);
 		m_MaterialPanel.SetContext(m_ActiveScene);
 	}
@@ -84,6 +79,26 @@ namespace Walker {
 		{
 			ImGuiID dockspace_id = ImGui::GetID("MyDockSpace");
 			ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
+		}
+
+		if (ImGui::BeginMenuBar()) {
+			if (ImGui::BeginMenu("File"))
+			{
+				if (ImGui::MenuItem("Serialize")) {
+					SceneSerializer serializer(m_ActiveScene);
+					serializer.Serialize("Scenes/Example2.walker");
+				}
+
+				if (ImGui::MenuItem("Deserialize")) {
+					SceneSerializer serializer(m_ActiveScene);
+					serializer.Deserialize("Scenes/Example2.walker");
+				}
+
+				if (ImGui::MenuItem("Exit")) {
+					// TODO Application close
+					//Application::Get().Close
+				}
+			}
 		}
 
 		m_SceneHierarchyPanel.OnImGuiRender();
