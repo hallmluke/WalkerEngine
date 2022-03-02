@@ -66,7 +66,7 @@ namespace Walker {
 		m_Framebuffer->Bind();
 		RenderCommand::Clear();
 		m_Shader->Bind();
-		scene.DrawMeshes(m_Shader);
+		scene.DrawEditor(m_Shader);
 	}
 
 	std::shared_ptr<Framebuffer> EditorPass::GetFramebuffer() const

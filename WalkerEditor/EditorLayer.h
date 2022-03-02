@@ -37,8 +37,11 @@ namespace Walker {
 		glm::vec2 m_ViewportSize = { 0.0f, 0.0f };
 		glm::vec2 m_ViewportBounds[2];
 
+		Entity m_HoveredEntity;
+
 		// Panels
 		SceneHierarchyPanel m_SceneHierarchyPanel;
 		MaterialPanel m_MaterialPanel;
+		
 	};
 }
