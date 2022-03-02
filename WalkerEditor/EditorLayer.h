@@ -4,6 +4,8 @@
 #include "Panels/SceneHierarchyPanel.h"
 #include "Panels/MaterialPanel.h"
 
+#include <filesystem>
+
 
 namespace Walker {
 
@@ -19,6 +21,13 @@ namespace Walker {
 		void OnUpdate(float ts) override;
 		virtual void OnImGuiRender() override;
 		void OnEvent(Event & e) override;
+
+	private:
+		bool OnKeyPressed(KeyPressedEvent& e);
+		void NewScene();
+		void OpenScene();
+		void OpenScene(const std::filesystem::path& path);
+		void SaveSceneAs();
 
 	private:
 		std::shared_ptr<Scene> m_ActiveScene;

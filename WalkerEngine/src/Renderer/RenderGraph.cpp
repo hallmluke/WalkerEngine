@@ -6,32 +6,39 @@
 #include "Renderer/RenderPasses/DeferredPBRLightingPass.h"
 #include "Renderer/RenderPasses/BoxBlurPass.h";
 #include "Renderer/RenderPasses/DepthOfFieldPass.h"
+#include "Renderer/RenderPasses/EditorPass.h"
 
 namespace Walker {
 
-	RenderGraph::RenderGraph(uint32_t viewportWidth, uint32_t viewportHeight)
+	namespace Utils {
+		static std::shared_ptr<RenderPass> RenderPassTypeToRenderPass(RenderPassType type, uint32_t viewportWidth, uint32_t viewportHeight) {
+			switch (type) {
+			case RenderPassType::ShadowMapPass: return std::make_shared<ShadowMapPass>();
+			case RenderPassType::GBufferPBRPass: return std::make_shared<GBufferPBRPass>(viewportWidth, viewportHeight);
+			case RenderPassType::DeferredPBRLightingPass: return std::make_shared<DeferredPBRLightingPass>(viewportWidth, viewportHeight);
+			case RenderPassType::BoxBlurPass: return std::make_shared<BoxBlurPass>(viewportWidth, viewportHeight);
+			case RenderPassType::DepthOfFieldPass: return std::make_shared<DepthOfFieldPass>(viewportWidth, viewportHeight);
+			case RenderPassType::EditorPass: return std::make_shared<EditorPass>(viewportWidth, viewportHeight);
+			}
+
+			return nullptr;
+		}
+	}
+
+	RenderGraph::RenderGraph(RenderGraphSpecification spec, uint32_t viewportWidth, uint32_t viewportHeight)
 		: m_ViewportWidth(viewportWidth), m_ViewportHeight(viewportHeight)
 	{
 		m_RenderPasses = std::vector<std::shared_ptr<RenderPass>>();
-		std::shared_ptr<RenderPass> shadowMapPass = std::make_shared<ShadowMapPass>();
-		std::shared_ptr<RenderPass> gBufferPBRPass = std::make_shared<GBufferPBRPass>(m_ViewportWidth, m_ViewportHeight);
-		std::shared_ptr<RenderPass> deferredPBRLightingPass = std::make_shared<DeferredPBRLightingPass>(m_ViewportWidth, m_ViewportHeight);
-		std::shared_ptr<RenderPass> boxBlurPass = std::make_shared<BoxBlurPass>(m_ViewportWidth, m_ViewportHeight);
-		std::shared_ptr<RenderPass> depthOfFieldPass = std::make_shared<DepthOfFieldPass>(m_ViewportWidth, m_ViewportHeight);
-		Link(gBufferPBRPass->GetOutput("gPosition"), deferredPBRLightingPass->GetInput("gPosition"));
-		Link(gBufferPBRPass->GetOutput("gNormal"), deferredPBRLightingPass->GetInput("gNormal"));
-		Link(gBufferPBRPass->GetOutput("gAlbedo"), deferredPBRLightingPass->GetInput("gAlbedo"));
-		Link(gBufferPBRPass->GetOutput("gMetRoughAO"), deferredPBRLightingPass->GetInput("gMetRoughAO"));
-		Link(deferredPBRLightingPass->GetOutput("gColor"), boxBlurPass->GetInput("u_ColorTexture"));
-		Link(gBufferPBRPass->GetOutput("gPosition"), depthOfFieldPass->GetInput("u_Position"));
-		Link(deferredPBRLightingPass->GetOutput("gColor"), depthOfFieldPass->GetInput("u_InFocusColor"));
-		Link(boxBlurPass->GetOutput("gColor"), depthOfFieldPass->GetInput("u_OutOfFocusColor"));
 
-		m_RenderPasses.push_back(shadowMapPass);
-		m_RenderPasses.push_back(gBufferPBRPass);
-		m_RenderPasses.push_back(deferredPBRLightingPass);
-		m_RenderPasses.push_back(boxBlurPass);
-		m_RenderPasses.push_back(depthOfFieldPass);
+		for (auto& renderPassSpec : spec.RenderPasses) {
+			auto& renderPass = Utils::RenderPassTypeToRenderPass(renderPassSpec.Type, m_ViewportWidth, m_ViewportHeight);
+			m_RenderPasses.push_back(renderPass);
+			m_NameToPass[renderPassSpec.Name] = renderPass;
+		}
+
+		for (auto& link : spec.Links) {
+			Link(m_NameToPass[link.RenderPassOut]->GetOutput(link.RenderPassOutputName), m_NameToPass[link.RenderPassIn]->GetInput(link.RenderPassInputName));
+		}
 	}
 
 	RenderGraph::~RenderGraph()
@@ -43,13 +50,11 @@ namespace Walker {
 		auto LastRenderPass = m_RenderPasses[m_RenderPasses.size() - 1];
 		return LastRenderPass->GetFinalOutputRendererId();
 	}
-	/*void RenderGraph::AddRenderPass(RenderPass renderPass)
+
+	std::shared_ptr<RenderPass> RenderGraph::GetRenderPass(std::string name)
 	{
-	}*/
-	/*std::vector<RenderPass> RenderGraph::GetRenderPasses()
-	{
-		return m_RenderPasses;
-	}*/
+		return m_NameToPass[name];
+	}
 
 	void RenderGraph::DrawScene(Scene& scene) const
 	{

@@ -241,8 +241,6 @@ namespace Walker {
 
 		ImGui::PopItemWidth();
 
-		//const ImGuiTreeNodeFlags treeNodeFlags = ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_AllowItemOverlap | ImGuiTreeNodeFlags_SpanAvailWidth;
-
 		DrawComponent<TransformComponent>("Transform", entity, [](auto& component) {
 			auto& translation = component.Translation;
 			DrawVec3Control("Translation", translation);
@@ -253,26 +251,6 @@ namespace Walker {
 			auto& scale = component.Scale;
 			DrawVec3Control("Scale", scale, 1.0f);
 		});
-
-		/*
-		if (entity.HasComponent<TransformComponent>())
-		{
-			bool open = ImGui::TreeNodeEx((void*)typeid(TransformComponent).hash_code(), treeNodeFlags, "Transform");
-			
-			if (open) {
-				auto& translation = entity.GetComponent<TransformComponent>().Translation;
-				DrawVec3Control("Translation", translation);
-				auto& compRotation = entity.GetComponent<TransformComponent>().Rotation;
-				glm::vec3 rotation = glm::degrees(compRotation);
-				DrawVec3Control("Rotation", rotation);
-				compRotation = glm::radians(rotation);
-				auto& scale = entity.GetComponent<TransformComponent>().Scale;
-				DrawVec3Control("Scale", scale, 1.0f);
-				ImGui::TreePop();
-			}
-
-			
-		}*/
 
 		DrawComponent<MeshComponent>("Mesh", entity, [](auto& component) {
 			auto& mesh = component.MeshPtr;
@@ -289,28 +267,6 @@ namespace Walker {
 			}
 		});
 
-		/*
-		if (entity.HasComponent<MeshComponent>())
-		{
-			if (ImGui::TreeNodeEx((void*)typeid(MeshComponent).hash_code(), treeNodeFlags, "Mesh")) {
-				auto& mesh = entity.GetComponent<MeshComponent>().MeshPtr;
-				auto& mat = mesh->GetMaterial();
-				ImVec2 texSize{ 50, 50 };
-
-				ImGui::Text("Material");
-				if (mat && mat->GetAlbedo()) {
-					ImGui::ImageButton((void*)mat->GetAlbedo()->GetRendererID(), texSize);
-				}
-
-				if (mat && mat->GetNormal()) {
-					ImGui::ImageButton((void*)mat->GetNormal()->GetRendererID(), texSize);
-				}
-				
-				ImGui::TreePop();
-				
-			}
-		}*/
-
 		DrawComponent<PointLightComponent>("Point Light", entity, [](auto& component) {
 			auto& pointLight = component.PointLightPtr;
 
@@ -318,47 +274,12 @@ namespace Walker {
 			ImGui::DragFloat("Diffuse Intensity", &(pointLight->m_DiffuseIntensity), 0.1f, 0.0f, 3.0f);
 			ImGui::DragFloat("Specular Intensity", &(pointLight->m_SpecularIntensity), 0.1f, 0.0f, 3.0f);
 		});
-
-		/*
-		if (entity.HasComponent<PointLightComponent>())
-		{
-			bool open = ImGui::TreeNodeEx((void*)typeid(PointLightComponent).hash_code(), treeNodeFlags, "Point Light");
-			ImGui::SameLine();
-			if (ImGui::Button("+"))
-			{
-				ImGui::OpenPopup("ComponentSettings");
-			}
-
-			bool removeComponent = false;
-			if (ImGui::BeginPopup("ComponentSettings"))
-			{
-				if (ImGui::MenuItem("Remove component")) {
-					removeComponent = true;
-				}
-
-				ImGui::EndPopup();
-			}
-
-			if (open) {
-				auto& pointLight = entity.GetComponent<PointLightComponent>().PointLightPtr;
-				
-				ImGui::DragFloat("Ambient Intensity", &(pointLight->m_AmbientIntensity), 0.1f, 0.0f, 3.0f);
-				ImGui::DragFloat("Diffuse Intensity", &(pointLight->m_DiffuseIntensity), 0.1f, 0.0f, 3.0f);
-				ImGui::DragFloat("Specular Intensity", &(pointLight->m_SpecularIntensity), 0.1f, 0.0f, 3.0f);
-
-				ImGui::TreePop();
-
-			}
-
-			if (removeComponent) {
-				entity.RemoveComponent<TransformComponent>();
-			}
-		}*/
 	}
 
 	void SceneHierarchyPanel::SetContext(const std::shared_ptr<Scene>& scene)
 	{
 		m_Context = scene;
+		m_SelectionContext = {};
 	}
 
 }

@@ -135,28 +135,10 @@ namespace Walker {
 
 		for (auto vertex : meshPtr->GetVertices()) {
 			file.write(reinterpret_cast<char*>(&vertex), sizeof(vertex));
-			//file.write(reinterpret_cast<char*>(&vertex.Position), sizeof(vertex.Position));
-			//file.write(reinterpret_cast<char*>())
-			/*out << YAML::BeginMap;
-
-			out << YAML::Key << "Position" << YAML::Value << vertex.Position;
-			out << YAML::Key << "Normal" << YAML::Value << vertex.Normal;
-			out << YAML::Key << "TexCoords" << YAML::Value << vertex.TexCoords;
-			out << YAML::Key << "Tangent" << YAML::Value << vertex.Tangent;
-			out << YAML::Key << "Bitangent" << YAML::Value << vertex.Bitangent;
-
-			out << YAML::EndMap;*/
 		}
-
-		/*out << YAML::EndSeq;
-
-		out << YAML::Key << "m_Indices";
-		out << YAML::Flow;
-		out << YAML::BeginSeq;*/
 
 		for (auto index : meshPtr->GetIndices()) {
 			file.write(reinterpret_cast<char*>(&index), sizeof(index));
-			//out << index;
 		}
 	}
 

@@ -34,6 +34,7 @@ namespace Walker {
 
 		// Temp
 		void DrawMeshes(std::shared_ptr<Shader> shader);
+		void DrawEditor(std::shared_ptr<Shader> shader);
 
 	private:
 		entt::registry m_Registry;

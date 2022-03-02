@@ -4,14 +4,54 @@
 
 namespace Walker {
 
+	enum class RenderPassType {
+		None = 0,
+		ShadowMapPass,
+		GBufferPBRPass,
+		DeferredPBRLightingPass,
+		BoxBlurPass,
+		DepthOfFieldPass,
+		EditorPass
+	};
+
+	struct RenderPassSpec {
+		RenderPassSpec() = default;
+		RenderPassSpec(RenderPassType type, std::string name)
+			: Type(type), Name(name) {}
+
+		RenderPassType Type;
+		std::string Name;
+	};
+
+	struct RenderPassLink {
+		RenderPassLink() = default;
+		RenderPassLink(std::string renderPassOut, std::string renderPassOutputName, std::string renderPassIn, std::string renderPassInputName)
+			: RenderPassOut(renderPassOut), RenderPassOutputName(renderPassOutputName), RenderPassIn(renderPassIn), RenderPassInputName(renderPassInputName) {}
+
+		std::string RenderPassOut;
+		std::string RenderPassOutputName;
+		std::string RenderPassIn;
+		std::string RenderPassInputName;
+	};
+
+	struct RenderGraphSpecification {
+		RenderGraphSpecification() = default;
+		RenderGraphSpecification(std::initializer_list<RenderPassSpec> renderPasses, std::initializer_list<RenderPassLink> links)
+			: RenderPasses(renderPasses), Links(links) {}
+
+		std::vector<RenderPassSpec> RenderPasses;
+		std::vector<RenderPassLink> Links;
+	};
+
 	class RenderGraph {
 	public:
-		RenderGraph(uint32_t viewportWidth, uint32_t viewportHeight);
+		RenderGraph(RenderGraphSpecification spec, uint32_t viewportWidth, uint32_t viewportHeight);
 		~RenderGraph();
 
 		uint32_t GetOutputRendererId() const;
 
 		//void AddRenderPass(RenderPass renderPass);
+		std::shared_ptr<RenderPass> GetRenderPass(std::string name);
 		std::vector<std::shared_ptr<RenderPass>> GetRenderPasses() { return m_RenderPasses; }
 
 		void DrawScene(Scene& scene) const;
@@ -24,7 +64,7 @@ namespace Walker {
 
 	private:
 		std::vector<std::shared_ptr<RenderPass>> m_RenderPasses;
-		//std::vector<std::unique_ptr<Scene>> m_R;
+		std::unordered_map <std::string, std::shared_ptr<RenderPass>> m_NameToPass;
 		uint32_t m_ViewportWidth, m_ViewportHeight;
 	};
 }

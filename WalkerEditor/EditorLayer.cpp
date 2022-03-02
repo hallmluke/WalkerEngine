@@ -2,6 +2,7 @@
 #include "imgui.h"
 
 #include "Scene/SceneSerializer.h"
+#include "Utils/PlatformUtils.h"
 
 namespace Walker {
 
@@ -11,8 +12,29 @@ namespace Walker {
 	void EditorLayer::OnAttach()
 	{
 		m_ActiveScene = std::make_shared<Scene>();
-		std::shared_ptr<Model> sponzaPBR = std::make_shared<Model>("SponzaPBR", "Models/SponzaPBR/Sponza.gltf", m_ActiveScene.get());
-		m_RenderGraph = std::make_shared<RenderGraph>(1280, 720);
+		//std::shared_ptr<Model> sponzaPBR = std::make_shared<Model>("SponzaPBR", "Models/SponzaPBR/Sponza.gltf", m_ActiveScene.get());
+
+		RenderGraphSpecification spec(
+			{ // Passes
+				{ RenderPassType::EditorPass, "EditorPass"}
+				//{RenderPassType::ShadowMapPass, "ShadowMapPass"},
+				//{RenderPassType::GBufferPBRPass, "GBufferPBRPass"},
+				//{RenderPassType::DeferredPBRLightingPass, "DeferredPBRLightingPass"},
+				//{RenderPassType::BoxBlurPass, "BoxBlurPass"},
+				//{RenderPassType::DepthOfFieldPass, "DepthOfFieldPass"} 
+			},
+			{ // Links
+				//{ "GBufferPBRPass", "gPosition", "DeferredPBRLightingPass", "gPosition" },
+				//{ "GBufferPBRPass", "gNormal", "DeferredPBRLightingPass", "gNormal" },
+				//{ "GBufferPBRPass", "gAlbedo", "DeferredPBRLightingPass", "gAlbedo" },
+				//{ "GBufferPBRPass", "gMetRoughAO", "DeferredPBRLightingPass", "gMetRoughAO" },
+				//{ "DeferredPBRLightingPass", "gColor", "BoxBlurPass", "u_ColorTexture" },
+				//{ "GBufferPBRPass", "gPosition", "DepthOfFieldPass", "u_Position" },
+				//{ "DeferredPBRLightingPass", "gColor", "DepthOfFieldPass", "u_InFocusColor" },
+				//{ "BoxBlurPass", "gColor", "DepthOfFieldPass", "u_OutOfFocusColor" } 
+			});
+
+		m_RenderGraph = std::make_shared<RenderGraph>(spec, 1280, 720);
 
 		m_SceneHierarchyPanel.SetContext(m_ActiveScene);
 		m_MaterialPanel.SetContext(m_ActiveScene);
@@ -84,14 +106,16 @@ namespace Walker {
 		if (ImGui::BeginMenuBar()) {
 			if (ImGui::BeginMenu("File"))
 			{
-				if (ImGui::MenuItem("Serialize")) {
-					SceneSerializer serializer(m_ActiveScene);
-					serializer.Serialize("Scenes/Example2.walker");
+				if (ImGui::MenuItem("New")) {
+					NewScene();
 				}
 
-				if (ImGui::MenuItem("Deserialize")) {
-					SceneSerializer serializer(m_ActiveScene);
-					serializer.Deserialize("Scenes/Example2.walker");
+				if (ImGui::MenuItem("Open...")) {
+					OpenScene();
+				}
+
+				if (ImGui::MenuItem("Save as...")) {
+					SaveSceneAs();
 				}
 
 				if (ImGui::MenuItem("Exit")) {
@@ -121,5 +145,49 @@ namespace Walker {
 	}
 	void EditorLayer::OnEvent(Event& e)
 	{
+	}
+	bool EditorLayer::OnKeyPressed(KeyPressedEvent& e)
+	{
+		return false;
+	}
+
+	void EditorLayer::NewScene()
+	{
+		m_ActiveScene = std::make_shared<Scene>();
+		m_SceneHierarchyPanel.SetContext(m_ActiveScene);
+		m_MaterialPanel.SetContext(m_ActiveScene);
+	}
+	void EditorLayer::OpenScene()
+	{
+		std::string filepath = FileDialogs::OpenFile("Walker Scene (*.walker)\0*.walker\0");
+		if (!filepath.empty())
+			OpenScene(filepath);
+	}
+	void EditorLayer::OpenScene(const std::filesystem::path& path)
+	{
+		if (path.extension().string() != ".walker")
+		{
+			W_WARN("Could not load {0} - not a scene file", path.filename().string());
+			return;
+		}
+
+		std::shared_ptr<Scene> newScene = std::make_shared<Scene>();
+		SceneSerializer serializer(newScene);
+		if (serializer.Deserialize(path.string()))
+		{
+			m_ActiveScene = newScene;
+			//m_ActiveScene->OnViewportResize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
+			m_SceneHierarchyPanel.SetContext(m_ActiveScene);
+			m_MaterialPanel.SetContext(m_ActiveScene);
+		}
+	}
+	void EditorLayer::SaveSceneAs()
+	{
+		std::string filepath = FileDialogs::SaveFile("Walker Scene (*.walker)\0*.walker\0");
+		if (!filepath.empty())
+		{
+			SceneSerializer serializer(m_ActiveScene);
+			serializer.Serialize(filepath);
+		}
 	}
 }

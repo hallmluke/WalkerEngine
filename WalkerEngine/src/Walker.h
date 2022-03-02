@@ -7,6 +7,11 @@
 #include "Core/KeyCodes.h"
 #include "Core/MouseCodes.h"
 
+#include "Events/Event.h"
+#include "Events/KeyboardEvent.h"
+#include "Events/MouseEvent.h"
+#include "Events/WindowEvent.h"
+
 #include "Scene/Scene.h"
 #include "Scene/Entity.h"
 #include "Scene/Model.h"

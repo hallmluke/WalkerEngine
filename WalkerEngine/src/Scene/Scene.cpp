@@ -64,11 +64,6 @@ namespace Walker {
 		if (rel.Previous && m_Registry.valid(rel.Previous)) {
 			auto& prevRel = rel.Previous.GetComponent<RelationshipComponent>();
 			prevRel.Next = rel.Next;
-
-			//auto& prevTag = rel.Previous.GetComponent<TagComponent>();
-			//auto& nextTag = rel.Next.GetComponent<TagComponent>();
-
-			//W_CORE_TRACE("Setting {0}.Next = {1}", prevTag.Tag, nextTag.Tag);
 		}
 
 		if (rel.Next && m_Registry.valid(rel.Next)) {
@@ -159,6 +154,30 @@ namespace Walker {
 		auto view = m_Registry.view<TransformComponent, RelationshipComponent, MeshComponent>();
 		for (auto entity : view)
 		{
+			auto [transform, relationship, mesh] = view.get<TransformComponent, RelationshipComponent, MeshComponent>(entity);
+
+			glm::mat4 globalTransform = transform.GetTransform();
+
+			// TODO: Persistently track global transform instead of calculating before drawing
+			Entity parent = relationship.Parent;
+			while (parent) {
+				glm::mat4 parentTransform = parent.GetComponent<TransformComponent>().GetTransform();
+				globalTransform = parentTransform * globalTransform;
+				parent = parent.GetComponent<RelationshipComponent>().Parent;
+				//globalTransform = globalTransform * parentTransform;
+			}
+
+			mesh.MeshPtr->Draw(shader, globalTransform);
+		}
+	}
+	void Scene::DrawEditor(std::shared_ptr<Shader> shader)
+	{
+		shader->SetMat4("view", m_ActiveCamera->GetViewMatrix());
+		shader->SetMat4("projection", m_ActiveCamera->GetProjectionMatrix());
+		auto view = m_Registry.view<TransformComponent, RelationshipComponent, MeshComponent>();
+		for (auto entity : view)
+		{
+			shader->SetInt("entityId", (int32_t) entity);
 			auto [transform, relationship, mesh] = view.get<TransformComponent, RelationshipComponent, MeshComponent>(entity);
 
 			glm::mat4 globalTransform = transform.GetTransform();
