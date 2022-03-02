@@ -23,6 +23,7 @@ namespace Walker {
 		// Temporary
 		void DrawModel(Model& model, glm::mat4 view, glm::mat4 projection) const;
 		virtual void DrawScene(Scene& scene) const override;
+		virtual std::shared_ptr<Framebuffer> GetFramebuffer() const override;
 		uint32_t GetFramebufferId() const { return m_Framebuffer->GetId(); }
 		void BindTextures();
 

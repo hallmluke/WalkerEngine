@@ -118,6 +118,11 @@ namespace Walker {
 		m_Quad.Draw();
 	}
 
+	std::shared_ptr<Framebuffer> DeferredPBRLightingPass::GetFramebuffer() const
+	{
+		return m_Framebuffer;
+	}
+
 	void DeferredPBRLightingPass::BindTextures()
 	{
 

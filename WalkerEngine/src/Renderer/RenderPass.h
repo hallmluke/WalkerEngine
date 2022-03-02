@@ -34,7 +34,7 @@ namespace Walker {
 		virtual void Draw() const = 0;
 		virtual void DrawScene(Scene& scene) const = 0;
 
-		virtual Framebuffer GetFramebuffer() const = 0;
+		virtual std::shared_ptr<Framebuffer> GetFramebuffer() const = 0;
 
 		virtual std::vector<RenderPassInput> GetInputs() const = 0;
 		virtual RenderPassInput GetInput(std::string name) const = 0;

@@ -26,6 +26,7 @@ namespace Walker {
 		virtual uint32_t GetFinalOutputRendererId() const override;
 
 		virtual void DrawScene(Scene& scene) const override;
+		virtual std::shared_ptr<Framebuffer> GetFramebuffer() const override;
 		uint32_t GetFramebufferId() const { return m_Framebuffer->GetId(); }
 		void BindTextures();
 

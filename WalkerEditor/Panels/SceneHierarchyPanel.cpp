@@ -254,7 +254,7 @@ namespace Walker {
 
 		DrawComponent<MeshComponent>("Mesh", entity, [](auto& component) {
 			auto& mesh = component.MeshPtr;
-			auto& mat = mesh->GetMaterial();
+			auto mat = mesh->GetMaterial();
 			ImVec2 texSize{ 50, 50 };
 
 			ImGui::Text("Material");

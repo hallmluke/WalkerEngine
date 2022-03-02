@@ -296,7 +296,7 @@ namespace Walker {
 		out << YAML::BeginMap;
 		out << YAML::Key << "Scene" << YAML::Value << "Untitled";
 		out << YAML::Key << "Materials" << YAML::Value << YAML::BeginSeq;
-		auto& materials = m_Scene->m_MaterialLibrary.GetMaterials();
+		auto materials = m_Scene->m_MaterialLibrary.GetMaterials();
 		for (auto& mat : materials) {
 			SerializeMaterial(out, *mat);
 		}
@@ -442,7 +442,7 @@ namespace Walker {
 			Entity prev;
 			Entity current;
 
-			for (auto& entity : children) {
+			for (auto entity : children) {
 				current = DeserializeEntity(entity);
 				
 				if (!rel.First) {

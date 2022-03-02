@@ -105,6 +105,10 @@ namespace Walker {
 
 		m_Quad.Draw();
 	}
+	std::shared_ptr<Framebuffer> BoxBlurPass::GetFramebuffer() const
+	{
+		return m_Framebuffer;
+	}
 	uint32_t BoxBlurPass::GetFinalOutputRendererId() const
 	{
 		return m_Framebuffer->GetColorAttachmentRendererID();

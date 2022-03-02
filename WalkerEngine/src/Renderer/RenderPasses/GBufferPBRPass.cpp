@@ -77,6 +77,11 @@ namespace Walker {
         scene.DrawMeshes(m_Shader);
 	}
 
+    std::shared_ptr<Framebuffer> GBufferPBRPass::GetFramebuffer() const
+    {
+        return m_Framebuffer;
+    }
+
     void GBufferPBRPass::BindTextures()
     {
         m_Framebuffer->BindColorAttachment(0, 0);

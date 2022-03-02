@@ -31,7 +31,7 @@ namespace Walker {
 		m_RenderPasses = std::vector<std::shared_ptr<RenderPass>>();
 
 		for (auto& renderPassSpec : spec.RenderPasses) {
-			auto& renderPass = Utils::RenderPassTypeToRenderPass(renderPassSpec.Type, m_ViewportWidth, m_ViewportHeight);
+			auto renderPass = Utils::RenderPassTypeToRenderPass(renderPassSpec.Type, m_ViewportWidth, m_ViewportHeight);
 			m_RenderPasses.push_back(renderPass);
 			m_NameToPass[renderPassSpec.Name] = renderPass;
 		}

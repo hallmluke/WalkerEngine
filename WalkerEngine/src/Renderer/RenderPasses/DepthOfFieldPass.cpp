@@ -118,6 +118,11 @@ namespace Walker {
 		m_Quad.Draw();
 	}
 
+	std::shared_ptr<Framebuffer> DepthOfFieldPass::GetFramebuffer() const
+	{
+		return m_Framebuffer;
+	}
+
 	uint32_t DepthOfFieldPass::GetFinalOutputRendererId() const
 	{
 		return m_Framebuffer->GetColorAttachmentRendererID();

@@ -46,7 +46,7 @@ set_property(TARGET ImGui PROPERTY FOLDER External)
 add_subdirectory(vendor/stb)
 set_property(TARGET stb PROPERTY FOLDER External)
 
-set(YAML_BUILD_SHARED_LIBS ON CACHE BOOL "Use static lib for yaml-cpp")
+set(YAML_BUILD_SHARED_LIBS OFF CACHE BOOL "Use static lib for yaml-cpp")
 add_subdirectory(vendor/yaml-cpp)
 set_property(TARGET yaml-cpp PROPERTY FOLDER External)
 set_property(TARGET format PROPERTY FOLDER External)

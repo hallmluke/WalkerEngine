@@ -69,6 +69,11 @@ namespace Walker {
 		scene.DrawMeshes(m_Shader);
 	}
 
+	std::shared_ptr<Framebuffer> EditorPass::GetFramebuffer() const
+	{
+		return m_Framebuffer;
+	}
+
 	void EditorPass::BindTextures()
 	{
 	}

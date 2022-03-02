@@ -22,6 +22,7 @@ namespace Walker {
 		virtual void LinkToInput(std::string inputName, RenderPassOutput output) override;
 
 		virtual void DrawScene(Scene& scene) const override;
+		virtual std::shared_ptr<Framebuffer> GetFramebuffer() const override;
 
 		virtual uint32_t GetFinalOutputRendererId() const override;
 

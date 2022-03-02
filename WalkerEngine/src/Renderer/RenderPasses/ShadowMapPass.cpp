@@ -37,6 +37,10 @@ namespace Walker {
 			lights[i]->GenerateShadowMap(scene, positions[i]);
 		}
 	}
+	std::shared_ptr<Framebuffer> ShadowMapPass::GetFramebuffer() const
+	{
+		return nullptr;
+	}
 	uint32_t ShadowMapPass::GetFinalOutputRendererId() const
 	{
 		// No final output

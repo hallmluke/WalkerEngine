@@ -23,6 +23,8 @@ namespace Walker {
 
 		virtual void DrawScene(Scene& scene) const override;
 
+		virtual std::shared_ptr<Framebuffer> GetFramebuffer() const override;
+
 		virtual uint32_t GetFinalOutputRendererId() const override;
 
 		virtual void Resize(uint32_t width, uint32_t height) override;
