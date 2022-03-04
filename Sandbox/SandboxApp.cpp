@@ -1,19 +1,23 @@
 #include <Walker.h>
+#include "Core/EntryPoint.h"
+#include "SandboxLayer.h"
 
-class Sandbox : public Walker::Application
-{
-public:
-	Sandbox()
+namespace Walker {
+	class Sandbox : public Application
 	{
+	public:
+		Sandbox() : Application("Sandbox")
+		{
+			PushLayer(new SandboxLayer());
+		}
 
+		~Sandbox()
+		{
+
+		}
+	};
+
+	Application* CreateApplication() {
+		return new Sandbox();
 	}
-
-	~Sandbox()
-	{
-
-	}
-};
-
-Walker::Application* Walker::CreateApplication() {
-	return new Sandbox();
 }

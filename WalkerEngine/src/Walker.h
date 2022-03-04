@@ -21,3 +21,6 @@
 #include "Renderer/RenderGraph.h"
 #include "Renderer/Shader.h"
 #include "Renderer/Texture.h"
+#include "Renderer/ComputeShader.h"
+
+#include "Math/SampleGeometry/Quad.h"

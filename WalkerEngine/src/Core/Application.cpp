@@ -78,18 +78,6 @@ namespace Walker {
 			m_LastFrameTime = time;
 			imguiManager.BeginFrame();
 
-			//scene.EntityDebugPanel();
-			//renderGraph.DrawScene(scene);
-			
-			/*
-			TODO: Render graph support for copying depth buffer
-			glBindFramebuffer(GL_READ_FRAMEBUFFER, gBufferPBRPass.GetFramebufferId());
-			glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0); // write to default framebuffer
-			glBlitFramebuffer(0, 0, m_Window->GetWidth(), m_Window->GetHeight(), 0, 0, m_Window->GetWidth(), m_Window->GetHeight(),
-				GL_DEPTH_BUFFER_BIT, GL_NEAREST);*/
-
-			//skybox.Draw(scene.GetCamera()->GetViewMatrix(), scene.GetCamera()->GetProjectionMatrix());
-
 			for (Layer* layer : m_LayerStack) {
 				layer->OnUpdate(timestep);
 				layer->OnImGuiRender();
