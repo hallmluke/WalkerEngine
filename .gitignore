@@ -16,9 +16,8 @@ bld/
 # Visual Studio cache/options directory
 .vs/
 
-WalkerEngine/Models/Cerberus/
-WalkerEngine/Models/bathroom/
-Sandbox/Models
+Shared/Assets/Models/
+!Shared/Assets/Models/SponzaPBR
 
 CMakeLists.txt.user
 CMakeCache.txt
