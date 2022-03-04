@@ -20,7 +20,7 @@ namespace Walker {
 		m_Framebuffer = Framebuffer::Create(fbSpec);
 
 		m_Shader = Shader::Create("Editor", "Shaders/editor.vert", "Shaders/editor.frag");
-
+		m_OutlineShader = Shader::Create("Outline", "Shaders/outline.vert", "Shaders/outline.frag");
 	}
 
 	void EditorPass::BindInputs() const
@@ -66,7 +66,7 @@ namespace Walker {
 		m_Framebuffer->Bind();
 		RenderCommand::Clear();
 		m_Shader->Bind();
-		scene.DrawEditor(m_Shader);
+		scene.DrawEditor(m_Shader, m_OutlineShader);
 	}
 
 	std::shared_ptr<Framebuffer> EditorPass::GetFramebuffer() const

@@ -77,4 +77,7 @@ namespace Walker {
 		glBindTexture(GL_TEXTURE_CUBE_MAP, m_RendererID);
 		glActiveTexture(GL_TEXTURE0);
 	}
+	void OpenGLTextureCubeMap::BindImage(uint32_t slot) const
+	{
+	}
 }

@@ -15,6 +15,7 @@ namespace Walker {
 		void DrawComponents(Entity entity);
 
 		void SetContext(const std::shared_ptr<Scene>& scene);
+		void SetSelectedEntity(Entity entity);
 	private:
 		std::shared_ptr<Scene> m_Context;
 		Entity m_SelectionContext;

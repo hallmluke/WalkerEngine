@@ -27,7 +27,7 @@ namespace Walker {
 		});
 
 		if (ImGui::IsMouseDown(0) && ImGui::IsWindowHovered()) {
-			m_SelectionContext = {};
+			SetSelectedEntity(Entity());
 		}
 
 		if (ImGui::BeginPopupContextWindow(0, 1, false))
@@ -66,7 +66,7 @@ namespace Walker {
 		bool opened = ImGui::TreeNodeEx((void*)(uint64_t)(uint32_t)entity, flags, tag.c_str());
 
 		if (ImGui::IsItemClicked()) {
-			m_SelectionContext = entity;
+			SetSelectedEntity(entity);
 		}
 
 		bool entityDeleted = false;
@@ -96,7 +96,7 @@ namespace Walker {
 		if (entityDeleted) {
 			m_Context->DestroyEntity(entity);
 			if (m_SelectionContext == entity) {
-				m_SelectionContext = {};
+				SetSelectedEntity(Entity());
 			}
 		}
 	}
@@ -280,6 +280,12 @@ namespace Walker {
 	{
 		m_Context = scene;
 		m_SelectionContext = {};
+	}
+
+	void SceneHierarchyPanel::SetSelectedEntity(Entity entity)
+	{
+		m_SelectionContext = entity;
+		m_Context->SetSelectedEntity(entity);
 	}
 
 }

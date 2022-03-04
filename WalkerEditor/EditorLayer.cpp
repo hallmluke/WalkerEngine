@@ -52,9 +52,9 @@ namespace Walker {
 		m_ActiveScene->OnUpdate(ts);
 		m_RenderGraph->DrawScene(*m_ActiveScene);
 
-		m_RenderGraph->GetRenderPass("EditorPass")->GetFramebuffer()->ClearAttachment(1, -1);
+		//m_RenderGraph->GetRenderPass("EditorPass")->GetFramebuffer()->ClearAttachment(1, -1);
 
-		auto [mx, my] = ImGui::GetMousePos();
+		/*auto [mx, my] = ImGui::GetMousePos();
 		mx -= m_ViewportBounds[0].x;
 		my -= m_ViewportBounds[0].y;
 		glm::vec2 viewportSize = m_ViewportBounds[1] - m_ViewportBounds[0];
@@ -68,8 +68,8 @@ namespace Walker {
 			m_HoveredEntity = pixelData == -1 ? Entity() : Entity((entt::entity)pixelData, m_ActiveScene.get());
 		}
 
-		W_CORE_TRACE("Mouse: {0}, {1}", mouseX, mouseY);
-		W_CORE_TRACE("Hovered entity: {0}", (uint32_t) m_HoveredEntity);
+		W_CORE_TRACE("Mouse: {0}, {1}", mouseX, mouseY);*/
+		
 
 
 		RenderCommand::BindDefaultFramebuffer();
@@ -143,7 +143,11 @@ namespace Walker {
 					// TODO Application close
 					//Application::Get().Close
 				}
+
+				ImGui::EndMenu();
 			}
+
+			ImGui::EndMenuBar();
 		}
 
 		m_SceneHierarchyPanel.OnImGuiRender();
@@ -151,6 +155,12 @@ namespace Walker {
 
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{ 0, 0 });
 		ImGui::Begin("Viewport");
+		auto viewportMinRegion = ImGui::GetWindowContentRegionMin();
+		auto viewportMaxRegion = ImGui::GetWindowContentRegionMax();
+		auto viewportOffset = ImGui::GetWindowPos();
+		m_ViewportBounds[0] = { viewportMinRegion.x + viewportOffset.x, viewportMinRegion.y + viewportOffset.y };
+		m_ViewportBounds[1] = { viewportMaxRegion.x + viewportOffset.x, viewportMaxRegion.y + viewportOffset.y };
+
 		ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
 		m_ViewportSize.x = viewportPanelSize.x;
 		m_ViewportSize.y = viewportPanelSize.y;
@@ -164,17 +174,50 @@ namespace Walker {
 		ImGui::PopStyleVar();
 		ImGui::End();
 	}
+
 	void EditorLayer::OnEvent(Event& e)
 	{
+		m_ActiveScene->GetCamera()->OnEvent(e);
+
+		EventDispatcher dispatcher(e);
+		dispatcher.Dispatch<MouseButtonPressedEvent>(BIND_EVENT_FN(EditorLayer::OnMouseButtonPressed));
+		dispatcher.Dispatch<KeyPressedEvent>(BIND_EVENT_FN(EditorLayer::OnKeyPressed));
 	}
+
 	bool EditorLayer::OnKeyPressed(KeyPressedEvent& e)
 	{
+		return false;
+	}
+
+	bool EditorLayer::OnMouseButtonPressed(MouseButtonPressedEvent& e)
+	{
+		if (e.GetMouseButton() == Mouse::ButtonLeft) {
+			auto [mx, my] = ImGui::GetMousePos();
+			mx -= m_ViewportBounds[0].x;
+			my -= m_ViewportBounds[0].y;
+			glm::vec2 viewportSize = m_ViewportBounds[1] - m_ViewportBounds[0];
+			my = viewportSize.y - my;
+			int mouseX = (int)mx;
+			int mouseY = (int)my;
+
+			if (mouseX >= 0 && mouseY >= 0 && mouseX < (int)viewportSize.x && mouseY < (int)viewportSize.y)
+			{
+				m_RenderGraph->GetRenderPass("EditorPass")->GetFramebuffer()->Bind();
+				int pixelData = m_RenderGraph->GetRenderPass("EditorPass")->GetFramebuffer()->ReadPixel(1, mouseX, mouseY);
+				m_HoveredEntity = pixelData == -1 ? Entity() : Entity((entt::entity)pixelData, m_ActiveScene.get());
+				m_SceneHierarchyPanel.SetSelectedEntity(m_HoveredEntity);
+				W_CORE_TRACE("Mouse: {0}, {1}", mouseX, mouseY);
+				W_CORE_TRACE("Hovered entity: {0}", (uint32_t)m_HoveredEntity);
+			}
+		}
+		
 		return false;
 	}
 
 	void EditorLayer::NewScene()
 	{
 		m_ActiveScene = std::make_shared<Scene>();
+		m_ActiveScene->OnViewportResize(m_ViewportSize.x, m_ViewportSize.y);
 		m_SceneHierarchyPanel.SetContext(m_ActiveScene);
 		m_MaterialPanel.SetContext(m_ActiveScene);
 	}
@@ -197,7 +240,7 @@ namespace Walker {
 		if (serializer.Deserialize(path.string()))
 		{
 			m_ActiveScene = newScene;
-			//m_ActiveScene->OnViewportResize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
+			m_ActiveScene->OnViewportResize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
 			m_SceneHierarchyPanel.SetContext(m_ActiveScene);
 			m_MaterialPanel.SetContext(m_ActiveScene);
 		}

@@ -20,6 +20,33 @@ namespace Walker {
 			LESS,
 			LEQUAL
 		};
+
+		enum class StencilFunction
+		{
+			None = 0,
+			NEVER,
+			LESS,
+			LEQUAL,
+			GREATER,
+			GEQUAL,
+			EQUAL,
+			NOTEQUAL,
+			ALWAYS
+		};
+
+		enum class StencilOp
+		{
+			None = 0,
+			KEEP,
+			ZERO,
+			REPLACE,
+			INCR,
+			INCR_WRAP,
+			DECR,
+			DECR_WRAP,
+			INVERT
+		};
+
 	public:
 		virtual ~RendererAPI() = default;
 
@@ -35,7 +62,13 @@ namespace Walker {
 		virtual void EnableBackfaceCulling() = 0;
 		virtual void DisableBackfaceCulling() = 0;
 
+		virtual void EnableDepthTest() = 0;
+		virtual void DisableDepthTest() = 0;
 		virtual void SetDepthFunction(DepthFunction func) = 0;
+
+		virtual void SetStencilFunction(StencilFunction func, int32_t ref, uint32_t mask) = 0;
+		virtual void SetStencilMask(uint32_t mask) = 0;
+		virtual void SetStencilOp(StencilOp fail, StencilOp depthFail, StencilOp pass) = 0;
 
 		static API GetAPI() { return s_API; }
 		static std::unique_ptr<RendererAPI> Create();

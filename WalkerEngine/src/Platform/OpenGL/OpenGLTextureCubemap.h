@@ -19,6 +19,7 @@ namespace Walker {
 		virtual void SetData(void* data, uint32_t size) override;
 
 		virtual void Bind(uint32_t slot = 0) const override;
+		virtual void BindImage(uint32_t slot) const override;
 
 		virtual bool IsLoaded() const override { return m_IsLoaded; }
 

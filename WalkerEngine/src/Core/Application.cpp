@@ -39,6 +39,13 @@ namespace Walker {
 	{
 		EventDispatcher dispatcher(e);
 		dispatcher.Dispatch<WindowCloseEvent>(BIND_EVENT_FN(Application::OnWindowClose));
+
+		for (auto it = m_LayerStack.rbegin(); it != m_LayerStack.rend(); ++it)
+		{
+			if (e.Handled)
+				break;
+			(*it)->OnEvent(e);
+		}
 		//W_CORE_TRACE("{0}", e.ToString());
 	}
 
@@ -64,7 +71,7 @@ namespace Walker {
 
 		while (m_Running) {
 
-			RenderCommand::Clear();
+			//RenderCommand::Clear();
 
 			float time = (float)glfwGetTime();
 			float timestep = time - m_LastFrameTime;

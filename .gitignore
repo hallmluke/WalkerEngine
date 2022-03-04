@@ -42,3 +42,6 @@ spdlog.pc
 **/*.vcxproj.filters
 **/*.vcxproj.user
 **/*.sln
+
+**/*.wmesh
+**/*.walker

@@ -125,4 +125,9 @@ namespace Walker {
 		glActiveTexture(GL_TEXTURE0);
 		//glBindTextureUnit(slot, m_RendererID);
 	}
+	void OpenGLTexture2D::BindImage(uint32_t slot) const
+	{
+		// TODO: Paramters to pass through
+		glBindImageTexture(slot, m_RendererID, 0, GL_FALSE, 0, GL_WRITE_ONLY, m_DataFormat);
+	}
 }

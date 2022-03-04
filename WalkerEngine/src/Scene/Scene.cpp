@@ -87,37 +87,9 @@ namespace Walker {
 		m_ActiveCamera->OnUpdate(timestep);
 	}
 
-	void Scene::EntityDebugPanel()
+	void Scene::OnViewportResize(uint32_t width, uint32_t height)
 	{
-		if (ImGui::Begin("Scene Panel")) {
-
-			auto view = m_Registry.view<TagComponent, TransformComponent, RelationshipComponent>();
-			for (auto entity : view)
-			{
-				auto [tag, transform, relationship] = view.get<TagComponent, TransformComponent, RelationshipComponent>(entity);
-				ImGui::Text(tag.Tag.c_str());
-				if (relationship.Parent) {
-					ImGui::Text(("Parent: " + relationship.Parent.GetComponent<TagComponent>().Tag).c_str());
-				}
-				if (relationship.First) {
-					ImGui::Text(("First: " + relationship.First.GetComponent<TagComponent>().Tag).c_str());
-				}
-				if (relationship.Next) {
-					ImGui::Text(("Next: " + relationship.Next.GetComponent<TagComponent>().Tag).c_str());
-				}
-				if (relationship.Previous) {
-					ImGui::Text(("Previous: " + relationship.Previous.GetComponent<TagComponent>().Tag).c_str());
-				}
-
-				ImGui::Text("Transform");
-				ImGui::Text(("Position: " + glm::to_string(transform.Translation)).c_str());
-				ImGui::Text(("Rotation: " + glm::to_string(transform.Rotation)).c_str());
-				ImGui::Text(("Scale: " + glm::to_string(transform.Scale)).c_str());
-				
-				ImGui::Separator();
-			}
-		}
-		ImGui::End();
+		m_ActiveCamera->ResizeViewport(width, height);
 	}
 
 	std::vector<std::shared_ptr<PointLight>> Scene::GetPointLights(std::vector<glm::vec3>& positions)
@@ -170,11 +142,18 @@ namespace Walker {
 			mesh.MeshPtr->Draw(shader, globalTransform);
 		}
 	}
-	void Scene::DrawEditor(std::shared_ptr<Shader> shader)
+	void Scene::DrawEditor(std::shared_ptr<Shader> shader, std::shared_ptr<Shader> outlineShader)
 	{
+		shader->Bind();
 		shader->SetMat4("view", m_ActiveCamera->GetViewMatrix());
 		shader->SetMat4("projection", m_ActiveCamera->GetProjectionMatrix());
 		auto view = m_Registry.view<TransformComponent, RelationshipComponent, MeshComponent>();
+
+		
+		Entity m_SelectedEntity = Entity{ (entt::entity) m_SelectedEntityId, this };
+
+		RenderCommand::SetStencilMask(0x00);
+
 		for (auto entity : view)
 		{
 			shader->SetInt("entityId", (int32_t) entity);
@@ -191,7 +170,51 @@ namespace Walker {
 				//globalTransform = globalTransform * parentTransform;
 			}
 
+			if (m_SelectedEntity != entity) {
+				mesh.MeshPtr->Draw(shader, globalTransform);
+			}
+		}
+
+		if (m_SelectedEntity.ValidEntity() && m_SelectedEntity.HasComponent<MeshComponent>()) {
+
+			RenderCommand::SetStencilFunction(RendererAPI::StencilFunction::ALWAYS, 1, 0xFF);
+			RenderCommand::SetStencilMask(0xFF);
+
+			auto transform = m_SelectedEntity.GetComponent<TransformComponent>();
+			auto relationship = m_SelectedEntity.GetComponent<RelationshipComponent>();
+			auto mesh = m_SelectedEntity.GetComponent<MeshComponent>();
+
+			shader->SetInt("entityId", (int32_t)m_SelectedEntity);
+
+			glm::mat4 globalTransform = transform.GetTransform();
+
+			// TODO: Persistently track global transform instead of calculating before drawing
+			Entity parent = relationship.Parent;
+			while (parent) {
+				glm::mat4 parentTransform = parent.GetComponent<TransformComponent>().GetTransform();
+				globalTransform = parentTransform * globalTransform;
+				parent = parent.GetComponent<RelationshipComponent>().Parent;
+				//globalTransform = globalTransform * parentTransform;
+			}
+
 			mesh.MeshPtr->Draw(shader, globalTransform);
+
+			outlineShader->Bind();
+			outlineShader->SetMat4("view", m_ActiveCamera->GetViewMatrix());
+			outlineShader->SetMat4("projection", m_ActiveCamera->GetProjectionMatrix());
+			outlineShader->SetInt("entityId", m_SelectedEntityId);
+
+			RenderCommand::SetStencilFunction(RendererAPI::StencilFunction::NOTEQUAL, 1, 0xFF);
+			RenderCommand::SetStencilMask(0x00);
+			//RenderCommand::DisableDepthTest();
+			RenderCommand::DisableBackfaceCulling();
+
+			//globalTransform = glm::scale(globalTransform, glm::vec3(1.01, 1.01f, 1.01f));
+			mesh.MeshPtr->Draw(outlineShader, globalTransform);
+
+			RenderCommand::SetStencilFunction(RendererAPI::StencilFunction::ALWAYS, 0, 0xFF);
+			//RenderCommand::EnableDepthTest();
+			RenderCommand::EnableBackfaceCulling();
 		}
 	}
 }

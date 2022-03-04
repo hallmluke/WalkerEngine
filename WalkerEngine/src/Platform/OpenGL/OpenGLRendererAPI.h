@@ -20,7 +20,13 @@ namespace Walker {
 		virtual void EnableBackfaceCulling() override;
 		virtual void DisableBackfaceCulling() override;
 
+		virtual void EnableDepthTest() override;
+		virtual void DisableDepthTest() override;
 		virtual void SetDepthFunction(DepthFunction func) override;
+
+		virtual void SetStencilFunction(StencilFunction func, int32_t ref, uint32_t mask) override;
+		virtual void SetStencilMask(uint32_t mask) override;
+		virtual void SetStencilOp(StencilOp fail, StencilOp depthFail, StencilOp pass) override;
 	};
 
 

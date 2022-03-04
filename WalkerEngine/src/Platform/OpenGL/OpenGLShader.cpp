@@ -2,10 +2,8 @@
 
 #include <fstream>
 #include <filesystem>
+#include <GLM/gtc/type_ptr.hpp>
 #include "OpenGLShader.h"
-#include "Scene/PointLight.h"
-#include "Scene/DirectionalLight.h"
-#include "Scene/Camera.h"
 
 namespace Walker {
 
@@ -156,27 +154,6 @@ namespace Walker {
     {
         glUniform3f(GetUniformLocation(name), value.x, value.y, value.z);
     }
-
-    /*void OpenGLShader::SetPointLightProperties(PointLight light)
-    {
-        SetVec3("pointLight.position", light.position);
-        SetVec3("pointLight.ambient", glm::vec3(light.ambientIntensity));
-        SetVec3("pointLight.diffuse", glm::vec3(light.diffuseIntensity));
-        SetVec3("pointLight.specular", glm::vec3(light.specularIntensity));
-        SetFloat("pointLight.constant", light.constantAttenuation);
-        SetFloat("pointLight.linear", light.linearAttenuation);
-        SetFloat("pointLight.quadratic", light.quadraticAttenuation);
-
-        if (light.shadowMapEnabled) {
-            glActiveTexture(GL_TEXTURE4);
-            glBindTexture(GL_TEXTURE_CUBE_MAP, light.depthCubeMap);
-            SetInt("pointLight.depthMap", 4);
-            SetFloat("pointLight.far_plane", light.farPlane);
-            SetFloat("pointLight.bias", light.bias);
-        }
-
-        SetBool("debugShadow", light.debugShadow);
-    }*/
 
     void OpenGLShader::CheckCompileErrors(GLuint shader, std::string type)
     {

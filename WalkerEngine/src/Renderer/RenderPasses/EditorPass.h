@@ -33,6 +33,7 @@ namespace Walker {
 	private:
 		std::shared_ptr<Framebuffer> m_Framebuffer;
 		std::shared_ptr<Shader> m_Shader;
+		std::shared_ptr<Shader> m_OutlineShader;
 		std::vector<RenderPassInput> m_Inputs = {};
 		std::vector<RenderPassOutput> m_Outputs = { {"gColor", 0, this }, {"gEntities", 1, this } };
 	};

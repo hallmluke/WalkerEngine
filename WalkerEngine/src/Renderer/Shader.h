@@ -1,13 +1,9 @@
 #pragma once
 
 #include <string>
-
 #include <vector>
 #include <unordered_map>
 #include <glm/glm.hpp>
-#include "Scene/DirectionalLight.h"
-#include "Scene/PointLight.h"
-#include "Scene/Camera.h"
 
 namespace Walker {
 

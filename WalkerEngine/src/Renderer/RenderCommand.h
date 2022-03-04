@@ -52,9 +52,34 @@ namespace Walker {
 			s_RendererAPI->DisableBackfaceCulling();
 		}
 
+		static void EnableDepthTest()
+		{
+			s_RendererAPI->EnableDepthTest();
+		}
+
+		static void DisableDepthTest() 
+		{
+			s_RendererAPI->DisableDepthTest();
+		}
+
 		static void SetDepthFunction(RendererAPI::DepthFunction func)
 		{
 			s_RendererAPI->SetDepthFunction(func);
+		}
+
+		static void SetStencilFunction(RendererAPI::StencilFunction func, int32_t ref, uint32_t mask)
+		{
+			s_RendererAPI->SetStencilFunction(func, ref, mask);
+		}
+
+		static void SetStencilMask(uint32_t mask) 
+		{
+			s_RendererAPI->SetStencilMask(mask);
+		}
+
+		static void SetStencilOp(RendererAPI::StencilOp fail, RendererAPI::StencilOp depthFail, RendererAPI::StencilOp pass) 
+		{
+			s_RendererAPI->SetStencilOp(fail, depthFail, pass);
 		}
 	private:
 		static std::unique_ptr<RendererAPI> s_RendererAPI;
