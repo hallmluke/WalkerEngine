@@ -1,7 +1,9 @@
 FILE(GLOB_RECURSE SRCFILES src/*.cpp src/*.h)
-add_library(WalkerEngine ${SRCFILES})
+FILE(GLOB_RECURSE SHADERS ../Shared/Shaders/*.vert ../Shared/Shaders/*.frag ../Shared/Shaders/*.geom ../Shared/Shaders/*.comp)
+add_library(WalkerEngine ${SRCFILES} ${SHADERS})
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 source_group(TREE ${CMAKE_SOURCE_DIR} FILES ${SRCFILES})
+source_group(TREE ${CMAKE_SOURCE_DIR} FILES ${SHADERS})
 set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 20)
 
 include_directories(src/)
