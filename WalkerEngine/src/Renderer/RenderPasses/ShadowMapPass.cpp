@@ -11,9 +11,6 @@ namespace Walker {
 	void ShadowMapPass::BindOutput(uint32_t outputSlot, uint32_t inputSlot) const
 	{
 	}
-	void ShadowMapPass::Draw() const
-	{
-	}
 	RenderPassInput ShadowMapPass::GetInput(std::string name) const
 	{
 		return RenderPassInput();

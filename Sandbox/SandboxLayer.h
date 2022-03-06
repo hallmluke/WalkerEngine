@@ -29,7 +29,9 @@ namespace Walker {
 
 	private:
 		std::shared_ptr<ComputeShader> m_ComputeShader;
+		std::shared_ptr<ComputeShader> m_Prefilter;
 		std::shared_ptr<Texture> m_ComputeTexture;
+		std::shared_ptr<Texture> m_Half;
 		std::shared_ptr<Scene> m_ActiveScene;
 		std::shared_ptr<RenderGraph> m_RenderGraph;
 		Quad m_Quad;

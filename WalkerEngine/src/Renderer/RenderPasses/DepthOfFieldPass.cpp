@@ -40,10 +40,6 @@ namespace Walker {
 		m_Framebuffer->BindColorAttachment(outputSlot, inputSlot);
 	}
 
-	void DepthOfFieldPass::Draw() const
-	{
-	}
-
 	RenderPassInput DepthOfFieldPass::GetInput(std::string name) const
 	{
 		for (auto input : m_Inputs) {

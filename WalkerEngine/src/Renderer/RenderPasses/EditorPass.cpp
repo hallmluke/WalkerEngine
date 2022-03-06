@@ -33,10 +33,6 @@ namespace Walker {
 		m_Framebuffer->BindColorAttachment(outputSlot, inputSlot);
 	}
 
-	void EditorPass::Draw() const
-	{
-	}
-
 	RenderPassInput EditorPass::GetInput(std::string name) const
 	{
 		// No inputs

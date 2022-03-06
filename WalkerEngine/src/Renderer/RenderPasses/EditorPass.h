@@ -12,7 +12,6 @@ namespace Walker {
 		EditorPass(uint32_t width, uint32_t height);
 		virtual void BindInputs() const override;
 		virtual void BindOutput(uint32_t outputSlot, uint32_t inputSlot) const override;
-		virtual void Draw() const override;
 		virtual std::vector<RenderPassInput> GetInputs() const override { return m_Inputs; };
 		virtual RenderPassInput GetInput(std::string name) const override;
 		virtual RenderPassOutput GetOutput(std::string name) const override;

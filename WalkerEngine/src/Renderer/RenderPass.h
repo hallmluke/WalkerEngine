@@ -29,22 +29,28 @@ namespace Walker {
 	public:
 		RenderPass() = default;
 		virtual ~RenderPass() = default;
-		virtual void BindInputs() const = 0;
+		virtual void BindInputs() const;
 		virtual void BindOutput(uint32_t outputSlot, uint32_t inputSlot) const = 0;
-		virtual void Draw() const = 0;
+		virtual void BindOutputImage(uint32_t outputSlot, uint32_t inputSlot) const = 0;
+
 		virtual void DrawScene(Scene& scene) const = 0;
 
 		virtual std::shared_ptr<Framebuffer> GetFramebuffer() const = 0;
 
-		virtual std::vector<RenderPassInput> GetInputs() const = 0;
-		virtual RenderPassInput GetInput(std::string name) const = 0;
-		virtual RenderPassOutput GetOutput(std::string name) const = 0;
+		virtual std::vector<RenderPassInput> GetInputs() const;
+		virtual RenderPassInput GetInput(std::string name) const;
+		virtual RenderPassOutput GetOutput(std::string name) const;
 
-		virtual void LinkToInput(std::string inputName, RenderPassOutput output) = 0;
+		virtual void LinkToInput(std::string inputName, RenderPassOutput output);
 
 		virtual void Resize(uint32_t width, uint32_t height) = 0;
 
 		// Temp
 		virtual uint32_t GetFinalOutputRendererId() const = 0;
+
+	protected:
+		std::vector<RenderPassInput> m_Inputs;
+		std::vector<RenderPassOutput> m_Outputs;
+		std::unordered_map<std::string, RenderPassOutput> m_Links;
 	};
 }

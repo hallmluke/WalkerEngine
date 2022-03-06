@@ -30,11 +30,6 @@ namespace Walker {
         m_Shader = Shader::Create("GBufferPBR", "Shaders/g_buffer.vert", "Shaders/test.frag");
     }
 
-    void GBufferPBRPass::Draw() const {
-        m_Framebuffer->Bind();
-        // Draw some objects
-    }
-
     RenderPassInput GBufferPBRPass::GetInput(std::string name) const
     {
         // TODO: Don't make pure virtual, default implementation?

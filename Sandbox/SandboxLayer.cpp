@@ -9,18 +9,24 @@ namespace Walker {
 	void SandboxLayer::OnAttach()
 	{
 		TextureSpecification spec;
-		spec.Width = 512;
-		spec.Height = 512;
+		spec.Width = 1280;
+		spec.Height = 720;
 		spec.WrapS = TextureWrapType::CLAMP_EDGE;
 		spec.WrapT = TextureWrapType::CLAMP_EDGE;
 		spec.MagFilter = TextureFilterType::LINEAR;
 		spec.MinFilter = TextureFilterType::LINEAR;
-		spec.TextureFormat = TextureFormat::RGBA32F;
+		spec.TextureFormat = TextureFormat::RGBA16F;
 		spec.Type = TextureType::FLOAT;
 
 		m_ComputeTexture = Texture2D::Create(spec);
 
+		spec.Width = spec.Width / 2;
+		spec.Height = spec.Height / 2;
+
+		m_Half = Texture2D::Create(spec);
+
 		m_ComputeShader = ComputeShader::Create("Comp", "Shaders/test.comp");
+		m_Prefilter = ComputeShader::Create("BloomPrefilter", "Shaders/bloomprefilter.comp");
 
 		m_DebugShader = Shader::Create("Debug", "Shaders/debug_quad.vert", "Shaders/debug_quad_input.frag");
 	}
@@ -37,9 +43,14 @@ namespace Walker {
 
 		m_ComputeShader->Barrier();
 
+		m_Half->BindImage(1);
+		m_Prefilter->Bind();
+		m_Prefilter->Dispatch(m_Half->GetWidth(), m_Half->GetHeight(), 1);
+		m_Prefilter->Barrier();
+
 		RenderCommand::Clear();
 		m_DebugShader->Bind();
-		m_ComputeTexture->Bind();
+		m_Half->Bind();
 		m_DebugShader->SetInt("u_Input", 0);
 
 		m_Quad.Draw();
