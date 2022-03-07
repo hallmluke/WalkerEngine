@@ -39,6 +39,11 @@ namespace Walker {
 		m_Framebuffer->BindColorAttachment(outputSlot, inputSlot);
 	}
 
+	void DeferredPBRLightingPass::BindOutputImage(uint32_t outputSlot, uint32_t inputSlot) const
+	{
+		m_Framebuffer->BindColorAttachmentImage(outputSlot, inputSlot);
+	}
+
 	RenderPassInput DeferredPBRLightingPass::GetInput(std::string name) const
 	{
 		for (auto input : m_Inputs) {

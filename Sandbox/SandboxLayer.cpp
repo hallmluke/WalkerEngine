@@ -8,7 +8,32 @@ namespace Walker {
 	}
 	void SandboxLayer::OnAttach()
 	{
-		TextureSpecification spec;
+		m_ActiveScene = std::make_shared<Scene>();
+		std::shared_ptr<Model> sponzaPBR = std::make_shared<Model>("SponzaPBR", "Models/SponzaPBR/Sponza.gltf", m_ActiveScene.get());
+
+		RenderGraphSpecification spec(
+			{ // Passes
+				{RenderPassType::ShadowMapPass, "ShadowMapPass"},
+				{RenderPassType::GBufferPBRPass, "GBufferPBRPass"},
+				{RenderPassType::DeferredPBRLightingPass, "DeferredPBRLightingPass"},
+				{RenderPassType::BloomCompute, "BloomCompute"}
+				//{RenderPassType::BoxBlurPass, "BoxBlurPass"},
+				//{RenderPassType::DepthOfFieldPass, "DepthOfFieldPass"} 
+			},
+			{ // Links
+				{ "GBufferPBRPass", "gPosition", "DeferredPBRLightingPass", "gPosition" },
+				{ "GBufferPBRPass", "gNormal", "DeferredPBRLightingPass", "gNormal" },
+				{ "GBufferPBRPass", "gAlbedo", "DeferredPBRLightingPass", "gAlbedo" },
+				{ "GBufferPBRPass", "gMetRoughAO", "DeferredPBRLightingPass", "gMetRoughAO" },
+				{ "DeferredPBRLightingPass", "gColor", "BloomCompute", "img_input" }
+				//{ "DeferredPBRLightingPass", "gColor", "BoxBlurPass", "u_ColorTexture" },
+				//{ "GBufferPBRPass", "gPosition", "DepthOfFieldPass", "u_Position" },
+				//{ "DeferredPBRLightingPass", "gColor", "DepthOfFieldPass", "u_InFocusColor" },
+				//{ "BoxBlurPass", "gColor", "DepthOfFieldPass", "u_OutOfFocusColor" } 
+			});
+
+		m_RenderGraph = std::make_shared<RenderGraph>(spec, 1280, 720);
+		/*TextureSpecification spec;
 		spec.Width = 1280;
 		spec.Height = 720;
 		spec.WrapS = TextureWrapType::CLAMP_EDGE;
@@ -26,7 +51,7 @@ namespace Walker {
 		m_Half = Texture2D::Create(spec);
 
 		m_ComputeShader = ComputeShader::Create("Comp", "Shaders/test.comp");
-		m_Prefilter = ComputeShader::Create("BloomPrefilter", "Shaders/bloomprefilter.comp");
+		m_Prefilter = ComputeShader::Create("BloomPrefilter", "Shaders/bloomprefilter.comp");*/
 
 		m_DebugShader = Shader::Create("Debug", "Shaders/debug_quad.vert", "Shaders/debug_quad_input.frag");
 	}
@@ -36,7 +61,7 @@ namespace Walker {
 
 	void SandboxLayer::OnUpdate(float ts)
 	{
-		m_ComputeShader->Bind();
+		/*m_ComputeShader->Bind();
 		m_ComputeTexture->BindImage();
 		m_ComputeShader->SetVec3("color", glm::vec3(0.0f, 0.0f, 1.0f));
 		m_ComputeShader->Dispatch(m_ComputeTexture->GetWidth(), m_ComputeTexture->GetHeight(), 1);
@@ -53,7 +78,18 @@ namespace Walker {
 		m_Half->Bind();
 		m_DebugShader->SetInt("u_Input", 0);
 
+		m_Quad.Draw();*/
+
+		m_ActiveScene->OnUpdate(ts);
+		m_RenderGraph->DrawScene(*m_ActiveScene);
+		RenderCommand::BindDefaultFramebuffer();
+
+		RenderCommand::Clear();
+		m_DebugShader->Bind();
+		m_RenderGraph->GetRenderPass("BloomCompute")->BindOutput(0, 0);
+		m_DebugShader->SetInt("u_Input", 0);
 		m_Quad.Draw();
+
 	}
 	void SandboxLayer::OnImGuiRender()
 	{

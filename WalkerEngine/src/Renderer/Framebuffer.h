@@ -87,6 +87,7 @@ namespace Walker {
 
 		virtual uint32_t GetColorAttachmentRendererID(uint32_t index = 0) const = 0;
 		virtual void BindColorAttachment(uint32_t index = 0, uint32_t slot = 0) const = 0;
+		virtual void BindColorAttachmentImage(uint32_t index = 0, uint32_t slot = 0) const = 0;
 		virtual void BindColorAttachment(std::string name, uint32_t slot = 0) const = 0;
 		virtual void BindDepthAttachment(uint32_t slot = 0) const = 0;
 

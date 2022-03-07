@@ -22,6 +22,7 @@ namespace Walker {
 
 		virtual uint32_t GetColorAttachmentRendererID(uint32_t index = 0) const override { /*W_CORE_ASSERT(index < m_ColorAttachments.size());*/ return m_ColorAttachments[index]; }
 		virtual void BindColorAttachment(uint32_t index = 0, uint32_t slot = 0) const override;
+		virtual void BindColorAttachmentImage(uint32_t index = 0, uint32_t slot = 0) const override;
 		virtual void BindColorAttachment(std::string name, uint32_t slot = 0) const override;
 		virtual void BindDepthAttachment(uint32_t slot = 0) const override;
 

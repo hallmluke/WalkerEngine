@@ -61,5 +61,5 @@ target_include_directories(${PROJECT_NAME} PUBLIC vendor/GLFW3 vendor/spdlog ven
 
 target_link_libraries(${PROJECT_NAME} PUBLIC glfw spdlog assimp ImGui Glad stb yaml-cpp)
 
-#TODO: Precompiled headers
+#TODO: Precompiled headers 
 #target_precompile_headers(WalkerEngine PRIVATE "$<$<COMPILE_LANGUAGE:CXX>:${CMAKE_CURRENT_SOURCE_DIR}/src/walkerpch.h>")

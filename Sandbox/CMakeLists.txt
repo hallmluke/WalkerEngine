@@ -20,5 +20,8 @@ add_custom_command(TARGET Sandbox POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_di
 add_custom_command(TARGET Sandbox POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/Shared/Assets/Skybox/ $<TARGET_FILE_DIR:Sandbox>/Skybox/)
 add_custom_command(TARGET Sandbox POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/Shared/Assets/Skybox/ $<TARGET_FILE_DIR:Sandbox>/../Skybox/)
 
-add_custom_command(TARGET Sandbox POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/Shared/Scenes/ $<TARGET_FILE_DIR:Sandbox>/Scenes/)
-add_custom_command(TARGET Sandbox POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/Shared/Scenes/ $<TARGET_FILE_DIR:Sandbox>/../Scenes/)
+add_custom_command(TARGET Sandbox POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/Shared/Assets/Fonts/ $<TARGET_FILE_DIR:Sandbox>/Fonts/)
+add_custom_command(TARGET Sandbox POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/Shared/Assets/Fonts/ $<TARGET_FILE_DIR:Sandbox>/../Fonts/)
+
+add_custom_command(TARGET Sandbox POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/Shared/Assets/Scenes/ $<TARGET_FILE_DIR:Sandbox>/Scenes/)
+add_custom_command(TARGET Sandbox POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/Shared/Assets/Scenes/ $<TARGET_FILE_DIR:Sandbox>/../Scenes/)

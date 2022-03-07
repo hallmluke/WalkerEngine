@@ -337,6 +337,11 @@ namespace Walker {
 		glBindTexture(GL_TEXTURE_2D, m_ColorAttachments[index]);
 	}
 
+	void OpenGLFramebuffer::BindColorAttachmentImage(uint32_t index, uint32_t slot) const
+	{
+		glBindImageTexture(slot, m_ColorAttachments[index], 0, GL_FALSE, 0, GL_READ_ONLY, Utils::WalkerFBTextureInternalFormatToGL(m_ColorAttachmentSpecifications[index].TextureFormat));
+	}
+
 	void OpenGLFramebuffer::BindColorAttachment(std::string name, uint32_t slot) const
 	{
 		// TODO: Optimize, store in map?

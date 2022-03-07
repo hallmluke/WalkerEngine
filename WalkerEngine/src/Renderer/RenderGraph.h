@@ -11,7 +11,8 @@ namespace Walker {
 		DeferredPBRLightingPass,
 		BoxBlurPass,
 		DepthOfFieldPass,
-		EditorPass
+		EditorPass,
+		BloomCompute
 	};
 
 	struct RenderPassSpec {
