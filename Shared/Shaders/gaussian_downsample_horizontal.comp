@@ -7,7 +7,6 @@ layout(rgba16f, binding = 1) uniform image2D img_output;
 uniform float offset[5] = float[](0.0, 1.0, 2.0, 3.0, 4.0);
 uniform float weight[5] = float[](0.2270270270, 0.1945945946, 0.1216216216,
                                   0.0540540541, 0.0162162162);
-uniform float threshold = 0.7;
 
 void main() {
 
@@ -23,11 +22,6 @@ void main() {
         pixel += imageLoad(img_input, ivec2(up_coords + vec2(0.0, offset[i]))) * weight[i];
         pixel += imageLoad(img_input, ivec2(up_coords - vec2(0.0, offset[i]))) * weight[i];
     }
-
-	float brightness = dot(pixel.xyz, vec3(0.2126, 0.7152, 0.0722));
-	if(brightness < threshold) {
-		pixel = vec4(0.0, 0.0, 0.0, 1.0);
-	}
 
 	imageStore(img_output, pixel_coords, pixel);
 }

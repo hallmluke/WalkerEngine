@@ -12,7 +12,7 @@ namespace Walker {
 	{
 		m_Name = "Directional Light";
 		m_AmbientIntensity = 0.1f;
-		m_DiffuseIntensity = 3.0f;
+		m_DiffuseIntensity = 8.0f;
 		m_SpecularIntensity = 1.0f;
 		m_Color = glm::vec3(0.8f);
 

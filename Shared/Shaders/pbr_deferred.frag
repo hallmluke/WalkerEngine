@@ -150,15 +150,15 @@ void main()
 
     //float averageAO = (AO + SSAO) / 2;
     vec3 ambient = vec3(0.03) * Albedo;
-    if(useAmbientOcclusion) {
+    //if(useAmbientOcclusion) {
         //ambient = ambient * SSAO;
-    }
+    //}
     //vec3 ambient = vec3(0.03) * Albedo * averageAO;
     vec3 color = ambient + Lo;
 
-    color = color / (color + vec3(1.0)); // Tone map (HDR)
-    color = pow(color, vec3(1.0/2.2)); // Gamma correct
-    color = clamp(color, 0.0, 1.0);
+    //color = color / (color + vec3(1.0)); // Tone map (HDR)
+    //color = pow(color, vec3(1.0/2.2)); // Gamma correct
+    //color = clamp(color, 0.0, 1.0);
     FragColor = vec4(color, 1.0);
     gColor = FragColor;
     //}

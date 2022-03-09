@@ -22,11 +22,14 @@ namespace Walker {
 		virtual void Resize(uint32_t width, uint32_t height) override;
 
 	private:
+		uint32_t m_Passes;
 		std::shared_ptr<Texture> m_Half;
 		std::shared_ptr<Texture> m_Quarter;
 		std::shared_ptr<Texture> m_Eigth;
+		std::vector<std::shared_ptr<Texture>> m_Textures;
 		std::shared_ptr<ComputeShader> m_Prefilter;
-		std::shared_ptr<ComputeShader> m_Downsample;
+		std::shared_ptr<ComputeShader> m_DownsampleVertical;
+		std::shared_ptr<ComputeShader> m_DownsampleHorizontal;
 		std::shared_ptr<ComputeShader> m_Upsample;
 	};
 }
