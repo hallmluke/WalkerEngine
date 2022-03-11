@@ -8,6 +8,7 @@
 #include "Renderer/RenderPasses/DepthOfFieldPass.h"
 #include "Renderer/RenderPasses/EditorPass.h"
 #include "Renderer/RenderPasses/BloomComputePass.h"
+#include "Renderer/RenderPasses/TonemapComputePass.h"
 
 namespace Walker {
 
@@ -21,6 +22,7 @@ namespace Walker {
 			case RenderPassType::DepthOfFieldPass: return std::make_shared<DepthOfFieldPass>(viewportWidth, viewportHeight);
 			case RenderPassType::EditorPass: return std::make_shared<EditorPass>(viewportWidth, viewportHeight);
 			case RenderPassType::BloomCompute: return std::make_shared<BloomComputePass>(viewportWidth, viewportHeight);
+			case RenderPassType::TonemapCompute: return std::make_shared<TonemapComputePass>(viewportWidth, viewportHeight);
 			}
 
 			return nullptr;

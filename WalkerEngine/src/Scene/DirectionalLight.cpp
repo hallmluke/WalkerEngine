@@ -142,54 +142,8 @@ namespace Walker {
 	void DirectionalLight::SetShadowCascadeLevels(float cameraFarPlane)
 	{
 		// TODO: Dynamic number of cascades
-		m_ShadowCascadeLevels = std::vector<float> { cameraFarPlane / 50.0f, cameraFarPlane / 25.0f, cameraFarPlane / 10.0f, cameraFarPlane / 2.0f };
+		m_ShadowCascadeLevels = std::vector<float> { cameraFarPlane / 50.0f, cameraFarPlane / 25.0f, cameraFarPlane / 20.0f, cameraFarPlane / 5.0f };
 	}
 
-	/*
-	void DirectionalLight::DrawDebug(Shader& shader)
-	{
-		if (!initialized) {
-			InitBuffers();
-		}
-
-		glBindVertexArray(VAO);
-
-		glm::mat4 model = glm::mat4(1.0f);
-		model = glm::translate(model, direction * -debugDistance);
-		model = glm::scale(model, glm::vec3(debugDrawSize));
-		shader.setMat4("model", model);
-
-		glDrawArrays(GL_TRIANGLES, 0, 36);
-	}
-
-	void DirectionalLight::ControlWindow()
-	{
-		if (ImGui::Begin(name)) {
-			ImGui::Text("Direction");
-			ImGui::SliderFloat("X", &direction.x, -1.0f, 1.0f);
-			ImGui::SliderFloat("Y", &direction.y, -1.0f, 1.0f);
-			ImGui::SliderFloat("Z", &direction.z, -1.0f, 1.0f);
-
-			ImGui::Text("Color");
-			ImGui::ColorPicker4("Color", (float*)&color);
-
-			ImGui::Text("Intensity");
-			ImGui::SliderFloat("Ambient Intensity", &ambientIntensity, 0.0f, 0.5f);
-			ImGui::SliderFloat("Diffuse Intensity", &diffuseIntensity, 0.0f, 20.0f);
-			ImGui::SliderFloat("Specular Intensity", &specularIntensity, 0.0f, 1.2f);
-
-			ImGui::Text("Shadow Mapping");
-			//ImGui::Checkbox("Enabled", &shadowMapEnabled);
-			//ImGui::Text("Bias");
-			ImGui::SliderFloat("Minimum Shadow Bias", &minimumShadowBias, 0.0001, 0.025);
-			//ImGui::SliderFloat("Shadow bias factor", &shadowBiasFactor, 0.001, 0.05);
-
-			ImGui::Text("Debug");
-			ImGui::Checkbox("Draw", &drawDebugEnabled);
-			ImGui::SliderFloat("Light scale", &debugDrawSize, 0.01f, 3.0f);
-			ImGui::SliderFloat("Distance", &debugDistance, 0.1f, 80.0f);
-		}
-		ImGui::End();
-	}*/
 
 }

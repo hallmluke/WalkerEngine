@@ -149,7 +149,8 @@ void main()
     Lo += CalcDirLight(dirLight, N, V, Albedo, Roughness, Metallic, F0, vec4(FragPos, 1.0));
 
     //float averageAO = (AO + SSAO) / 2;
-    vec3 ambient = vec3(0.03) * Albedo;
+    vec3 ambient = vec3(0.01) * Albedo;
+    //ambient = vec3(0.0);
     //if(useAmbientOcclusion) {
         //ambient = ambient * SSAO;
     //}

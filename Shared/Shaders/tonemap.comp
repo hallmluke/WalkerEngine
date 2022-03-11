@@ -1,14 +1,23 @@
 #version 450
-layout(local_size_x = 1, local_size_y = 1) in;
+layout(local_size_x = 32, local_size_y = 32) in;
 layout(rgba16f, binding = 0) uniform image2D img_input;
-layout(rgba16f, binding = 1) uniform image2D img_output;
+layout(rgba16f, binding = 1) uniform image2D bloom_input;
+layout(rgba16f, binding = 2) uniform image2D img_output;
+
+
+uniform float bloom_intensity = 0.1;
 
 void main() {
 
 	ivec2 pixel_coords = ivec2(gl_GlobalInvocationID.xy);
 
 	vec3 color = imageLoad(img_input, pixel_coords).xyz;
+	ivec2 bloom_coords = (pixel_coords * imageSize(bloom_input)) / imageSize(img_input);
 
+	vec4 bloom = imageLoad(bloom_input, bloom_coords);
+	vec3 bloomColor = bloom.xyz * bloom_intensity;
+
+	color += bloomColor;
 	color = color / (color + vec3(1.0)); // Tone map (HDR)
     color = pow(color, vec3(1.0/2.2)); // Gamma correct
     color = clamp(color, 0.0, 1.0);

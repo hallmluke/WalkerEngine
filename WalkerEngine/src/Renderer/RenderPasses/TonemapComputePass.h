@@ -6,9 +6,9 @@
 
 namespace Walker {
 
-	class BloomComputePass : public RenderPass {
+	class TonemapComputePass : public RenderPass {
 	public:
-		BloomComputePass(uint32_t width, uint32_t height);
+		TonemapComputePass(uint32_t width, uint32_t height);
 		virtual void BindInputs() const override;
 		virtual void BindOutput(uint32_t outputSlot, uint32_t inputSlot) const override;
 		virtual void BindOutputImage(uint32_t outputSlot, uint32_t inputSlot) const override;
@@ -22,11 +22,8 @@ namespace Walker {
 		virtual void Resize(uint32_t width, uint32_t height) override;
 
 	private:
-		uint32_t m_Passes;
-		std::vector<std::shared_ptr<Texture>> m_Textures;
-		std::shared_ptr<ComputeShader> m_Prefilter;
-		std::shared_ptr<ComputeShader> m_DownsampleVertical;
-		std::shared_ptr<ComputeShader> m_DownsampleHorizontal;
-		std::shared_ptr<ComputeShader> m_Upsample;
+		std::shared_ptr<Texture> m_Output;
+		std::shared_ptr<ComputeShader> m_TonemapShader;
+
 	};
 }

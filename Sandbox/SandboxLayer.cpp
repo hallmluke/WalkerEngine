@@ -16,7 +16,8 @@ namespace Walker {
 				{RenderPassType::ShadowMapPass, "ShadowMapPass"},
 				{RenderPassType::GBufferPBRPass, "GBufferPBRPass"},
 				{RenderPassType::DeferredPBRLightingPass, "DeferredPBRLightingPass"},
-				{RenderPassType::BloomCompute, "BloomCompute"}
+				{RenderPassType::BloomCompute, "BloomCompute"},
+				{RenderPassType::TonemapCompute, "TonemapCompute"}
 				//{RenderPassType::BoxBlurPass, "BoxBlurPass"},
 				//{RenderPassType::DepthOfFieldPass, "DepthOfFieldPass"} 
 			},
@@ -25,14 +26,16 @@ namespace Walker {
 				{ "GBufferPBRPass", "gNormal", "DeferredPBRLightingPass", "gNormal" },
 				{ "GBufferPBRPass", "gAlbedo", "DeferredPBRLightingPass", "gAlbedo" },
 				{ "GBufferPBRPass", "gMetRoughAO", "DeferredPBRLightingPass", "gMetRoughAO" },
-				{ "DeferredPBRLightingPass", "gColor", "BloomCompute", "img_input" }
+				{ "DeferredPBRLightingPass", "gColor", "BloomCompute", "img_input" },
+				{ "DeferredPBRLightingPass", "gColor", "TonemapCompute", "img_input"},
+				{ "BloomCompute", "img_output", "TonemapCompute", "bloom_input"}
 				//{ "DeferredPBRLightingPass", "gColor", "BoxBlurPass", "u_ColorTexture" },
 				//{ "GBufferPBRPass", "gPosition", "DepthOfFieldPass", "u_Position" },
 				//{ "DeferredPBRLightingPass", "gColor", "DepthOfFieldPass", "u_InFocusColor" },
 				//{ "BoxBlurPass", "gColor", "DepthOfFieldPass", "u_OutOfFocusColor" } 
 			});
 
-		m_RenderGraph = std::make_shared<RenderGraph>(spec, 1280, 720);
+		m_RenderGraph = std::make_shared<RenderGraph>(spec, 1600, 900);
 		/*TextureSpecification spec;
 		spec.Width = 1280;
 		spec.Height = 720;
@@ -86,7 +89,9 @@ namespace Walker {
 
 		RenderCommand::Clear();
 		m_DebugShader->Bind();
-		m_RenderGraph->GetRenderPass("BloomCompute")->BindOutput(0, 0);
+		m_RenderGraph->GetRenderPass("TonemapCompute")->BindOutput(2, 0);
+		//m_RenderGraph->GetRenderPass("DeferredPBRLightingPass")->BindOutput(0, 0);
+		
 		m_DebugShader->SetInt("u_Input", 0);
 		m_Quad.Draw();
 

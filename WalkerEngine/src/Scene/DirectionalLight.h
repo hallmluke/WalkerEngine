@@ -46,8 +46,8 @@ namespace Walker {
 		bool m_ShadowMapEnabled = true;
 		std::shared_ptr<Framebuffer> m_ShadowMapFramebuffer;
 		std::shared_ptr<UniformBuffer> m_LightMatricesUniformBuffer;
-		uint32_t m_ShadowMapWidth = 2048;
-		uint32_t m_ShadowMapHeight = 2048;
+		uint32_t m_ShadowMapWidth = 4096;
+		uint32_t m_ShadowMapHeight = 4096;
 		std::vector<float> m_ShadowCascadeLevels;
 		std::shared_ptr<Shader> m_ShadowMapShader;
 

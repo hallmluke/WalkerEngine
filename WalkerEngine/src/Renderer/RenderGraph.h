@@ -12,7 +12,8 @@ namespace Walker {
 		BoxBlurPass,
 		DepthOfFieldPass,
 		EditorPass,
-		BloomCompute
+		BloomCompute,
+		TonemapCompute
 	};
 
 	struct RenderPassSpec {
