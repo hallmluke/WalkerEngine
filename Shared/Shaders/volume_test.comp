@@ -1,0 +1,15 @@
+#version 450
+layout(local_size_x = 8, local_size_y = 8, local_size_z = 8) in;
+layout(rgba16f, binding = 0) uniform image3D volumeTex;
+
+void main() {
+
+	uvec3 pixel_coords = gl_GlobalInvocationID;
+
+	vec3 color = vec3(pixel_coords) / 128;
+
+	vec4 pixel = vec4(color, 0.2);
+
+	imageStore(volumeTex, ivec3(pixel_coords), pixel);
+
+}

@@ -11,7 +11,7 @@ namespace Walker {
 		m_ActiveScene = std::make_shared<Scene>();
 		std::shared_ptr<Model> sponzaPBR = std::make_shared<Model>("SponzaPBR", "Models/SponzaPBR/Sponza.gltf", m_ActiveScene.get());
 
-		RenderGraphSpecification spec(
+		/*RenderGraphSpecification spec(
 			{ // Passes
 				{RenderPassType::ShadowMapPass, "ShadowMapPass"},
 				{RenderPassType::GBufferPBRPass, "GBufferPBRPass"},
@@ -33,6 +33,13 @@ namespace Walker {
 				//{ "GBufferPBRPass", "gPosition", "DepthOfFieldPass", "u_Position" },
 				//{ "DeferredPBRLightingPass", "gColor", "DepthOfFieldPass", "u_InFocusColor" },
 				//{ "BoxBlurPass", "gColor", "DepthOfFieldPass", "u_OutOfFocusColor" } 
+			});*/
+		RenderGraphSpecification spec(
+			{
+				{ RenderPassType::Voxelization, "VoxelizationPass "}
+			},
+			{
+
 			});
 
 		m_RenderGraph = std::make_shared<RenderGraph>(spec, 1600, 900);
@@ -87,13 +94,13 @@ namespace Walker {
 		m_RenderGraph->DrawScene(*m_ActiveScene);
 		RenderCommand::BindDefaultFramebuffer();
 
-		RenderCommand::Clear();
+		/*RenderCommand::Clear();
 		m_DebugShader->Bind();
 		m_RenderGraph->GetRenderPass("TonemapCompute")->BindOutput(2, 0);
 		//m_RenderGraph->GetRenderPass("DeferredPBRLightingPass")->BindOutput(0, 0);
 		
 		m_DebugShader->SetInt("u_Input", 0);
-		m_Quad.Draw();
+		m_Quad.Draw();*/
 
 	}
 	void SandboxLayer::OnImGuiRender()

@@ -13,7 +13,8 @@ namespace Walker {
 		DepthOfFieldPass,
 		EditorPass,
 		BloomCompute,
-		TonemapCompute
+		TonemapCompute,
+		Voxelization
 	};
 
 	struct RenderPassSpec {

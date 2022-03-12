@@ -35,6 +35,8 @@ namespace Walker {
 		std::shared_ptr<Material> GetMaterial(UUID uuid);
 
 		// Temp
+		void Voxelize(std::shared_ptr<Shader> shader);
+
 		void DrawMeshes(std::shared_ptr<Shader> shader);
 		void DrawEditor(std::shared_ptr<Shader> shader, std::shared_ptr<Shader> outlineShader);
 		void SetSelectedEntity(uint32_t entity) { m_SelectedEntityId = entity; }

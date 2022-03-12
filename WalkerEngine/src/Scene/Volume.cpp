@@ -2,8 +2,10 @@
 #include "Volume.h"
 #include "Math/SampleGeometry/Cube.h"
 #include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 #include <glad/glad.h>
 #include "imgui/imgui.h"
+#include "Renderer/RenderCommand.h"
 
 /*Volume::Volume()
 {
@@ -121,3 +123,44 @@ void Volume::PopulateTestData()
 	}
 }
 */
+
+namespace Walker {
+
+	Volume::Volume(std::shared_ptr<Texture3D> tex)
+	{
+		m_VolumeTex = tex;
+		m_VertexArray = VertexArray::Create();
+		std::vector<float> vertices = Cube::GetUnindexedVertices();
+		m_VertexBuffer = VertexBuffer::Create(vertices.data(), vertices.size() * sizeof(float));
+
+		BufferLayout layout = {
+			{ ShaderDataType::Float3, "a_Position"},
+			{ ShaderDataType::Float2, "a_TexCoords" }
+		};
+
+		m_VertexBuffer->SetLayout(layout);
+		m_VertexArray->AddVertexBuffer(m_VertexBuffer);
+	}
+
+	void Volume::Draw(std::shared_ptr<Shader> shader, glm::mat4 view, glm::mat4 projection, glm::vec3 viewPos)
+	{
+		m_VolumeTex->Bind();
+		shader->Bind();
+		shader->SetInt("volumeTex", 0);
+		shader->SetVec3("viewPos", viewPos);
+		shader->SetMat4("view", view);
+		shader->SetMat4("projection", projection);
+
+		glm::mat4 model = glm::mat4(1.0f);
+		
+		model = glm::scale(model, glm::vec3(32.0f));
+		shader->SetMat4("model", model);
+
+		m_VertexArray->Bind();
+		RenderCommand::Clear();
+		
+		RenderCommand::DrawUnindexed(m_VertexArray, 36);
+
+	}
+
+}
