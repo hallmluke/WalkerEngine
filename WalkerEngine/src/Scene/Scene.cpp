@@ -17,9 +17,11 @@ namespace Walker {
 		m_DirectionalLight = std::make_shared<DirectionalLight>(glm::vec3(0.0f, -1.0f, -0.1f));
 		//m_Skybox = std::make_shared<Skybox>("Skybox/default");
 
-		//Entity defaultPointLight = CreateEntity("Default Pointlight");
-		//auto& pointLightComponent = defaultPointLight.AddComponent<PointLightComponent>();
+		Entity defaultPointLight = CreateEntity("Default Pointlight");
+		auto& pointLightComponent = defaultPointLight.AddComponent<PointLightComponent>();
+		auto& pointLightPosition = defaultPointLight.GetComponent<TransformComponent>();
 
+		pointLightPosition.Translation = glm::vec3(0.0, 1.0, 0.0);
 	}
 
 	Scene::~Scene()

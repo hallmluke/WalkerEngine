@@ -34,7 +34,7 @@ namespace Walker {
 
 		// TODO: Implement max per frame with caching?
 		for (int i = 0; i < lights.size(); i++) {
-			lights[i]->GenerateShadowMap(scene, positions[i]);
+			//lights[i]->GenerateShadowMap(scene, positions[i]);
 		}
 	}
 	std::shared_ptr<Framebuffer> ShadowMapPass::GetFramebuffer() const

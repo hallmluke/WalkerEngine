@@ -36,6 +36,7 @@ namespace Walker {
 			});*/
 		RenderGraphSpecification spec(
 			{
+				{ RenderPassType::ShadowMapPass, "ShadowMapPass"},
 				{ RenderPassType::Voxelization, "VoxelizationPass "}
 			},
 			{

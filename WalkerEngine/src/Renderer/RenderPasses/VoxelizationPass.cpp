@@ -43,12 +43,16 @@ namespace Walker {
 
 	void VoxelizationPass::DrawScene(Scene& scene) const
 	{
+		RenderCommand::BindDefaultFramebuffer();
+		RenderCommand::SetViewport(0, 0, 1600, 900);
 		if (!m_Cache) {
 			RenderCommand::DisableDepthTest();
 			RenderCommand::DisableBackfaceCulling();
 			//RenderCommand::SetViewport(0, 0, 128, 128);
 			m_VoxelizationShader->Bind();
-			m_VoxelTex->BindImage();
+			m_VoxelTex->BindImage(1);
+			SetDirectionalLightShaderUniforms(scene);
+			SetPointLightShaderUniforms(scene);
 			scene.Voxelize(m_VoxelizationShader);
 			m_VoxelTex->GenerateMipMaps();
 			RenderCommand::EnableDepthTest();
@@ -63,6 +67,7 @@ namespace Walker {
 		//RenderCommand::EnableBackfaceCulling();
 		RenderCommand::Clear();
 		RenderCommand::EnableDepthTest();
+		//RenderCommand::SetViewport(0, 0, 1600, 900);
 		m_Volume->Draw(m_VisualizationShader, scene.GetCamera()->GetViewMatrix(), scene.GetCamera()->GetProjectionMatrix(), scene.GetCamera()->GetPosition());
 	}
 
@@ -78,5 +83,70 @@ namespace Walker {
 	void VoxelizationPass::Resize(uint32_t width, uint32_t height)
 	{
 		// Not applicable
+	}
+
+	void VoxelizationPass::SetDirectionalLightShaderUniforms(Scene& scene) const
+	{
+		std::shared_ptr<DirectionalLight> light = scene.GetDirectionalLight();
+
+		m_VoxelizationShader->SetVec3("dirLight.direction", light->GetDirection());
+		m_VoxelizationShader->SetVec3("dirLight.color", light->GetColor());
+		m_VoxelizationShader->SetVec3("dirLight.ambient", glm::vec3(light->GetAmbientIntensity()));
+		m_VoxelizationShader->SetVec3("dirLight.diffuse", glm::vec3(light->GetDiffuseIntensity()));
+		m_VoxelizationShader->SetVec3("dirLight.specular", glm::vec3(light->GetSpecularIntensity()));
+
+		std::vector<float> cascadeDistances = light->GetShadowCascadeLevels();
+		m_VoxelizationShader->SetMat4("view", scene.GetCamera()->GetViewMatrix());
+		m_VoxelizationShader->SetFloat("farPlane", scene.GetCamera()->GetFarPlane());
+		m_VoxelizationShader->SetInt("cascadeCount", cascadeDistances.size());
+		for (size_t i = 0; i < cascadeDistances.size(); ++i)
+		{
+			m_VoxelizationShader->SetFloat("cascadePlaneDistances[" + std::to_string(i) + "]", cascadeDistances[i]);
+		}
+		light->BindShadowMap(5);
+		m_VoxelizationShader->SetInt("shadowMap", 5);
+	}
+
+	void VoxelizationPass::SetPointLightShaderUniforms(Scene& scene) const
+	{
+		size_t maxLights = 8;
+		std::vector<glm::vec3> positions;
+		auto lights = scene.GetPointLights(positions);
+
+		uint32_t maxedLights = std::min(maxLights, lights.size());
+
+		for (int i = 0; i < maxLights; i++) {
+			std::string lightPrefix = "lights[" + std::to_string(i) + "]";
+			int pointLightStartSlot = 6;
+			if (i < maxedLights) {
+				auto light = lights[i];
+				auto position = positions[i];
+				m_VoxelizationShader->SetVec3(lightPrefix + ".position", position);
+				m_VoxelizationShader->SetVec3(lightPrefix + ".ambient", glm::vec3(light->GetAmbientIntensity()));
+				m_VoxelizationShader->SetVec3(lightPrefix + ".diffuse", glm::vec3(light->GetDiffuseIntensity()));
+				m_VoxelizationShader->SetVec3(lightPrefix + ".specular", glm::vec3(light->GetSpecularIntensity()));
+				m_VoxelizationShader->SetFloat(lightPrefix + ".constant", light->GetConstantAttenuation());
+				m_VoxelizationShader->SetFloat(lightPrefix + ".linear", light->GetLinearAttenuation());
+				m_VoxelizationShader->SetFloat(lightPrefix + ".quadratic", light->GetQuadraticAttenuation());
+
+
+				//light->BindShadowMap(pointLightStartSlot + i);
+				//m_VoxelizationShader->SetInt(lightPrefix + ".depthMap", pointLightStartSlot + i);
+				m_VoxelizationShader->SetFloat(lightPrefix + ".far_plane", light->GetShadowMapFarPlane());
+				m_VoxelizationShader->SetFloat(lightPrefix + ".bias", 0.05f);
+			}
+			// TODO: This is done to avoid issues with a samplerCube bound to a 2d texture, figure out a better way to do this
+			else if (lights.size() > 0) {
+				//auto light = lights[lights.size() - 1];
+				//light->BindShadowMap(pointLightStartSlot + i);
+				//m_VoxelizationShader->SetInt(lightPrefix + ".depthMap", pointLightStartSlot + lights.size() - 1);
+				//m_VoxelizationShader->SetInt(lightPrefix + ".depthMap", 0);
+			}
+			else {
+				//m_VoxelizationShader->SetInt(lightPrefix + ".depthMap", pointLightStartSlot);
+			}
+		}
+
+		m_VoxelizationShader->SetInt("numberOfLights", maxedLights);
 	}
 }

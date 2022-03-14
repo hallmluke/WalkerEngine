@@ -29,5 +29,8 @@ namespace Walker {
 		std::shared_ptr<ComputeShader> m_VolumeCompShader;
 		std::shared_ptr<Volume> m_Volume;
 		std::shared_ptr<Shader> m_VisualizationShader;
+
+		void SetDirectionalLightShaderUniforms(Scene& scene) const;
+		void SetPointLightShaderUniforms(Scene& scene) const;
 	};
 }

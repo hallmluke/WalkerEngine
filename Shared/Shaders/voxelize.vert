@@ -8,7 +8,7 @@ layout (location = 4) in vec3 aBitangent;
 out vec3 GeomPos;
 //out vec4 GeomViewSpace;
 //out mat3 TBN;
-//out vec3 NormalGeom;
+out vec3 NormalGeom;
 out vec3 FragPos;
 out vec2 TexCoordsGeom;
 
@@ -28,7 +28,7 @@ void main()
     
     vec3 N = normalize(vec3(model * vec4(aNormal, 0.0)));
 
-   // NormalGeom = N;
+    NormalGeom = N;
     
     //TBN = mat3(T, B, N);
 
