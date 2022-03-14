@@ -81,4 +81,8 @@ namespace Walker {
 	{
 		// TODO: bind for cubemap
 	}
+	void OpenGLTextureCubeMap::GenerateMipMaps()
+	{
+		glGenerateMipmap(GL_TEXTURE_CUBE_MAP);
+	}
 }

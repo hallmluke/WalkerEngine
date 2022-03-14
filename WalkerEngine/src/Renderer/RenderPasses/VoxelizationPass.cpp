@@ -19,7 +19,7 @@ namespace Walker {
 		spec.WrapR = TextureWrapType::CLAMP_EDGE;
 
 		m_VoxelTex = Texture3D::Create(spec);
-		m_VoxelizationShader = Shader::Create("Voxelization", "Shaders/voxelize.vert", "Shaders/voxelize.frag"); //"Shaders/voxelize.geom");
+		m_VoxelizationShader = Shader::Create("Voxelization", "Shaders/voxelize.vert", "Shaders/voxelize.frag", "Shaders/voxelize.geom");
 
 		m_Volume = std::make_shared<Volume>(m_VoxelTex);
 		m_VisualizationShader = Shader::Create("VoxelVisualization", "Shaders/voxel_visualization.vert", "Shaders/voxel_visualization.frag");
@@ -50,6 +50,7 @@ namespace Walker {
 			m_VoxelizationShader->Bind();
 			m_VoxelTex->BindImage();
 			scene.Voxelize(m_VoxelizationShader);
+			m_VoxelTex->GenerateMipMaps();
 			RenderCommand::EnableDepthTest();
 			m_Cache = true;
 		}
@@ -60,6 +61,7 @@ namespace Walker {
 		m_VolumeCompShader->Barrier();*/
 
 		//RenderCommand::EnableBackfaceCulling();
+		RenderCommand::Clear();
 		RenderCommand::EnableDepthTest();
 		m_Volume->Draw(m_VisualizationShader, scene.GetCamera()->GetViewMatrix(), scene.GetCamera()->GetProjectionMatrix(), scene.GetCamera()->GetPosition());
 	}

@@ -90,6 +90,7 @@ namespace Walker {
 		virtual void BindImage(uint32_t slot = 0, TextureAccess access = TextureAccess::READ_WRITE) const = 0;
 
 		virtual bool IsLoaded() const = 0;
+		virtual void GenerateMipMaps() = 0;
 
 		virtual bool operator==(const Texture& other) const = 0;
 	};

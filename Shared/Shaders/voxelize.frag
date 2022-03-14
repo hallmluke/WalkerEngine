@@ -1,11 +1,18 @@
 #version 450 core
 layout(rgba16f, binding = 0) uniform image3D voxelTex;
 
+out vec4 FragColor;
+
 in vec3 FragPos;
 //in mat3 TBN;
-//in vec3 NormalFrag;
-//in vec2 TexCoordsFrag;
-in vec2 TexCoords;
+in vec3 NormalFrag;
+in vec2 TexCoordsFrag;
+//in vec2 TexCoords;
+
+layout (std140, binding = 0) uniform LightSpaceMatrices
+{
+    mat4 lightSpaceMatrices[16];
+};
 
 uniform bool diffuse_tex;
 uniform sampler2D texture_diffuse1;
@@ -49,6 +56,13 @@ uniform int numberOfLights;
 uniform PointLight lights[MAX_LIGHTS];
 uniform DirLight dirLight;
 
+uniform mat4 view;
+uniform sampler2DArray shadowMap;
+
+uniform float cascadePlaneDistances[16];
+uniform int cascadeCount;   // number of frusta - 1
+uniform float farPlane;
+
 uint layers = 128;
 
 ivec3 scaleAndBias(vec3 position) { return ivec3((position + vec3(imageSize(voxelTex).xy, layers) / 2)); }
@@ -56,6 +70,9 @@ ivec3 scaleAndBias(vec3 position) { return ivec3((position + vec3(imageSize(voxe
 bool IsInProbe(vec3 position, ivec3 size) { 
     return abs(position.x) < size.x / 2 && abs(position.y) < size.y / 2 && abs(position.z) < size.z / 2; 
 }
+
+vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir, vec3 albedo, float roughness, float metallic, vec3 F0, vec4 fragPosWorldSpace);
+float ShadowCalculationDirCascades(vec4 fragPosWorldSpace, vec3 normal, vec3 lightDir);
 
 void main() {
 	
@@ -79,7 +96,7 @@ void main() {
     //ivec3 voxel = ivec3(64, 64, 64);
 
     //imageStore(voxelTex, voxel, diffuseColor);
-    vec4 diffuseColor = texture(texture_diffuse1, TexCoords);
+    vec4 diffuseColor = texture(texture_diffuse1, TexCoordsFrag);
     ivec3 voxel = scaleAndBias(FragPos);
     ivec3 size = imageSize(voxelTex);
 
@@ -95,4 +112,6 @@ void main() {
     //if(voxel.x >= 0 && voxel.x < size.x && voxel.y >= 0 && voxel.y < size.y && voxel.z > 0 && voxel.z < size.z) {
         imageStore(voxelTex, ivec3(voxel), diffuseColor);
     }
+
+    FragColor = diffuseColor;
 }

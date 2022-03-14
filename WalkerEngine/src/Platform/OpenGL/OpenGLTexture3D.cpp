@@ -118,10 +118,9 @@ namespace Walker {
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, Utils::WalkerTextureFilterTypeToGL(spec.MagFilter));
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, Utils::WalkerTextureFilterTypeToGL(spec.MinFilter));
 
-		const uint32_t levels = 7; // TODO: Configurable levels
+		const uint32_t levels = 5; // TODO: Configurable levels
 		glTexStorage3D(GL_TEXTURE_3D, levels, m_InternalFormat, m_Width, m_Height, m_Depth);
 		glTexImage3D(GL_TEXTURE_3D, 0, m_InternalFormat, m_Width, m_Height, m_Depth, 0, m_DataFormat, Utils::WalkerTextureTypeToGL(spec.Type), NULL);
-		glGenerateMipmap(GL_TEXTURE_3D);
 	}
 
 	OpenGLTexture3D::~OpenGLTexture3D()
@@ -156,5 +155,9 @@ namespace Walker {
 		// TODO: Paramters to pass through
 		glBindImageTexture(slot, m_RendererID, 0, GL_FALSE, 0, Utils::WalkerTextureAccessToGL(access), m_InternalFormat);
 		//W_CORE_ERROR("Error in image binding {0}", glGetError());
+	}
+	void OpenGLTexture3D::GenerateMipMaps()
+	{
+		glGenerateMipmap(GL_TEXTURE_3D);
 	}
 }

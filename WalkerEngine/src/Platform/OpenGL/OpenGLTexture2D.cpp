@@ -153,4 +153,8 @@ namespace Walker {
 		glBindImageTexture(slot, m_RendererID, 0, GL_FALSE, 0, Utils::WalkerTextureAccessToGL(access), m_InternalFormat);
 		//W_CORE_ERROR("Error in image binding {0}", glGetError());
 	}
+	void OpenGLTexture2D::GenerateMipMaps()
+	{
+		glGenerateMipmap(GL_TEXTURE_2D);
+	}
 }

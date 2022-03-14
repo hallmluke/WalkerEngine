@@ -122,7 +122,7 @@ namespace Walker {
 	void Scene::Voxelize(std::shared_ptr<Shader> shader)
 	{
 		glm::mat4 voxelProjection = glm::ortho(-128.0f, 128.0f, -128.0f, 128.0f, -128.0f, 128.0f);
-		glm::mat4 voxelView = glm::lookAt(glm::vec3(0.0f, 0.0f, 63.0f), glm::vec3(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		glm::mat4 voxelView = glm::lookAt(glm::vec3(0.0f, 0.0f, 64.0f), glm::vec3(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 
 		shader->SetMat4("view", voxelView);
 		shader->SetMat4("projection", voxelProjection);
@@ -143,13 +143,12 @@ namespace Walker {
 			}
 
 			globalTransform = glm::scale(globalTransform, glm::vec3(3.0));
-			globalTransform = glm::translate(globalTransform, glm::vec3(0.0f, -20.0f, 0.0f));
 			mesh.MeshPtr->Draw(shader, globalTransform);
 		}
 
 
-		voxelProjection = glm::ortho(-128.0f, 128.0f, -128.0f, 128.0f, -128.0f, 128.0f);
-		voxelView = glm::lookAt(glm::vec3(0.0f, -50.0f, 0.0f), glm::vec3(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		/*voxelProjection = glm::ortho(-128.0f, 128.0f, -128.0f, 128.0f, -128.0f, 128.0f);
+		voxelView = glm::lookAt(glm::vec3(0.0f, 64.0f, 0.0f), glm::vec3(0.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 
 		shader->SetMat4("view", voxelView);
 		shader->SetMat4("projection", voxelProjection);
@@ -170,17 +169,16 @@ namespace Walker {
 			}
 
 			globalTransform = glm::scale(globalTransform, glm::vec3(3.0));
-			globalTransform = glm::translate(globalTransform, glm::vec3(0.0f, -20.0f, 0.0f));
 
 			mesh.MeshPtr->Draw(shader, globalTransform);
-		}
-
-		voxelProjection = glm::ortho(-128.0f, 128.0f, -128.0f, 128.0f, -128.0f, 128.0f);
-		voxelView = glm::lookAt(glm::vec3(63.0f, 0.0f, 0.0f), glm::vec3(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		}*/
+		
+		/*glm::mat4 voxelProjection = glm::ortho(-128.0f, 128.0f, -128.0f, 128.0f, -128.0f, 128.0f);
+		glm::mat4 voxelView = glm::lookAt(glm::vec3(64.0f, 0.0f, 0.0f), glm::vec3(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 
 		shader->SetMat4("view", voxelView);
 		shader->SetMat4("projection", voxelProjection);
-		view = m_Registry.view<TransformComponent, RelationshipComponent, MeshComponent>();
+		auto view = m_Registry.view<TransformComponent, RelationshipComponent, MeshComponent>();
 		for (auto entity : view)
 		{
 			auto [transform, relationship, mesh] = view.get<TransformComponent, RelationshipComponent, MeshComponent>(entity);
@@ -197,10 +195,9 @@ namespace Walker {
 			}
 
 			globalTransform = glm::scale(globalTransform, glm::vec3(3.0));
-			globalTransform = glm::translate(globalTransform, glm::vec3(0.0f, -20.0f, 0.0f));
 
 			mesh.MeshPtr->Draw(shader, globalTransform);
-		}
+		}*/
 	}
 
 	void Scene::DrawMeshes(std::shared_ptr<Shader> shader)

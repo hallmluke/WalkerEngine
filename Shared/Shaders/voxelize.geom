@@ -5,7 +5,7 @@ layout(triangle_strip, max_vertices = 3) out;
 
 in vec3 GeomPos[];
 in vec3 NormalGeom[];
-in vec2 TexCoords[];
+in vec2 TexCoordsGeom[];
 
 out vec3 FragPos;
 out vec3 NormalFrag;
@@ -23,13 +23,13 @@ void main() {
 	for(uint i = 0; i < 3; ++i){
 		FragPos = GeomPos[i];
 		NormalFrag = NormalGeom[i];
-		TexCoordsFrag = TexCoords[i];
+		TexCoordsFrag = TexCoordsGeom[i];
 		if(p.z > p.x && p.z > p.y){
-			gl_Position = vec4(FragPos.x, FragPos.y, 0, 1);
+			gl_Position = projection * view * vec4(FragPos.x, FragPos.y, FragPos.z, 1);
 		} else if (p.x > p.y && p.x > p.z){
-			gl_Position = vec4(FragPos.y, FragPos.z, 0, 1);
+			gl_Position = projection * view * vec4(FragPos.z, FragPos.y, FragPos.x, 1);
 		} else {
-			gl_Position = vec4(FragPos.x, FragPos.z, 0, 1);
+			gl_Position = projection * view * vec4(FragPos.x, FragPos.z, FragPos.y, 1);
 		}
 		EmitVertex();
 	}
