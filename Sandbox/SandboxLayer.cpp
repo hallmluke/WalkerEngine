@@ -1,4 +1,7 @@
 #include "SandboxLayer.h"
+#include "Renderer/RenderPasses/DeferredPBRLightingPass.h"
+
+#include <imgui.h>
 
 namespace Walker {
 
@@ -9,6 +12,12 @@ namespace Walker {
 	void SandboxLayer::OnAttach()
 	{
 		m_ActiveScene = std::make_shared<Scene>();
+
+		m_PointLight = m_ActiveScene->CreateEntity("Default Pointlight");
+		auto& pointLightComponent = m_PointLight.AddComponent<PointLightComponent>();
+		auto& pointLightPosition = m_PointLight.GetComponent<TransformComponent>();
+
+		pointLightPosition.Translation = glm::vec3(0.0, 1.0, 0.0);
 		std::shared_ptr<Model> sponzaPBR = std::make_shared<Model>("SponzaPBR", "Models/SponzaPBR/Sponza.gltf", m_ActiveScene.get());
 
 		/*RenderGraphSpecification spec(
@@ -34,14 +43,35 @@ namespace Walker {
 				//{ "DeferredPBRLightingPass", "gColor", "DepthOfFieldPass", "u_InFocusColor" },
 				//{ "BoxBlurPass", "gColor", "DepthOfFieldPass", "u_OutOfFocusColor" } 
 			});*/
-		RenderGraphSpecification spec(
+		/*RenderGraphSpecification spec(
 			{
 				{ RenderPassType::ShadowMapPass, "ShadowMapPass"},
 				{ RenderPassType::Voxelization, "VoxelizationPass "}
 			},
 			{
 
-			});
+			});*/
+
+		RenderGraphSpecification spec(
+			{
+				{ RenderPassType::ShadowMapPass, "ShadowMapPass"},
+				{ RenderPassType::Voxelization, "VoxelizationPass"},
+				{ RenderPassType::GBufferPBRPass, "GBufferPBRPass"},
+				{ RenderPassType::DeferredPBRLightingPass, "DeferredPBRLightingPass"},
+				{ RenderPassType::BloomCompute, "BloomCompute"},
+				{ RenderPassType::TonemapCompute, "TonemapCompute"}
+			},
+			{
+				{ "GBufferPBRPass", "gPosition", "DeferredPBRLightingPass", "gPosition" },
+				{ "GBufferPBRPass", "gNormal", "DeferredPBRLightingPass", "gNormal" },
+				{ "GBufferPBRPass", "gAlbedo", "DeferredPBRLightingPass", "gAlbedo" },
+				{ "GBufferPBRPass", "gMetRoughAO", "DeferredPBRLightingPass", "gMetRoughAO" },
+				{ "VoxelizationPass", "VoxelTex", "DeferredPBRLightingPass", "VoxelTex" },
+				{ "DeferredPBRLightingPass", "gColor", "BloomCompute", "img_input" },
+				{ "DeferredPBRLightingPass", "gColor", "TonemapCompute", "img_input"},
+				{ "BloomCompute", "img_output", "TonemapCompute", "bloom_input"}
+			}
+			);
 
 		m_RenderGraph = std::make_shared<RenderGraph>(spec, 1600, 900);
 		/*TextureSpecification spec;
@@ -95,17 +125,35 @@ namespace Walker {
 		m_RenderGraph->DrawScene(*m_ActiveScene);
 		RenderCommand::BindDefaultFramebuffer();
 
-		/*RenderCommand::Clear();
+		RenderCommand::Clear();
 		m_DebugShader->Bind();
 		m_RenderGraph->GetRenderPass("TonemapCompute")->BindOutput(2, 0);
+		
 		//m_RenderGraph->GetRenderPass("DeferredPBRLightingPass")->BindOutput(0, 0);
 		
 		m_DebugShader->SetInt("u_Input", 0);
-		m_Quad.Draw();*/
+		m_Quad.Draw();
 
 	}
 	void SandboxLayer::OnImGuiRender()
 	{
+		auto passes = m_RenderGraph->GetRenderPasses();
+
+		for (auto pass : passes) {
+			pass->OnImGuiRender();
+		}
+
+		ImGui::Begin("Point light");
+		if (m_PointLight && m_PointLight.HasComponent<PointLightComponent>()) {
+			auto& pointLightComponent = m_PointLight.GetComponent<PointLightComponent>();
+			auto& pointLight = pointLightComponent.PointLightPtr;
+
+			ImGui::DragFloat("Ambient Intensity", &(pointLight->m_AmbientIntensity), 0.1f, 0.0f, 10.0f);
+			ImGui::DragFloat("Diffuse Intensity", &(pointLight->m_DiffuseIntensity), 0.1f, 0.0f, 10.0f);
+			ImGui::DragFloat("Specular Intensity", &(pointLight->m_SpecularIntensity), 0.1f, 0.0f, 10.0f);
+		}
+
+		ImGui::End();
 	}
 	void SandboxLayer::OnEvent(Event& e)
 	{

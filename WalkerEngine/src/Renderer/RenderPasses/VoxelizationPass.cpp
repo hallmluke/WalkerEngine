@@ -2,6 +2,8 @@
 #include "VoxelizationPass.h"
 #include "Renderer/RenderCommand.h"
 
+#include <imgui.h>
+
 namespace Walker {
 
 	VoxelizationPass::VoxelizationPass()
@@ -10,8 +12,8 @@ namespace Walker {
 		spec.Width = 128;
 		spec.Height = 128;
 		spec.Depth = 128;
-		spec.MagFilter = TextureFilterType::NEAREST;
-		spec.MinFilter = TextureFilterType::NEAREST;
+		spec.MagFilter = TextureFilterType::LINEAR;
+		spec.MinFilter = TextureFilterType::LINEAR;
 		spec.Type = TextureType::FLOAT;
 		spec.TextureFormat = TextureFormat::RGBA16F;
 		spec.WrapS = TextureWrapType::CLAMP_EDGE;
@@ -26,7 +28,12 @@ namespace Walker {
 
 		m_VolumeCompShader = ComputeShader::Create("VolumeTest", "Shaders/volume_test.comp");
 
+		m_VoxelBufferToTexShader = ComputeShader::Create("VoxelBufferToTex", "Shaders/voxel_buffer_to_texture.comp");
+
+		m_VoxelBuffer = ShaderStorageBuffer::Create(sizeof(VoxelType) * 128 * 128 * 128, 1);
 		m_Cache = false;
+
+		m_Outputs = { {"VoxelTex", 0, this} };
 	}
 	void VoxelizationPass::BindInputs() const
 	{
@@ -53,7 +60,13 @@ namespace Walker {
 			m_VoxelTex->BindImage(1);
 			SetDirectionalLightShaderUniforms(scene);
 			SetPointLightShaderUniforms(scene);
+
 			scene.Voxelize(m_VoxelizationShader);
+
+			m_VoxelBufferToTexShader->Bind();
+			
+			m_VoxelBufferToTexShader->Dispatch(128 / 8, 128 / 8, 128 / 8);
+			m_VoxelBufferToTexShader->Barrier();
 			m_VoxelTex->GenerateMipMaps();
 			RenderCommand::EnableDepthTest();
 			m_Cache = true;
@@ -68,7 +81,7 @@ namespace Walker {
 		RenderCommand::Clear();
 		RenderCommand::EnableDepthTest();
 		//RenderCommand::SetViewport(0, 0, 1600, 900);
-		m_Volume->Draw(m_VisualizationShader, scene.GetCamera()->GetViewMatrix(), scene.GetCamera()->GetProjectionMatrix(), scene.GetCamera()->GetPosition());
+		//m_Volume->Draw(m_VisualizationShader, scene.GetCamera()->GetViewMatrix(), scene.GetCamera()->GetProjectionMatrix(), scene.GetCamera()->GetPosition());
 	}
 
 	std::shared_ptr<Framebuffer> VoxelizationPass::GetFramebuffer() const
@@ -83,6 +96,13 @@ namespace Walker {
 	void VoxelizationPass::Resize(uint32_t width, uint32_t height)
 	{
 		// Not applicable
+	}
+
+	void VoxelizationPass::OnImGuiRender()
+	{
+		ImGui::Begin("Voxelization");
+		ImGui::Checkbox("Cache", &m_Cache);
+		ImGui::End();
 	}
 
 	void VoxelizationPass::SetDirectionalLightShaderUniforms(Scene& scene) const
@@ -130,8 +150,8 @@ namespace Walker {
 				m_VoxelizationShader->SetFloat(lightPrefix + ".quadratic", light->GetQuadraticAttenuation());
 
 
-				//light->BindShadowMap(pointLightStartSlot + i);
-				//m_VoxelizationShader->SetInt(lightPrefix + ".depthMap", pointLightStartSlot + i);
+				light->BindShadowMap(pointLightStartSlot + i);
+				m_VoxelizationShader->SetInt(lightPrefix + ".depthMap", pointLightStartSlot + i);
 				m_VoxelizationShader->SetFloat(lightPrefix + ".far_plane", light->GetShadowMapFarPlane());
 				m_VoxelizationShader->SetFloat(lightPrefix + ".bias", 0.05f);
 			}
@@ -139,11 +159,11 @@ namespace Walker {
 			else if (lights.size() > 0) {
 				//auto light = lights[lights.size() - 1];
 				//light->BindShadowMap(pointLightStartSlot + i);
-				//m_VoxelizationShader->SetInt(lightPrefix + ".depthMap", pointLightStartSlot + lights.size() - 1);
+				m_VoxelizationShader->SetInt(lightPrefix + ".depthMap", pointLightStartSlot + lights.size() - 1);
 				//m_VoxelizationShader->SetInt(lightPrefix + ".depthMap", 0);
 			}
 			else {
-				//m_VoxelizationShader->SetInt(lightPrefix + ".depthMap", pointLightStartSlot);
+				m_VoxelizationShader->SetInt(lightPrefix + ".depthMap", pointLightStartSlot);
 			}
 		}
 

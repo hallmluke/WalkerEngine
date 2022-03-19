@@ -2,6 +2,8 @@
 #include "DeferredPBRLightingPass.h"
 #include "Renderer/RenderCommand.h"
 
+#include <imgui.h>
+
 namespace Walker {
 
 	DeferredPBRLightingPass::DeferredPBRLightingPass(uint32_t width, uint32_t height)
@@ -108,6 +110,12 @@ namespace Walker {
 		}
 
 		m_Shader->SetVec3("camPos", scene.GetCamera()->GetPosition());
+		m_Shader->SetBool("useVoxelConetrace", m_UseVoxelConetrace);
+		m_Shader->SetFloat("aperture", m_Aperture);
+		m_Shader->SetFloat("maxDistance", m_MaxDistance);
+		m_Shader->SetFloat("stepSize", m_StepSize); 
+		m_Shader->SetFloat("indirectMultiplier", m_IndirectMultiplier);
+		m_Shader->SetInt("numCones", m_NumCones);
 
 		BindInputs();
 
@@ -133,6 +141,20 @@ namespace Walker {
 		m_Framebuffer->Resize(width, height);
 	}
 
+	void DeferredPBRLightingPass::OnImGuiRender()
+	{
+		ImGui::Begin("Voxel Cone Tracing Settings");
+
+		ImGui::Checkbox("Use VCT", &m_UseVoxelConetrace);
+		ImGui::SliderFloat("Aperture", &m_Aperture, 0.0f, 5.0f);
+		ImGui::SliderFloat("Max Distance", &m_MaxDistance, 0.0f, 200.0f);
+		ImGui::SliderFloat("Step Size", &m_StepSize, 0.01f, 3.0f);
+		ImGui::SliderFloat("Indirect Multiplier", &m_IndirectMultiplier, 0.01f, 10.0f);
+		ImGui::SliderInt("Cones", &m_NumCones, 1, 16);
+
+		ImGui::End();
+	}
+
 	void DeferredPBRLightingPass::SetDirectionalLightShaderUniforms(Scene& scene) const
 	{
 		std::shared_ptr<DirectionalLight> light = scene.GetDirectionalLight();
@@ -151,8 +173,8 @@ namespace Walker {
 		{
 			m_Shader->SetFloat("cascadePlaneDistances[" + std::to_string(i) + "]", cascadeDistances[i]);
 		}
-		light->BindShadowMap(5);
-		m_Shader->SetInt("shadowMap", 5);
+		light->BindShadowMap(6);
+		m_Shader->SetInt("shadowMap", 6);
 	}
 
 	void DeferredPBRLightingPass::SetPointLightShaderUniforms(Scene& scene) const
@@ -165,7 +187,7 @@ namespace Walker {
 
 		for (int i = 0; i < maxLights; i++) {
 			std::string lightPrefix = "lights[" + std::to_string(i) + "]";
-			int pointLightStartSlot = 6;
+			int pointLightStartSlot = 7;
 			if (i < maxedLights) {
 				auto light = lights[i];
 				auto position = positions[i];

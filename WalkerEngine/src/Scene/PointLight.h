@@ -77,6 +77,9 @@ namespace Walker {
 		friend class SceneHierarchyPanel;
 		friend class SceneSerializer;
 
+		// TEMP
+		friend class SandboxLayer;
+
 		/*bool initialized = false;
 		void InitBuffers();
 

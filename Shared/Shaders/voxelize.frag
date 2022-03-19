@@ -14,6 +14,58 @@ layout (std140, binding = 0) uniform LightSpaceMatrices
     mat4 lightSpaceMatrices[16];
 };
 
+struct VoxelType
+{
+    uint color;
+    uint normal;
+};
+
+layout (std140, binding = 1) buffer VoxelBuffer {
+    VoxelType voxels[];
+};
+
+uint flatten3D(uvec3 coord, uvec3 dim)
+{
+    return (coord.z * dim.x * dim.y) + (coord.y * dim.x) + coord.x;
+}
+
+// Encode HDR color to a 32 bit uint
+// Alpha is 1 bit + 7 bit HDR remapping
+uint EncodeColor(in vec4 color)
+{
+	// normalize color to LDR
+	float hdr = length(color.rgb);
+	color.rgb /= hdr;
+
+	// encode LDR color and HDR range
+	uvec3 iColor = uvec3(color.rgb * 255.0f);
+	uint iHDR = uint(clamp(hdr / 10.0f, 0.0, 1.0) * 127);
+	uint colorMask = (iHDR << 24u) | (iColor.r << 16u) | (iColor.g << 8u) | iColor.b;
+
+	// encode alpha into highest bit
+	uint iAlpha = (color.a > 0 ? 1u : 0u);
+	colorMask |= iAlpha << 31u;
+
+	return colorMask;
+}
+
+
+// Encode specified normal (normalized) into an unsigned integer. Each axis of
+// the normal is encoded into 9 bits (1 for the sign/ 8 for the value).
+uint EncodeNormal(in vec3 normal)
+{
+	ivec3 iNormal = ivec3(normal*255.0f);
+	uvec3 iNormalSigns;
+	iNormalSigns.x = (iNormal.x >> 5) & 0x04000000;
+	iNormalSigns.y = (iNormal.y >> 14) & 0x00020000;
+	iNormalSigns.z = (iNormal.z >> 23) & 0x00000100;
+	iNormal = abs(iNormal);
+	uint normalMask = iNormalSigns.x | (iNormal.x << 18) | iNormalSigns.y | (iNormal.y << 9) | iNormalSigns.z | iNormal.z;
+	return normalMask;
+}
+
+
+
 uniform bool diffuse_tex;
 uniform sampler2D texture_diffuse1;
 uniform bool specular_tex;
@@ -46,7 +98,7 @@ struct PointLight {
     vec3 diffuse;
     vec3 specular;
 
-   // samplerCube depthMap;
+    samplerCube depthMap;
     float far_plane;
     float bias;
 };
@@ -118,10 +170,55 @@ void main() {
 
     if(greaterThanZero && xIsGood && yIsGood && zIsGood) {
     //if(voxel.x >= 0 && voxel.x < size.x && voxel.y >= 0 && voxel.y < size.y && voxel.z > 0 && voxel.z < size.z) {
-        imageStore(voxelTex, ivec3(voxel), vec4(diffuseLuminance, 1.0));
+        //imageStore(voxelTex, ivec3(voxel), vec4(diffuseLuminance, 1.0));
+        uint id = flatten3D(uvec3(voxel), uvec3(128));
+        vec4 lightedDiffuseColor = vec4(diffuseLuminance, 1.0);
+        uint encodedColor = EncodeColor(lightedDiffuseColor);
+        uint encodedNormal = EncodeNormal(NormalFrag);
+        atomicMax(voxels[id].color, encodedColor);
+        atomicMax(voxels[id].normal, encodedNormal);
     }
 
     FragColor = vec4(diffuseColor);
+}
+
+vec3 sampleOffsetDirections[20] = vec3[]
+(
+vec3( 1, 1, 1), vec3( 1, -1, 1), vec3(-1, -1, 1), vec3(-1, 1, 1),
+vec3( 1, 1, -1), vec3( 1, -1, -1), vec3(-1, -1, -1), vec3(-1, 1, -1),
+vec3( 1, 1, 0), vec3( 1, -1, 0), vec3(-1, -1, 0), vec3(-1, 1, 0),
+vec3( 1, 0, 1), vec3(-1, 0, 1), vec3( 1, 0, -1), vec3(-1, 0, -1),
+vec3( 0, 1, 1), vec3( 0, -1, 1), vec3( 0, -1, -1), vec3( 0, 1, -1)
+);
+
+float ShadowCalculationPoint(PointLight light, vec3 fragPos)
+{
+    //vec3 fragToLight = FragPos - light.position;
+    vec3 fragToLight = FragPos - light.position;
+    float closestDepth = texture(light.depthMap, fragToLight).r;
+    closestDepth *= light.far_plane;
+    float currentDepth = length(fragToLight);
+    //float bias = 0.002;
+    //float shadow = currentDepth - light.bias > closestDepth ? 1.0 : 0.0;
+    float shadow = 0.0;
+    int samples = 20;
+
+    float viewDistance = 4;
+    float diskRadius = (1.0 + (viewDistance / light.far_plane)) / 25.0;
+    for(int i = 0; i < samples; ++i)
+    {
+        float closestDepth = texture(light.depthMap, fragToLight + sampleOffsetDirections[i] * diskRadius).r;
+        closestDepth *= light.far_plane; // undo mapping [0;1]
+        if(currentDepth - light.bias > closestDepth) {
+            shadow += 1.0;
+        }
+     }
+
+    shadow /= float(samples);
+
+    return shadow;
+    //return closestDepth / light.far_plane;
+    //return currentDepth / light.far_plane;
 }
 
 
@@ -138,6 +235,9 @@ vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos) {
     // combine results
     vec3 ambient = light.ambient * vec3(texture(texture_diffuse1, TexCoordsFrag));
     vec3 diffuse = light.diffuse * diff * vec3(texture(texture_diffuse1, TexCoordsFrag));
+    // TODO
+    // Figure out why the "diff" term seems to cause odd issues
+    //vec3 diffuse = light.diffuse * vec3(texture(texture_diffuse1, TexCoordsFrag));
     vec3 specColor = vec3(0.2);
     if(specular_tex) {
         specColor = vec3(texture(texture_specular1, TexCoordsFrag));
@@ -148,11 +248,12 @@ vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos) {
     diffuse *= attenuation;
     //specular *= attenuation;
 
-    //float shadow = ShadowCalculationPoint(light, fragPos);
+    float shadow = ShadowCalculationPoint(light, fragPos);
 
     //return (ambient + (1 - shadow) * (diffuse + specular));
 
-    return diffuse;
+    return (1 - shadow) * diffuse;
+    //return diffuse;
 }
 
 vec3 CalcDirLight(DirLight light, vec3 normal, vec4 fragPosWorldSpace) {

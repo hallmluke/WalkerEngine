@@ -16,6 +16,7 @@ uniform sampler2D gPosition;
 uniform sampler2D gNormal;
 uniform sampler2D gAlbedo;
 uniform sampler2D gMetRoughAO;
+uniform sampler3D VoxelTex;
 //uniform sampler2D ssaoColor;
 
 uniform vec3 camPos;
@@ -70,11 +71,99 @@ vec3 fresnelSchlick(float cosTheta, vec3 F0);
 
 uniform int debugPass;
 uniform bool useAmbientOcclusion;
+uniform bool useVoxelConetrace;
+uniform float aperture;
+uniform float maxDistance;
+uniform float stepSize;
+uniform float indirectMultiplier;
+uniform int numCones;
 
 vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir, vec3 albedo, float roughness, float metallic, vec3 F0, vec4 fragPosWorldSpace);
 float ShadowCalculationDir(vec4 fragPosLightSpace, vec3 normal, vec3 lightDir);
 float ShadowCalculationDirCascades(vec4 fragPosWorldSpace, vec3 normal, vec3 lightDir);
 float ShadowCalculationPoint(PointLight light, vec3 fragPos);
+
+
+ivec3 scaleAndBias(vec3 position) { return ivec3((position + vec3(64))); }
+
+const vec3 CONES[] = 
+{
+	vec3(0.57735, 0.57735, 0.57735),
+	vec3(0.57735, -0.57735, -0.57735),
+	vec3(-0.57735, 0.57735, -0.57735),
+	vec3(-0.57735, -0.57735, 0.57735),
+	vec3(-0.903007, -0.182696, -0.388844),
+	vec3(-0.903007, 0.182696, 0.388844),
+	vec3(0.903007, -0.182696, 0.388844),
+	vec3(0.903007, 0.182696, -0.388844),
+	vec3(-0.388844, -0.903007, -0.182696),
+	vec3(0.388844, -0.903007, 0.182696),
+	vec3(0.388844, 0.903007, -0.182696),
+	vec3(-0.388844, 0.903007, 0.182696),
+	vec3(-0.182696, -0.388844, -0.903007),
+	vec3(0.182696, 0.388844, -0.903007),
+	vec3(-0.182696, 0.388844, 0.903007),
+	vec3(0.182696, -0.388844, 0.903007)
+};
+
+vec4 ConeTrace(vec3 position, vec3 normal, vec3 coneDirection, float coneAperture)
+{
+    vec3 color = vec3(0.0);
+    float alpha = 0.0;
+
+    bool belowHorizon = dot(normal, coneDirection) < 0;
+    coneDirection = belowHorizon ? -coneDirection : coneDirection;
+
+    vec3 startPos = position + normal + coneDirection;
+    float dist = 0.0;
+
+    //const float maxDistance = 100.0f;
+
+    while(dist < maxDistance && alpha < 1) {
+
+        float diameter = max(1.0f, 2 * coneAperture * dist);
+        float mip = log2( diameter / 2);
+
+        vec3 worldPosition = startPos + coneDirection * dist;
+
+        ivec3 voxelPosition = scaleAndBias(worldPosition);
+
+        vec3 voxelTexPosition = vec3(voxelPosition) / 128;
+
+        if(mip >= 5) {
+            break;
+        }
+
+        vec4 sampled = textureLod(VoxelTex, voxelTexPosition, mip);
+
+        float a = 1 - alpha;
+        color += a * sampled.rgb;
+        alpha += a * sampled.a;
+
+        dist += diameter * 2.0 * stepSize;
+    }
+
+    return vec4(color, 1.0);
+
+}
+
+vec4 ConeTraceRadiance(vec3 position, vec3 normal)
+{
+    vec4 radiance = vec4(0.0);
+    //const float aperture = tan(PI * 0.5 * 0.33);
+
+    for (uint cone = 0; cone < numCones; ++cone) // quality is between 1 and 16 cones
+	{
+		vec3 coneDirection = normalize(CONES[cone] + normal);
+
+		radiance += ConeTrace(position, normal, coneDirection, aperture);
+	}
+
+	radiance /= 8;
+	radiance.a = clamp(radiance.a, 0.0, 1.0);
+
+	return max(vec4(0.0), radiance);
+}
 
 void main()
 {
@@ -127,6 +216,12 @@ void main()
         //float attenuation = 1.0 / (distance * distance);
         float attenuation = 1.0 / (lights[i].constant + lights[i].linear * distance + lights[i].quadratic * (distance * distance));
         vec3 radiance = lights[i].diffuse * attenuation;
+        float shadow = ShadowCalculationPoint(lights[i], FragPos);
+        radiance = ( 1 - shadow ) * radiance;
+
+        if(useVoxelConetrace) {
+            radiance += ConeTraceRadiance(FragPos, N).xyz * indirectMultiplier;
+        }
 
         // cook-torrance brdf
         float NDF = DistributionGGX(N, H, Roughness);
@@ -140,16 +235,16 @@ void main()
         vec3 specular = numerator / max(denominator, 0.001);
         // add to outgoing radiance Lo
         float NdotL = max(dot(N, L), 0.0);
-        float shadow = ShadowCalculationPoint(lights[i], FragPos);
+        
         //float shadow = 0;
-        vec3 final = (1 - shadow) * (kD * Albedo / PI + specular) * radiance * NdotL;
+        vec3 final = (kD * Albedo / PI + specular) * radiance * NdotL;
         Lo += final;
     }
 
-    Lo += CalcDirLight(dirLight, N, V, Albedo, Roughness, Metallic, F0, vec4(FragPos, 1.0));
+    //Lo += CalcDirLight(dirLight, N, V, Albedo, Roughness, Metallic, F0, vec4(FragPos, 1.0));
 
     //float averageAO = (AO + SSAO) / 2;
-    vec3 ambient = vec3(0.01) * Albedo;
+    vec3 ambient = vec3(0.00) * Albedo;
     //ambient = vec3(0.0);
     //if(useAmbientOcclusion) {
         //ambient = ambient * SSAO;
@@ -161,7 +256,11 @@ void main()
     //color = pow(color, vec3(1.0/2.2)); // Gamma correct
     //color = clamp(color, 0.0, 1.0);
     FragColor = vec4(color, 1.0);
+    //if(useVoxelConetrace) {
+    //    FragColor = ConeTraceRadiance(FragPos, N);
+    //}
     gColor = FragColor;
+
     //}
 }
 

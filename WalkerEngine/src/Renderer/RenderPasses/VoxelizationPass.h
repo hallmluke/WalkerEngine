@@ -2,6 +2,7 @@
 #include "Renderer/RenderPass.h"
 #include "Renderer/Shader.h"
 #include "Renderer/ComputeShader.h"
+#include "Renderer/ShaderStorageBuffer.h"
 #include "Scene/Scene.h"
 #include "Scene/Volume.h"
 
@@ -22,6 +23,14 @@ namespace Walker {
 
 		virtual void Resize(uint32_t width, uint32_t height) override;
 
+		virtual void OnImGuiRender() override;
+
+		struct VoxelType {
+			glm::uint color;
+			glm::uint normal;
+			glm::uint pad[2];
+		};
+
 	private:
 		mutable bool m_Cache;
 		std::shared_ptr<Texture3D> m_VoxelTex;
@@ -29,6 +38,8 @@ namespace Walker {
 		std::shared_ptr<ComputeShader> m_VolumeCompShader;
 		std::shared_ptr<Volume> m_Volume;
 		std::shared_ptr<Shader> m_VisualizationShader;
+		std::shared_ptr<ShaderStorageBuffer> m_VoxelBuffer;
+		std::shared_ptr<ComputeShader> m_VoxelBufferToTexShader;
 
 		void SetDirectionalLightShaderUniforms(Scene& scene) const;
 		void SetPointLightShaderUniforms(Scene& scene) const;

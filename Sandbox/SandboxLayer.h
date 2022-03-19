@@ -36,5 +36,6 @@ namespace Walker {
 		std::shared_ptr<RenderGraph> m_RenderGraph;
 		Quad m_Quad;
 		std::shared_ptr<Shader> m_DebugShader;
+		Entity m_PointLight;
 	};
 }

@@ -71,4 +71,8 @@ namespace Walker {
 		}
 	}
 
+	void RenderPass::OnImGuiRender()
+	{
+	}
+
 }

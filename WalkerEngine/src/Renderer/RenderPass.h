@@ -47,6 +47,7 @@ namespace Walker {
 
 		// Temp
 		virtual uint32_t GetFinalOutputRendererId() const = 0;
+		virtual void OnImGuiRender();
 
 	protected:
 		std::vector<RenderPassInput> m_Inputs;
