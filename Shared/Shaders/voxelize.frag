@@ -117,7 +117,12 @@ uniform float farPlane;
 
 uint layers = 128;
 
-ivec3 scaleAndBias(vec3 position) { return ivec3((position + vec3(imageSize(voxelTex).xy, layers) / 2)); }
+uniform vec3 GIPosition;
+uniform vec3 GIScale;
+uniform int GISubdiv;
+
+//ivec3 scaleAndBias(vec3 position) { return ivec3((position + vec3(imageSize(voxelTex).xy, layers) / 2)); }
+ivec3 scaleAndBias(vec3 position) { return ivec3((position - GIPosition + GIScale / 2)); }
 
 bool IsInProbe(vec3 position, ivec3 size) { 
     return abs(position.x) < size.x / 2 && abs(position.y) < size.y / 2 && abs(position.z) < size.z / 2; 
@@ -158,12 +163,14 @@ void main() {
         diffuseLuminance += CalcPointLight(lights[i], NormalFrag, FragPos);
     }
     ivec3 voxel = scaleAndBias(FragPos);
-    ivec3 size = imageSize(voxelTex);
+    //ivec3 size = imageSize(voxelTex);
+    ivec3 size = ivec3(GIScale);
 
     bool greaterThanZero = voxel.x >= 0 && voxel.y >= 0 && voxel.z >= 0;
     bool xIsGood = voxel.x < size.x;
     bool yIsGood = voxel.y < size.y;
-    bool zIsGood = voxel.z < layers;
+    bool zIsGood = voxel.z < size.z;
+    //bool zIsGood = voxel.z < layers;
     //float z = size.z;
     ///diffuseColor.z = z;
     //diffuseColor.y = 1.5;
@@ -171,7 +178,8 @@ void main() {
     if(greaterThanZero && xIsGood && yIsGood && zIsGood) {
     //if(voxel.x >= 0 && voxel.x < size.x && voxel.y >= 0 && voxel.y < size.y && voxel.z > 0 && voxel.z < size.z) {
         //imageStore(voxelTex, ivec3(voxel), vec4(diffuseLuminance, 1.0));
-        uint id = flatten3D(uvec3(voxel), uvec3(128));
+        //uint id = flatten3D(uvec3(voxel), uvec3(128));
+        uint id = flatten3D(uvec3(voxel), uvec3(GISubdiv));
         vec4 lightedDiffuseColor = vec4(diffuseLuminance, 1.0);
         uint encodedColor = EncodeColor(lightedDiffuseColor);
         uint encodedNormal = EncodeNormal(NormalFrag);

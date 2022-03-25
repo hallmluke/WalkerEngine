@@ -78,13 +78,18 @@ uniform float stepSize;
 uniform float indirectMultiplier;
 uniform int numCones;
 
+uniform vec3 GIPosition;
+uniform vec3 GIScale;
+uniform int GISubdiv;
+
 vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir, vec3 albedo, float roughness, float metallic, vec3 F0, vec4 fragPosWorldSpace);
 float ShadowCalculationDir(vec4 fragPosLightSpace, vec3 normal, vec3 lightDir);
 float ShadowCalculationDirCascades(vec4 fragPosWorldSpace, vec3 normal, vec3 lightDir);
 float ShadowCalculationPoint(PointLight light, vec3 fragPos);
 
 
-ivec3 scaleAndBias(vec3 position) { return ivec3((position + vec3(64))); }
+//ivec3 scaleAndBias(vec3 position) { return ivec3((position + vec3(64))); }
+ivec3 scaleAndBias(vec3 position) { return ivec3((position - GIPosition + GIScale / 2)); }
 
 const vec3 CONES[] = 
 {
@@ -128,7 +133,8 @@ vec4 ConeTrace(vec3 position, vec3 normal, vec3 coneDirection, float coneApertur
 
         ivec3 voxelPosition = scaleAndBias(worldPosition);
 
-        vec3 voxelTexPosition = vec3(voxelPosition) / 128;
+        //vec3 voxelTexPosition = vec3(voxelPosition) / 128;
+        vec3 voxelTexPosition = vec3(voxelPosition) / GISubdiv;
 
         if(mip >= 5) {
             break;

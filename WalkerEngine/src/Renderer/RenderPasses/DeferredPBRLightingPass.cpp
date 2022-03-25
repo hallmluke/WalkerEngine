@@ -119,6 +119,10 @@ namespace Walker {
 			auto probe = probes[i];
 			probe->VoxelTex->Bind(4);
 
+			m_Shader->SetVec3("GIPosition", positions[i]);
+			m_Shader->SetVec3("GIScale", scales[i]);
+			m_Shader->SetInt("GISubdiv", probe->Subdiv);
+
 		}
 
 		m_Shader->SetVec3("camPos", scene.GetCamera()->GetPosition());

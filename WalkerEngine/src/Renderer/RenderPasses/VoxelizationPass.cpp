@@ -88,6 +88,9 @@ namespace Walker {
 				m_VoxelizationShader->Bind();
 				//m_VoxelTex->BindImage(1);
 				probe->VoxelTex->BindImage(1);
+				m_VoxelizationShader->SetVec3("GIPosition", positions[i]);
+				m_VoxelizationShader->SetVec3("GIScale", scales[i]);
+				m_VoxelizationShader->SetInt("GISubdiv", probe->Subdiv);
 				SetDirectionalLightShaderUniforms(scene);
 				SetPointLightShaderUniforms(scene);
 
