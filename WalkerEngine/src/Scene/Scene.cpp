@@ -112,6 +112,26 @@ namespace Walker {
 		return lights;
 	}
 
+	std::vector<std::shared_ptr<GIProbe>> Scene::GetGIProbes(std::vector<glm::vec3>& positions, std::vector<glm::vec3>& scales)
+	{
+		std::vector<std::shared_ptr<GIProbe>> probes;
+		std::vector<glm::vec3> pos;
+		std::vector<glm::vec3> scale;
+		auto view = m_Registry.view<GIProbeComponent, TransformComponent>();
+
+		for (auto entity : view) {
+			auto& [GIProbeComp, TransformComp] = view.get<GIProbeComponent, TransformComponent>(entity);
+			probes.push_back(GIProbeComp.Probe);
+			pos.push_back(TransformComp.Translation);
+			scale.push_back(TransformComp.Scale);
+		}
+
+		positions = pos;
+		scales = scale;
+
+		return probes;
+	}
+
 	void Scene::AddMaterial(std::shared_ptr<Material> material)
 	{
 		m_MaterialLibrary.Add(material);
@@ -122,10 +142,10 @@ namespace Walker {
 		return m_MaterialLibrary.Get(uuid);
 	}
 
-	void Scene::Voxelize(std::shared_ptr<Shader> shader)
+	void Scene::Voxelize(std::shared_ptr<Shader> shader, glm::mat4 voxelProjection, glm::mat4 voxelView)
 	{
-		glm::mat4 voxelProjection = glm::ortho(-128.0f, 128.0f, -128.0f, 128.0f, -128.0f, 128.0f);
-		glm::mat4 voxelView = glm::lookAt(glm::vec3(0.0f, 0.0f, 64.0f), glm::vec3(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		//glm::mat4 voxelProjection = glm::ortho(-128.0f, 128.0f, -128.0f, 128.0f, -128.0f, 128.0f);
+		//glm::mat4 voxelView = glm::lookAt(glm::vec3(0.0f, 0.0f, 64.0f), glm::vec3(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 
 		shader->SetMat4("view", voxelView);
 		shader->SetMat4("projection", voxelProjection);
@@ -149,58 +169,6 @@ namespace Walker {
 			mesh.MeshPtr->Draw(shader, globalTransform);
 		}
 
-
-		/*voxelProjection = glm::ortho(-128.0f, 128.0f, -128.0f, 128.0f, -128.0f, 128.0f);
-		voxelView = glm::lookAt(glm::vec3(0.0f, 64.0f, 0.0f), glm::vec3(0.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-
-		shader->SetMat4("view", voxelView);
-		shader->SetMat4("projection", voxelProjection);
-		view = m_Registry.view<TransformComponent, RelationshipComponent, MeshComponent>();
-		for (auto entity : view)
-		{
-			auto [transform, relationship, mesh] = view.get<TransformComponent, RelationshipComponent, MeshComponent>(entity);
-
-			glm::mat4 globalTransform = transform.GetTransform();
-
-			// TODO: Persistently track global transform instead of calculating before drawing
-			Entity parent = relationship.Parent;
-			while (parent) {
-				glm::mat4 parentTransform = parent.GetComponent<TransformComponent>().GetTransform();
-				globalTransform = parentTransform * globalTransform;
-				parent = parent.GetComponent<RelationshipComponent>().Parent;
-				//globalTransform = globalTransform * parentTransform;
-			}
-
-			globalTransform = glm::scale(globalTransform, glm::vec3(3.0));
-
-			mesh.MeshPtr->Draw(shader, globalTransform);
-		}*/
-		
-		/*glm::mat4 voxelProjection = glm::ortho(-128.0f, 128.0f, -128.0f, 128.0f, -128.0f, 128.0f);
-		glm::mat4 voxelView = glm::lookAt(glm::vec3(64.0f, 0.0f, 0.0f), glm::vec3(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-
-		shader->SetMat4("view", voxelView);
-		shader->SetMat4("projection", voxelProjection);
-		auto view = m_Registry.view<TransformComponent, RelationshipComponent, MeshComponent>();
-		for (auto entity : view)
-		{
-			auto [transform, relationship, mesh] = view.get<TransformComponent, RelationshipComponent, MeshComponent>(entity);
-
-			glm::mat4 globalTransform = transform.GetTransform();
-
-			// TODO: Persistently track global transform instead of calculating before drawing
-			Entity parent = relationship.Parent;
-			while (parent) {
-				glm::mat4 parentTransform = parent.GetComponent<TransformComponent>().GetTransform();
-				globalTransform = parentTransform * globalTransform;
-				parent = parent.GetComponent<RelationshipComponent>().Parent;
-				//globalTransform = globalTransform * parentTransform;
-			}
-
-			globalTransform = glm::scale(globalTransform, glm::vec3(3.0));
-
-			mesh.MeshPtr->Draw(shader, globalTransform);
-		}*/
 	}
 
 	void Scene::DrawMeshes(std::shared_ptr<Shader> shader)

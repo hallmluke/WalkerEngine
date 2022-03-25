@@ -159,7 +159,7 @@ vec4 ConeTraceRadiance(vec3 position, vec3 normal)
 		radiance += ConeTrace(position, normal, coneDirection, aperture);
 	}
 
-	radiance /= 8;
+	radiance /= numCones;
 	radiance.a = clamp(radiance.a, 0.0, 1.0);
 
 	return max(vec4(0.0), radiance);

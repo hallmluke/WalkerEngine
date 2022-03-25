@@ -109,6 +109,18 @@ namespace Walker {
 			m_Shader->SetInt(input.Name, input.Slot);
 		}
 
+		std::vector<glm::vec3> positions;
+		std::vector<glm::vec3> scales;
+		auto probes = scene.GetGIProbes(positions, scales);
+
+		for (size_t i = 0; i < probes.size(); i++) {
+			// TODO: This only supports binding one GI Probe
+			// should either support multiple or pick best probe to use
+			auto probe = probes[i];
+			probe->VoxelTex->Bind(4);
+
+		}
+
 		m_Shader->SetVec3("camPos", scene.GetCamera()->GetPosition());
 		m_Shader->SetBool("useVoxelConetrace", m_UseVoxelConetrace);
 		m_Shader->SetFloat("aperture", m_Aperture);
