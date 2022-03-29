@@ -58,15 +58,17 @@ namespace Walker {
 		glm::vec3 centerDirection = center - m_Direction;
 
 
-		/*float radius = 0.0f;
+		float radius = 0.0f;
 		for (uint32_t i = 0; i < 8; i++) {
 			float distance = glm::length(glm::vec3(corners[i].x, corners[i].y, corners[i].z) - center);
 			radius = glm::max(radius, distance);
 		}
-		radius = std::ceil(radius * 16.0f) / 16.0f;
+		//float scaleFactor = (farPlane - nearPlane) / (float) m_ShadowMapWidth;
+		float scaleFactor = 1.0f;
+		radius = std::ceil(radius * scaleFactor) / scaleFactor;
 
 		glm::vec3 maxExtents = glm::vec3(radius);
-		glm::vec3 minExtents = -maxExtents;*/
+		glm::vec3 minExtents = -maxExtents;
 
 		const auto lightView = glm::lookAt(
 			center - m_Direction,
@@ -112,22 +114,98 @@ namespace Walker {
 			maxZ *= debugDistance;
 		}
 
-		/*const auto lightView = glm::lookAt(
+		const auto lightView2 = glm::lookAt(
 			center - m_Direction * -minExtents.z,
 			center,
 			glm::vec3(0.0f, 1.0f, 0.0f)
 		);
 
-		const glm::mat4 lightProjection = glm::ortho(minExtents.x, maxExtents.x, minExtents.y, maxExtents.y, 0.0f, maxExtents.z - minExtents.z);*/
+		const glm::mat4 lightProjection2 = glm::ortho(minExtents.x, maxExtents.x, minExtents.y, maxExtents.y, 0.0f, maxExtents.z - minExtents.z);
 
 		const glm::mat4 lightProjection = glm::ortho(minX, maxX, minY, maxY, minZ, maxZ);
 
 		return lightProjection * lightView;
 	}
 
+	glm::mat4 DirectionalLight::GetLightSpaceMatrix(Camera& camera, const float nearPlane, const float farPlane, glm::mat4 view)
+	{
+		std::vector<glm::vec4> corners = camera.GetFrustumCornersWorldSpace(glm::perspective(glm::radians(camera.GetZoom()), camera.GetAspectRatio(), nearPlane, farPlane), camera.GetViewMatrix());
+
+		glm::vec3 center = glm::vec3(0, 0, 0);
+		for (const auto& v : corners)
+		{
+			center += glm::vec3(v);
+		}
+		center /= corners.size();
+
+		//glm::vec3 centerDirection = center - m_Direction;
+
+
+		float radius = 0.0f;
+		for (uint32_t i = 0; i < 8; i++) {
+			float distance = glm::length(glm::vec3(corners[i].x, corners[i].y, corners[i].z) - center);
+			radius = glm::max(radius, distance);
+		}
+		radius = std::round(radius * 16.0f) / 16.0f;
+		//float scaleFactor = (farPlane - nearPlane) / (float) m_ShadowMapWidth;
+		//float scaleFactor = 1.0f;
+		//radius = std::ceil(radius * scaleFactor) / scaleFactor;
+
+		float f = (radius * 2.0f) / m_ShadowMapWidth;
+		glm::vec4 centerViewSpace = view * glm::vec4(center, 1.0f);
+
+		float minX = centerViewSpace.x - radius;
+		minX = std::floor(minX / f) * f;
+
+		float minY = centerViewSpace.y - radius;
+		minY = std::floor(minY / f) * f;
+
+		float minZ = centerViewSpace.z - radius;
+		float maxZ = centerViewSpace.z + radius;
+
+		float viewportExtent = floor((radius * 2.0f) / f) * f;
+		float maxX = minX + viewportExtent;
+		float maxY = minY + viewportExtent;
+		//glm::vec3 maxExtents = glm::vec3(radius);
+		//glm::vec3 minExtents = -maxExtents;
+
+		/*const auto lightView = glm::lookAt(
+			center - m_Direction,
+			center,
+			glm::vec3(0.0f, 1.0f, 0.0f)
+		);
+		*/
+		/*const auto lightView2 = glm::lookAt(
+			center - m_Direction * -minExtents.z,
+			center,
+			glm::vec3(0.0f, 1.0f, 0.0f)
+		);
+
+		const glm::mat4 lightProjection2 = glm::ortho(minExtents.x, maxExtents.x, minExtents.y, maxExtents.y, 0.0f, maxExtents.z - minExtents.z);*/
+
+		const glm::mat4 lightProjection = glm::ortho(minX, maxX, minY, maxY, minZ, maxZ);
+
+		//return lightProjection2 * lightView2;
+		return lightProjection * view;
+	}
+
 	std::vector<glm::mat4> DirectionalLight::GetLightSpaceMatrices(Camera& camera)
 	{
 		std::vector<glm::mat4> matrices;
+		
+		std::vector<glm::vec4> corners = camera.GetFrustumCornersWorldSpace(camera.GetProjectionMatrix(), camera.GetViewMatrix());
+
+		glm::vec3 center = glm::vec3(0, 0, 0);
+		for (const auto& v : corners)
+		{
+			center += glm::vec3(v);
+		}
+		center /= corners.size();
+		const auto lightView = glm::lookAt(
+			center - m_Direction,
+			center,
+			glm::vec3(0.0f, 1.0f, 0.0f)
+		);
 
 		for (size_t i = 0; i < m_ShadowCascadeLevels.size() + 1; ++i)
 		{
@@ -218,6 +296,109 @@ namespace Walker {
 	void DirectionalLight::BindVoxelShadowMap(uint32_t slot) const
 	{
 		m_VoxelShadowMapFramebuffer->BindDepthAttachment(slot);
+	}
+
+	void DirectionalLight::UpdateShadowCascades(Camera& camera, const float nearPlane, const float farPlane)
+	{
+		const float minDistance = 0.0f;
+
+		m_Global = CalculateShadowSpaceMatrix(camera);
+		const glm::mat3 shadowOffsetMatrix = glm::mat3(glm::transpose(m_Global.ShadowView));
+
+		for (uint32_t cascade = 0; cascade <= m_ShadowCascadeLevels.size(); cascade++) {
+			const float nearSplitDistance = nearPlane + (cascade == 0 ? minDistance : m_ShadowCascadeLevels[cascade - 1]);
+			const float farSplitDistance = nearPlane + (cascade == m_ShadowCascadeLevels.size() ? farPlane : m_ShadowCascadeLevels[cascade]);
+
+			const BoundingSphere boundingSphere = CalculateFrustumBoundingSphere(camera, nearSplitDistance, farSplitDistance);
+
+			glm::vec3 offset;
+
+			if (CascadeNeedsUpdate(m_Global.ShadowView, cascade, boundingSphere.FrustumCenter, m_CascadeBoundCenters[cascade], boundingSphere.Radius, offset))
+			{
+				glm::vec3 offsetWorldSpace = shadowOffsetMatrix * offset;
+				m_CascadeBoundCenters[cascade] += offsetWorldSpace;
+			}
+
+			glm::vec3 cascadeCenterShadowSpace = glm::vec3(m_Global.WorldToShadowSpace * glm::vec4(m_CascadeBoundCenters[cascade], 1.0f));
+			float scale = m_Global.Radius / boundingSphere.Radius;
+
+			// TODO store data
+		}
+	}
+
+	GlobalShadow DirectionalLight::CalculateShadowSpaceMatrix(Camera& camera)
+	{
+		const float nearPlane = camera.GetNearPlane();
+		const float farPlane = camera.GetFarPlane();
+		const float cascadeTotalRange = farPlane - nearPlane;
+		const BoundingSphere shadowBounds = CalculateFrustumBoundingSphere(camera, nearPlane, farPlane);
+
+		const glm::vec3 cameraFrustumCenterWorldSpace = shadowBounds.FrustumCenter;
+		const glm::vec3 lightPosition = cameraFrustumCenterWorldSpace + glm::normalize(m_Direction) * m_Distance;
+
+		glm::vec3 upVec = glm::normalize(glm::cross(m_Direction, glm::vec3(0.0f, 1.0f, 0.0f)));
+
+		const float directionBias = 0.0001f;
+
+		if (glm::abs(glm::dot(upVec, m_Direction)) < directionBias) {
+			upVec = glm::normalize(glm::cross(m_Direction, glm::vec3(0.0f, 0.0f, -1.0f)));
+		}
+
+		const glm::mat4 shadowView = glm::lookAt(cameraFrustumCenterWorldSpace, lightPosition, upVec);
+		const glm::mat4 shadowProj = glm::ortho(-shadowBounds.Radius, shadowBounds.Radius, -shadowBounds.Radius, shadowBounds.Radius, -shadowBounds.Radius, shadowBounds.Radius);
+
+		GlobalShadow result;
+		result.WorldToShadowSpace = shadowProj * shadowView;
+		result.ShadowView = shadowView;
+		result.Radius = shadowBounds.Radius;
+		return result;
+	}
+
+	BoundingSphere DirectionalLight::CalculateFrustumBoundingSphere(Camera& camera, const float nearPlane, const float farPlane)
+	{
+		std::vector<glm::vec4> corners = camera.GetFrustumCornersWorldSpace(glm::perspective(glm::radians(camera.GetZoom()), camera.GetAspectRatio(), nearPlane, farPlane), camera.GetViewMatrix());
+
+		glm::vec3 center = glm::vec3(0.0f);
+		for (const auto& v : corners)
+		{
+			center += glm::vec3(v);
+		}
+		center /= corners.size();
+
+		float radius = 0.0f;
+		for (uint32_t i = 0; i < 8; i++) {
+			float distance = glm::length(glm::vec3(corners[i].x, corners[i].y, corners[i].z) - center);
+			radius = glm::max(radius, distance);
+		}
+		radius = std::round(radius * 16.0f) / 16.0f;
+
+		BoundingSphere result;
+		result.FrustumCenter = center;
+		result.Radius = radius;
+
+		return result;
+	}
+
+	bool DirectionalLight::CascadeNeedsUpdate(glm::mat4 shadowView, uint32_t cascadeNumber, glm::vec3 newCenter, glm::vec3 oldCenter, float radius, glm::vec3& offset)
+	{
+		const glm::vec3 oldCenterViewSpace = glm::vec3(shadowView * glm::vec4(oldCenter, 1.0f));
+		const glm::vec3 newCenterViewSpace = glm::vec3(shadowView * glm::vec4(newCenter, 1.0f));
+		const glm::vec3 centerDiff = newCenterViewSpace - oldCenterViewSpace;
+
+		const float pixelSize = (float)m_ShadowMapWidth / (2.0f * radius);
+
+		const float pixelOffsetX = centerDiff.x * pixelSize;
+		const float pixelOffsetY = centerDiff.y * pixelSize;
+
+		const bool needUpdate = glm::abs(pixelOffsetX) > 0.5f || glm::abs(pixelOffsetY) > 0.5f;
+		if (needUpdate)
+		{
+			offset.x = glm::floor(0.5f + pixelOffsetX) / pixelSize;
+			offset.y = glm::floor(0.5f + pixelOffsetY) / pixelSize;
+			offset.z = centerDiff.z;
+		}
+
+		return needUpdate;
 	}
 
 	void DirectionalLight::SetShadowCascadeLevels(float cameraFarPlane)
