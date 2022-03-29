@@ -120,7 +120,7 @@ namespace Walker {
 		auto view = m_Registry.view<GIProbeComponent, TransformComponent>();
 
 		for (auto entity : view) {
-			auto& [GIProbeComp, TransformComp] = view.get<GIProbeComponent, TransformComponent>(entity);
+			auto [GIProbeComp, TransformComp] = view.get<GIProbeComponent, TransformComponent>(entity);
 			probes.push_back(GIProbeComp.Probe);
 			pos.push_back(TransformComp.Translation);
 			scale.push_back(TransformComp.Scale);
