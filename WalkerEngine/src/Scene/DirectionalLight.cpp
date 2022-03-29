@@ -42,6 +42,11 @@ namespace Walker {
 		voxelFbSpec.Samples = 1;
 		m_VoxelShadowMapFramebuffer = Framebuffer::Create(voxelFbSpec);
 		m_VoxelShadowMapShader = Shader::Create("Depth", "Shaders/depth_shader.vert", "Shaders/depth_shader.frag");
+
+		m_CascadeBoundCenters.reserve(m_ShadowCascadeLevels.size() + 1);
+		for (uint32_t i = 0; i < m_ShadowCascadeLevels.size() + 1; i++) {
+			m_CascadeBoundCenters.push_back(glm::vec3(0.0f));
+		}
 	}
 
 	glm::mat4 DirectionalLight::GetLightSpaceMatrix(Camera& camera, const float nearPlane, const float farPlane)
@@ -228,11 +233,13 @@ namespace Walker {
 	void DirectionalLight::GenerateCascadedShadowMap(Scene& scene)
 	{
 		// Upload light space matrices to uniform buffer
-		std::vector<glm::mat4> lightSpaceMatrices = GetLightSpaceMatrices(*(scene.GetCamera()));
+		/*std::vector<glm::mat4> lightSpaceMatrices = GetLightSpaceMatrices(*(scene.GetCamera()));
 		for (size_t i = 0; i < lightSpaceMatrices.size(); ++i)
 		{
 			m_LightMatricesUniformBuffer->SetData(&lightSpaceMatrices[i], sizeof(glm::mat4x4), i * sizeof(glm::mat4x4));
-		}
+		}*/
+
+		UpdateShadowCascades(*(scene.GetCamera()), scene.GetCamera()->GetNearPlane(), scene.GetCamera()->GetFarPlane());
 
 		m_ShadowMapFramebuffer->Bind();
 		m_ShadowMapShader->Bind();
@@ -323,6 +330,15 @@ namespace Walker {
 			float scale = m_Global.Radius / boundingSphere.Radius;
 
 			// TODO store data
+
+			auto cascadeTranslate = glm::translate(glm::mat4(1.0f), glm::vec3(cascadeCenterShadowSpace.x, cascadeCenterShadowSpace.y, 0.0f));
+			auto cascadeTranslateInverse = glm::translate(glm::mat4(1.0f), glm::vec3(-cascadeCenterShadowSpace.x, -cascadeCenterShadowSpace.y, 0.0f));
+			auto cascadeScale = glm::scale(glm::mat4(1.0), glm::vec3(scale, scale, 1.0f));
+
+			auto lightViewProjectionMatrix = cascadeScale * cascadeTranslateInverse * m_Global.WorldToShadowSpace;
+
+			m_LightMatricesUniformBuffer->SetData(&lightViewProjectionMatrix, sizeof(glm::mat4x4), cascade * sizeof(glm::mat4x4));
+			// Set scale?
 		}
 	}
 
