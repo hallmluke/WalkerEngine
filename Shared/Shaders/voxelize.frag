@@ -8,11 +8,7 @@ in vec3 FragPos;
 in vec3 NormalFrag;
 in vec2 TexCoordsFrag;
 //in vec2 TexCoords;
-
-layout (std140, binding = 0) uniform LightSpaceMatrices
-{
-    mat4 lightSpaceMatrices[16];
-};
+in vec4 FragPosLightSpace;
 
 struct VoxelType
 {
@@ -109,20 +105,13 @@ uniform PointLight lights[MAX_LIGHTS];
 uniform DirLight dirLight;
 
 uniform mat4 view;
-uniform sampler2DArray shadowMap;
-
-uniform float cascadePlaneDistances[16];
-uniform int cascadeCount;   // number of frusta - 1
 uniform float farPlane;
-
-uint layers = 128;
 
 uniform vec3 GIPosition;
 uniform vec3 GIScale;
 uniform int GISubdiv;
 
-//ivec3 scaleAndBias(vec3 position) { return ivec3((position + vec3(imageSize(voxelTex).xy, layers) / 2)); }
-ivec3 scaleAndBias(vec3 position) { return ivec3((position - GIPosition + GIScale / 2)); }
+ivec3 scaleAndBias(vec3 position) { return ivec3((position - GIPosition + GIScale / 2) * GISubdiv / GIScale); }
 
 bool IsInProbe(vec3 position, ivec3 size) { 
     return abs(position.x) < size.x / 2 && abs(position.y) < size.y / 2 && abs(position.z) < size.z / 2; 
@@ -130,41 +119,20 @@ bool IsInProbe(vec3 position, ivec3 size) {
 
 vec3 CalcDirLight(DirLight light, vec3 normal, vec4 fragPosWorldSpace);
 vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos);
-float ShadowCalculationDirCascades(vec4 fragPosWorldSpace, vec3 normal, vec3 lightDir);
+//float ShadowCalculation(vec4 fragPosLightSpace, vec3 normal, vec3 lightDir);
 
 void main() {
-	
-	//if(!IsInProbe(FragPos, imageSize(voxelTex))) return;
-
-    //vec3 lightDir = normalize(-dirLight.direction);
-    //
-    //vec3 normal;
-    //if(normal_tex) {
-    //    normal = texture(texture_normal1, TexCoords).rgb;
-    //} else {
-    //    normal = vec3(0.0, 0.0, 1.0);
-    //}
-    //normal = normal * 2.0 - 1.0;
-    //normal = normalize(TBN * normal);
-    //
-    //float diffuse = max(dot(normal, lightDir), 0.0);
-    //vec4 diffuseColor = texture(texture_diffuse1, TexCoordsFrag);
-    //vec4 diffuseColor = vec4(1.0, 0.0, 0.0, 1.0);
-
-    //ivec3 voxel = ivec3(64, 64, 64);
-
-    //imageStore(voxelTex, voxel, diffuseColor);
 
     vec4 diffuseColor = texture(texture_diffuse1, TexCoordsFrag);
-    //vec3 diffuseLuminance = CalcDirLight(dirLight, NormalFrag, vec4(FragPos, 1.0));
 
     vec3 diffuseLuminance = vec3(0.0);
     for(int i = 0; i < numberOfLights; ++i) {
-        diffuseLuminance += CalcPointLight(lights[i], NormalFrag, FragPos);
+        //diffuseLuminance += CalcPointLight(lights[i], NormalFrag, FragPos);
     }
+    diffuseLuminance += CalcDirLight(dirLight, NormalFrag, FragPosLightSpace);
     ivec3 voxel = scaleAndBias(FragPos);
     //ivec3 size = imageSize(voxelTex);
-    ivec3 size = ivec3(GIScale);
+    ivec3 size = ivec3(GISubdiv);
 
     bool greaterThanZero = voxel.x >= 0 && voxel.y >= 0 && voxel.z >= 0;
     bool xIsGood = voxel.x < size.x;
@@ -264,6 +232,37 @@ vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos) {
     //return diffuse;
 }
 
+
+float ShadowCalculation(vec4 fragPosLightSpace, vec3 normal, vec3 lightDir) {
+    
+    vec3 projCoords = fragPosLightSpace.xyz / fragPosLightSpace.w;
+    projCoords = projCoords * 0.5 + 0.5;
+
+    float closestDepth = texture(dirLight.shadowMap, projCoords.xy).r;
+    float currentDepth = projCoords.z; 
+    float bias = max(0.005 * (1.0 - dot(normal, lightDir)), dirLight.shadowBias);
+
+    float shadow = 0.0;
+    vec2 texelSize = 1.0 / textureSize(dirLight.shadowMap, 0);
+
+    for(int x = -2; x <= 2; ++x)
+    {
+        for(int y = -2; y <= 2; ++y)
+        {
+            float pcfDepth = texture(dirLight.shadowMap, projCoords.xy + vec2(x, y) * texelSize).r;
+            shadow += currentDepth - dirLight.shadowBias > pcfDepth ? 1.0 : 0.0;
+        }
+    }
+    shadow /= 25;
+
+    if(projCoords.z > 1.0) {
+        shadow = 0.0;
+    }
+
+    return shadow;
+
+}
+
 vec3 CalcDirLight(DirLight light, vec3 normal, vec4 fragPosWorldSpace) {
     vec3 lightDir = normalize(-light.direction);
 
@@ -277,74 +276,10 @@ vec3 CalcDirLight(DirLight light, vec3 normal, vec4 fragPosWorldSpace) {
     //vec3 diffuse = vec3(texture(texture_diffuse1, TexCoordsFrag));
     //vec3 specular = light.specular * spec * vec3(texture(texture_specular1, TexCoords).r);
 
-    float shadow = ShadowCalculationDirCascades(fragPosWorldSpace, normal, lightDir);
+    float shadow = ShadowCalculation(FragPosLightSpace, normal, lightDir);
 
-    vec3 final = diffuse;
-    //vec3 final = (1 - shadow) * diffuse;
+    //vec3 final = diffuse;
+    vec3 final = (1 - shadow) * diffuse;
 
     return final;
-}
-
-float ShadowCalculationDirCascades(vec4 fragPosWorldSpace, vec3 normal, vec3 lightDir) {
-    // select cascade layer
-    vec4 fragPosViewSpace = view * fragPosWorldSpace;
-    float depthValue = abs(fragPosViewSpace.z);
-
-    int layer = -1;
-    for (int i = 0; i < cascadeCount; ++i)
-    {
-        if (depthValue < cascadePlaneDistances[i])
-        {
-            layer = i;
-            break;
-        }
-    }
-    if (layer == -1)
-    {
-        layer = cascadeCount;
-    }
-
-    vec4 fragPosLightSpace = lightSpaceMatrices[layer] * fragPosWorldSpace;
-    // perform perspective divide
-    vec3 projCoords = fragPosLightSpace.xyz / fragPosLightSpace.w;
-    // transform to [0,1] range
-    projCoords = projCoords * 0.5 + 0.5;
-
-    // get depth of current fragment from light's perspective
-    float currentDepth = projCoords.z;
-    if (currentDepth  > 1.0)
-    {
-        return 0.0;
-    }
-    // calculate bias (based on depth map resolution and slope)
-    float bias = max(0.005 * (1.0 - dot(normal, lightDir)), 0.005);
-    if (layer == cascadeCount)
-    {
-        bias *= 1 / (farPlane * 0.5f);
-    }
-    else
-    {
-        bias *= 1 / (cascadePlaneDistances[layer] * 0.5f);
-    }
-
-    // PCF
-    float shadow = 0.0;
-    vec2 texelSize = 1.0 / vec2(textureSize(shadowMap, 0));
-    for(int x = -1; x <= 1; ++x)
-    {
-        for(int y = -1; y <= 1; ++y)
-        {
-            float pcfDepth = texture(shadowMap, vec3(projCoords.xy + vec2(x, y) * texelSize, layer)).r; 
-            shadow += (currentDepth - bias) > pcfDepth ? 1.0 : 0.0;        
-        }    
-    }
-    shadow /= 9.0;
-    
-    // keep the shadow at 0.0 when outside the far_plane region of the light's frustum.
-    if(projCoords.z > 1.0)
-    {
-        shadow = 0.0;
-    }
-        
-    return shadow;
 }

@@ -132,6 +132,7 @@ namespace Walker {
 		m_Shader->SetFloat("stepSize", m_StepSize); 
 		m_Shader->SetFloat("indirectMultiplier", m_IndirectMultiplier);
 		m_Shader->SetInt("numCones", m_NumCones);
+		m_Shader->SetFloat("mipModifier", m_MipModifier);
 
 		BindInputs();
 
@@ -167,7 +168,12 @@ namespace Walker {
 		ImGui::SliderFloat("Step Size", &m_StepSize, 0.01f, 3.0f);
 		ImGui::SliderFloat("Indirect Multiplier", &m_IndirectMultiplier, 0.01f, 10.0f);
 		ImGui::SliderInt("Cones", &m_NumCones, 1, 16);
+		ImGui::SliderFloat("Mip Modifier", &m_MipModifier, 0.0f, 5.0f);
 
+		ImGui::End();
+
+		ImGui::Begin("Shadow Bias Testing");
+		ImGui::SliderFloat("Bias", &m_ShadowBiasTest, 0.0f, 0.2f);
 		ImGui::End();
 	}
 
@@ -180,6 +186,7 @@ namespace Walker {
 		m_Shader->SetVec3("dirLight.ambient", glm::vec3(light->GetAmbientIntensity()));
 		m_Shader->SetVec3("dirLight.diffuse", glm::vec3(light->GetDiffuseIntensity()));
 		m_Shader->SetVec3("dirLight.specular", glm::vec3(light->GetSpecularIntensity()));
+		m_Shader->SetFloat("dirLight.shadowBias", m_ShadowBiasTest);
 
 		std::vector<float> cascadeDistances = light->GetShadowCascadeLevels();
 		m_Shader->SetMat4("view", scene.GetCamera()->GetViewMatrix());

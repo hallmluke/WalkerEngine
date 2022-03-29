@@ -1,6 +1,7 @@
 #include "walkerpch.h"
 #include "VoxelizationPass.h"
 #include "Renderer/RenderCommand.h"
+#include "Platform/OpenGL/OpenGLUtils.h"
 
 #include <imgui.h>
 
@@ -55,6 +56,8 @@ namespace Walker {
 
 		
 		if (!m_Cache) {
+			
+
 			std::vector<glm::vec3> positions;
 			std::vector<glm::vec3> scales;
 			auto probes = scene.GetGIProbes(positions, scales);
@@ -70,9 +73,9 @@ namespace Walker {
 					spec.Height = probe->Subdiv;
 					spec.Depth = probe->Subdiv;
 					spec.MagFilter = TextureFilterType::LINEAR;
-					spec.MinFilter = TextureFilterType::LINEAR;
+					spec.MinFilter = TextureFilterType::LINEAR_MIPMAP_LINEAR;
 					spec.Type = TextureType::FLOAT;
-					spec.TextureFormat = TextureFormat::RGBA16F;
+					spec.TextureFormat = TextureFormat::RGBA16;
 					spec.WrapS = TextureWrapType::CLAMP_EDGE;
 					spec.WrapT = TextureWrapType::CLAMP_EDGE;
 					spec.WrapR = TextureWrapType::CLAMP_EDGE;
@@ -81,9 +84,23 @@ namespace Walker {
 				}
 
 				m_VoxelBuffer = ShaderStorageBuffer::Create(sizeof(VoxelType) * probe->Subdiv * probe->Subdiv * probe->Subdiv, 1);
+				
+				glm::mat4 lightSpaceMatrix = glm::mat4(1.0f);
+				auto dirLight = scene.GetDirectionalLight();
+				if (dirLight) {
+					lightSpaceMatrix = dirLight->GetVoxelLightSpaceMatrix(scene);
+					
+					dirLight->GenerateVoxelShadowMap(scene, lightSpaceMatrix);
+					dirLight->BindVoxelShadowMap(5);
+					RenderCommand::BindDefaultFramebuffer();
+					RenderCommand::SetViewport(0, 0, 1600, 900);
+					OpenGLUtils::LogErrors();
+
+				}
 
 				RenderCommand::DisableDepthTest();
 				RenderCommand::DisableBackfaceCulling();
+
 				//RenderCommand::SetViewport(0, 0, 128, 128);
 				m_VoxelizationShader->Bind();
 				//m_VoxelTex->BindImage(1);
@@ -91,8 +108,10 @@ namespace Walker {
 				m_VoxelizationShader->SetVec3("GIPosition", positions[i]);
 				m_VoxelizationShader->SetVec3("GIScale", scales[i]);
 				m_VoxelizationShader->SetInt("GISubdiv", probe->Subdiv);
-				SetDirectionalLightShaderUniforms(scene);
+				
 				SetPointLightShaderUniforms(scene);
+				SetDirectionalLightShaderUniforms(scene);
+				m_VoxelizationShader->SetMat4("lightSpaceMatrix", lightSpaceMatrix);
 
 				glm::mat4 voxelProjection = glm::ortho(-scales[i].x, scales[i].x, -scales[i].y, scales[i].y, -scales[i].z, scales[i].z);
 				glm::mat4 voxelView = glm::lookAt(glm::vec3(0.0f, 0.0f, scales[i].z / 2), positions[i], glm::vec3(0.0f, 1.0f, 0.0f));
@@ -153,17 +172,8 @@ namespace Walker {
 		m_VoxelizationShader->SetVec3("dirLight.ambient", glm::vec3(light->GetAmbientIntensity()));
 		m_VoxelizationShader->SetVec3("dirLight.diffuse", glm::vec3(light->GetDiffuseIntensity()));
 		m_VoxelizationShader->SetVec3("dirLight.specular", glm::vec3(light->GetSpecularIntensity()));
-
-		std::vector<float> cascadeDistances = light->GetShadowCascadeLevels();
-		m_VoxelizationShader->SetMat4("view", scene.GetCamera()->GetViewMatrix());
-		m_VoxelizationShader->SetFloat("farPlane", scene.GetCamera()->GetFarPlane());
-		m_VoxelizationShader->SetInt("cascadeCount", cascadeDistances.size());
-		for (size_t i = 0; i < cascadeDistances.size(); ++i)
-		{
-			m_VoxelizationShader->SetFloat("cascadePlaneDistances[" + std::to_string(i) + "]", cascadeDistances[i]);
-		}
-		light->BindShadowMap(5);
-		m_VoxelizationShader->SetInt("shadowMap", 5);
+		m_VoxelizationShader->SetFloat("dirLight.shadowBias", 0.005f);
+		m_VoxelizationShader->SetInt("dirLight.shadowMap", 5);
 	}
 
 	void VoxelizationPass::SetPointLightShaderUniforms(Scene& scene) const

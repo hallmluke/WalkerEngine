@@ -47,6 +47,9 @@ namespace Walker {
 		float m_StepSize = 1.0f;
 		float m_IndirectMultiplier = 1.0f;
 		int32_t m_NumCones = 8;
+		float m_MipModifier = 1.0f;
+
+		float m_ShadowBiasTest = 0.05f;
 
 
 		void SetDirectionalLightShaderUniforms(Scene& scene) const;

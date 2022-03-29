@@ -31,7 +31,17 @@ namespace Walker {
 		m_LightMatricesUniformBuffer = UniformBuffer::Create(sizeof(glm::mat4) * 16, 0);
 
 		SetShadowCascadeLevels(70.0f); // TODO: retrieve from camera
-		m_ShadowMapShader = Shader::Create("Depth", "Shaders/depth_shader_cascades.vert", "Shaders/depth_shader.frag", "Shaders/depth_shader_cascades.geom"); // TODO: Use shader library
+		m_ShadowMapShader = Shader::Create("DepthCascades", "Shaders/depth_shader_cascades.vert", "Shaders/depth_shader.frag", "Shaders/depth_shader_cascades.geom"); // TODO: Use shader library
+
+		FramebufferSpecification voxelFbSpec;
+		voxelFbSpec.Attachments = {
+			{ "Depth", FramebufferTextureFormat::DEPTH32F, FramebufferTextureType::FLOAT, FramebufferTextureTarget::TEXTURE_2D }
+		};
+		voxelFbSpec.Width = m_ShadowMapWidth;
+		voxelFbSpec.Height = m_ShadowMapHeight;
+		voxelFbSpec.Samples = 1;
+		m_VoxelShadowMapFramebuffer = Framebuffer::Create(voxelFbSpec);
+		m_VoxelShadowMapShader = Shader::Create("Depth", "Shaders/depth_shader.vert", "Shaders/depth_shader.frag");
 	}
 
 	glm::mat4 DirectionalLight::GetLightSpaceMatrix(Camera& camera, const float nearPlane, const float farPlane)
@@ -47,6 +57,16 @@ namespace Walker {
 
 		glm::vec3 centerDirection = center - m_Direction;
 
+
+		/*float radius = 0.0f;
+		for (uint32_t i = 0; i < 8; i++) {
+			float distance = glm::length(glm::vec3(corners[i].x, corners[i].y, corners[i].z) - center);
+			radius = glm::max(radius, distance);
+		}
+		radius = std::ceil(radius * 16.0f) / 16.0f;
+
+		glm::vec3 maxExtents = glm::vec3(radius);
+		glm::vec3 minExtents = -maxExtents;*/
 
 		const auto lightView = glm::lookAt(
 			center - m_Direction,
@@ -92,6 +112,14 @@ namespace Walker {
 			maxZ *= debugDistance;
 		}
 
+		/*const auto lightView = glm::lookAt(
+			center - m_Direction * -minExtents.z,
+			center,
+			glm::vec3(0.0f, 1.0f, 0.0f)
+		);
+
+		const glm::mat4 lightProjection = glm::ortho(minExtents.x, maxExtents.x, minExtents.y, maxExtents.y, 0.0f, maxExtents.z - minExtents.z);*/
+
 		const glm::mat4 lightProjection = glm::ortho(minX, maxX, minY, maxY, minZ, maxZ);
 
 		return lightProjection * lightView;
@@ -130,6 +158,7 @@ namespace Walker {
 
 		m_ShadowMapFramebuffer->Bind();
 		m_ShadowMapShader->Bind();
+		RenderCommand::SetViewport(0, 0, m_ShadowMapWidth, m_ShadowMapHeight);
 		RenderCommand::Clear();
 		scene.DrawMeshes(m_ShadowMapShader);
 	}
@@ -137,6 +166,58 @@ namespace Walker {
 	void DirectionalLight::BindShadowMap(uint32_t slot) const
 	{
 		m_ShadowMapFramebuffer->BindDepthAttachment(slot);
+	}
+
+	glm::mat4 DirectionalLight::GetVoxelLightSpaceMatrix(Scene& scene)
+	{
+		std::vector<glm::vec3> positions;
+		std::vector<glm::vec3> scales;
+		auto probes = scene.GetGIProbes(positions, scales);
+
+		// TODO: This really only works for one probe, either select best one or refactor to work for all
+		for (size_t i = 0; i < probes.size(); i++) {
+
+			auto probe = probes[i];
+			float minZ = positions[i].z - (scales[i].z / 2);
+			float maxZ = positions[i].z + (scales[i].z / 2);
+			float minY = positions[i].y - (scales[i].y / 2);
+			float maxY = positions[i].y + (scales[i].y / 2);
+			float minX = positions[i].x - (scales[i].x / 2);
+			float maxX = positions[i].z + (scales[i].x / 2);
+
+			glm::vec3 centerDirection = positions[i] - m_Direction;
+
+			const glm::mat4 lightProjection = glm::ortho(minX, maxX, minY, maxY, minZ, maxZ);
+
+			const auto lightView = glm::lookAt(
+				positions[i] - m_Direction,
+				positions[i],
+				glm::vec3(0.0f, 1.0f, 0.0f)
+			);
+
+			return lightProjection * lightView;
+		}
+	}
+
+	void DirectionalLight::GenerateVoxelShadowMap(Scene& scene)
+	{
+		GenerateVoxelShadowMap(scene, GetVoxelLightSpaceMatrix(scene));
+	}
+
+	void DirectionalLight::GenerateVoxelShadowMap(Scene& scene, glm::mat4 lightSpaceMatrix)
+	{
+		m_VoxelShadowMapFramebuffer->Bind();
+		m_VoxelShadowMapShader->Bind();
+		RenderCommand::Clear();
+
+		m_VoxelShadowMapShader->SetMat4("lightSpaceMatrix", lightSpaceMatrix);
+		//RenderCommand::SetViewport(0, 0, m_ShadowMapWidth, m_ShadowMapHeight);
+		scene.DrawMeshes(m_VoxelShadowMapShader);
+	}
+
+	void DirectionalLight::BindVoxelShadowMap(uint32_t slot) const
+	{
+		m_VoxelShadowMapFramebuffer->BindDepthAttachment(slot);
 	}
 
 	void DirectionalLight::SetShadowCascadeLevels(float cameraFarPlane)

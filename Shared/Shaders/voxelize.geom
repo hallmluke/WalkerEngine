@@ -6,14 +6,17 @@ layout(triangle_strip, max_vertices = 3) out;
 in vec3 GeomPos[];
 in vec3 NormalGeom[];
 in vec2 TexCoordsGeom[];
+in vec4 GeomPosLightSpace[];
 
 out vec3 FragPos;
 out vec3 NormalFrag;
 out vec2 TexCoordsFrag;
+out vec4 FragPosLightSpace;
 
 uniform mat4 model;
 uniform mat4 view;
 uniform mat4 projection;
+uniform mat4 lightSpaceMatrix;
 
 void main() {
 	
@@ -24,6 +27,7 @@ void main() {
 		FragPos = GeomPos[i];
 		NormalFrag = NormalGeom[i];
 		TexCoordsFrag = TexCoordsGeom[i];
+		FragPosLightSpace = GeomPosLightSpace[i];
 		if(p.z > p.x && p.z > p.y){
 			gl_Position = projection * view * vec4(FragPos.x, FragPos.y, FragPos.z, 1);
 		} else if (p.x > p.y && p.x > p.z){

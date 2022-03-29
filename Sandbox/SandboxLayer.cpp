@@ -19,13 +19,16 @@ namespace Walker {
 
 
 		pointLightPosition.Translation = glm::vec3(0.0, 1.0, 0.0);
+		pointLightComponent.PointLightPtr->m_DiffuseIntensity = 7.0f;
 		std::shared_ptr<Model> sponzaPBR = std::make_shared<Model>("SponzaPBR", "Models/SponzaPBR/Sponza.gltf", m_ActiveScene.get());
 
 		auto giProbe = m_ActiveScene->CreateEntity("GI Probe");
 		auto& giProbeComponent = giProbe.AddComponent<GIProbeComponent>();
 		auto& giProbeTransform = giProbe.GetComponent<TransformComponent>();
 
-		giProbeTransform.Scale = glm::vec3(128.0f, 128.0f, 128.0f);
+		giProbeComponent.Probe->Subdiv = 256;
+		giProbeTransform.Translation = glm::vec3(0.0f, 10.0f, 0.0f);
+		giProbeTransform.Scale = glm::vec3(90.0f, 90.0f, 90.0f);
 		/*RenderGraphSpecification spec(
 			{ // Passes
 				{RenderPassType::ShadowMapPass, "ShadowMapPass"},

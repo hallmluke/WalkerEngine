@@ -29,9 +29,11 @@ struct DirLight {
     vec3 diffuse;
     vec3 specular;
 
+    float shadowBias;
+
     mat4 lightSpaceMatrix;
     sampler2D shadowMap;
-    float shadowBias;
+    
 };
 
 struct PointLight {
@@ -77,6 +79,7 @@ uniform float maxDistance;
 uniform float stepSize;
 uniform float indirectMultiplier;
 uniform int numCones;
+uniform float mipModifier;
 
 uniform vec3 GIPosition;
 uniform vec3 GIScale;
@@ -89,7 +92,7 @@ float ShadowCalculationPoint(PointLight light, vec3 fragPos);
 
 
 //ivec3 scaleAndBias(vec3 position) { return ivec3((position + vec3(64))); }
-ivec3 scaleAndBias(vec3 position) { return ivec3((position - GIPosition + GIScale / 2)); }
+ivec3 scaleAndBias(vec3 position) { return ivec3((position - GIPosition + GIScale / 2) * GISubdiv / GIScale); }
 
 const vec3 CONES[] = 
 {
@@ -127,7 +130,7 @@ vec4 ConeTrace(vec3 position, vec3 normal, vec3 coneDirection, float coneApertur
     while(dist < maxDistance && alpha < 1) {
 
         float diameter = max(1.0f, 2 * coneAperture * dist);
-        float mip = log2( diameter / 2);
+        float mip = log2( diameter * GISubdiv / GIScale.x * mipModifier); 
 
         vec3 worldPosition = startPos + coneDirection * dist;
 
@@ -225,9 +228,6 @@ void main()
         float shadow = ShadowCalculationPoint(lights[i], FragPos);
         radiance = ( 1 - shadow ) * radiance;
 
-        if(useVoxelConetrace) {
-            radiance += ConeTraceRadiance(FragPos, N).xyz * indirectMultiplier;
-        }
 
         // cook-torrance brdf
         float NDF = DistributionGGX(N, H, Roughness);
@@ -244,10 +244,16 @@ void main()
         
         //float shadow = 0;
         vec3 final = (kD * Albedo / PI + specular) * radiance * NdotL;
-        Lo += final;
+        //Lo += final;
     }
 
-    //Lo += CalcDirLight(dirLight, N, V, Albedo, Roughness, Metallic, F0, vec4(FragPos, 1.0));
+    Lo += CalcDirLight(dirLight, N, V, Albedo, Roughness, Metallic, F0, vec4(FragPos, 1.0));
+
+    
+    if(useVoxelConetrace) {
+        vec3 radiance = ConeTraceRadiance(FragPos, N).xyz * indirectMultiplier;
+        Lo += radiance * Albedo;
+    }
 
     //float averageAO = (AO + SSAO) / 2;
     vec3 ambient = vec3(0.00) * Albedo;
@@ -393,7 +399,7 @@ float ShadowCalculationDirCascades(vec4 fragPosWorldSpace, vec3 normal, vec3 lig
         return 0.0;
     }
     // calculate bias (based on depth map resolution and slope)
-    float bias = max(0.005 * (1.0 - dot(normal, lightDir)), 0.005);
+    float bias = max(0.005 * (1.0 - dot(normal, lightDir)), dirLight.shadowBias);
     if (layer == cascadeCount)
     {
         bias *= 1 / (farPlane * 0.5f);

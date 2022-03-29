@@ -11,10 +11,12 @@ out vec3 GeomPos;
 out vec3 NormalGeom;
 out vec3 FragPos;
 out vec2 TexCoordsGeom;
+out vec4 GeomPosLightSpace;
 
 uniform mat4 model;
 uniform mat4 view;
 uniform mat4 projection;
+uniform mat4 lightSpaceMatrix;
 
 void main()
 {
@@ -33,6 +35,7 @@ void main()
     //TBN = mat3(T, B, N);
 
     TexCoordsGeom = aTexCoords;
+    GeomPosLightSpace = lightSpaceMatrix * vec4(GeomPos, 1.0);
     
     gl_Position = projection * view * vec4(GeomPos, 1.0);
     

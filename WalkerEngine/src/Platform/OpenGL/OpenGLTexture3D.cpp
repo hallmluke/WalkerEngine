@@ -115,12 +115,12 @@ namespace Walker {
 		glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_T, Utils::WalkerTextureWrapTypeToGL(spec.WrapT));
 		glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_R, Utils::WalkerTextureWrapTypeToGL(spec.WrapR));
 
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, Utils::WalkerTextureFilterTypeToGL(spec.MagFilter));
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, Utils::WalkerTextureFilterTypeToGL(spec.MinFilter));
+		glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER, Utils::WalkerTextureFilterTypeToGL(spec.MagFilter));
+		glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, Utils::WalkerTextureFilterTypeToGL(spec.MinFilter));
 
 		const uint32_t levels = 5; // TODO: Configurable levels
 		glTexStorage3D(GL_TEXTURE_3D, levels, m_InternalFormat, m_Width, m_Height, m_Depth);
-		glTexImage3D(GL_TEXTURE_3D, 0, m_InternalFormat, m_Width, m_Height, m_Depth, 0, m_DataFormat, Utils::WalkerTextureTypeToGL(spec.Type), NULL);
+		//glTexImage3D(GL_TEXTURE_3D, 0, m_InternalFormat, m_Width, m_Height, m_Depth, 0, m_DataFormat, Utils::WalkerTextureTypeToGL(spec.Type), NULL);
 	}
 
 	OpenGLTexture3D::~OpenGLTexture3D()

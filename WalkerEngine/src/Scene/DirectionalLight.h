@@ -31,6 +31,10 @@ namespace Walker {
 		void GenerateCascadedShadowMap(Scene& scene);
 		void BindShadowMap(uint32_t slot) const;
 
+		glm::mat4 GetVoxelLightSpaceMatrix(Scene& scene);
+		void GenerateVoxelShadowMap(Scene& scene);
+		void GenerateVoxelShadowMap(Scene& scene, glm::mat4 lightSpaceMatrix);
+		void BindVoxelShadowMap(uint32_t slot) const;
 
 	private:
 		std::string m_Name;
@@ -50,6 +54,9 @@ namespace Walker {
 		uint32_t m_ShadowMapHeight = 4096;
 		std::vector<float> m_ShadowCascadeLevels;
 		std::shared_ptr<Shader> m_ShadowMapShader;
+
+		std::shared_ptr<Framebuffer> m_VoxelShadowMapFramebuffer;
+		std::shared_ptr<Shader> m_VoxelShadowMapShader;
 
 		float debugDrawSize = 0.2f;
 		bool drawDebugEnabled = true;
