@@ -11,6 +11,10 @@ target_link_libraries(Sandbox WalkerEngine)
 add_custom_command(TARGET Sandbox POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/Shared/Shaders/ $<TARGET_FILE_DIR:Sandbox>/Shaders/)
 add_custom_command(TARGET Sandbox POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/Shared/Shaders/ $<TARGET_FILE_DIR:Sandbox>/../Shaders/)
 
+#Sadly, symlinks require escalate priveleges on Windows which makes this a pain. Sigh...
+#add_custom_command(TARGET Sandbox POST_BUILD COMMAND ${CMAKE_COMMAND} -E create_symlink ${CMAKE_SOURCE_DIR}/Shared/Shaders/ $<TARGET_FILE_DIR:Sandbox>/Shaders/)
+#add_custom_command(TARGET Sandbox POST_BUILD COMMAND ${CMAKE_COMMAND} -E create_symlink ${CMAKE_SOURCE_DIR}/Shared/Shaders/ $<TARGET_FILE_DIR:Sandbox>/../Shaders/)
+
 add_custom_command(TARGET Sandbox POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/Shared/Assets/Icons/ $<TARGET_FILE_DIR:Sandbox>/Icons/)
 add_custom_command(TARGET Sandbox POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/Shared/Assets/Icons/ $<TARGET_FILE_DIR:Sandbox>/../Icons/)
 

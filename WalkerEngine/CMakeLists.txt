@@ -10,6 +10,7 @@ include_directories(src/)
 include_directories(vendor/)
 include_directories(vendor/entt/include)
 add_compile_definitions(W_PLATFORM_WINDOWS)
+set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DW_DEBUG")
 
 set( GLFW_BUILD_DOCS OFF CACHE BOOL "GLFW lib only")
 set( GLFW_INSTALL OFF CACHE BOOL "GLFW lib only")
