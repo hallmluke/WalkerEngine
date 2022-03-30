@@ -85,6 +85,8 @@ uniform vec3 GIPosition;
 uniform vec3 GIScale;
 uniform int GISubdiv;
 
+uniform float inverseCascadeFactor;
+
 vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir, vec3 albedo, float roughness, float metallic, vec3 F0, vec4 fragPosWorldSpace);
 float ShadowCalculationDir(vec4 fragPosLightSpace, vec3 normal, vec3 lightDir);
 float ShadowCalculationDirCascades(vec4 fragPosWorldSpace, vec3 normal, vec3 lightDir);
@@ -174,6 +176,14 @@ vec4 ConeTraceRadiance(vec3 position, vec3 normal)
 	return max(vec4(0.0), radiance);
 }
 
+vec4 ConeTraceReflection(vec3 position, vec3 normal, vec3 view, float roughness)
+{
+    const float coneAperture = tan(roughness * PI * 0.05);
+    vec3 coneDirection = reflect(-view, normal);
+    vec4 reflection = ConeTrace(position, normal, coneDirection, coneAperture);
+    return vec4(max(vec3(0.0), reflection.rgb), clamp(reflection.a, 0.0, 1.0));
+}
+
 void main()
 {
     
@@ -253,6 +263,8 @@ void main()
     if(useVoxelConetrace) {
         vec3 radiance = ConeTraceRadiance(FragPos, N).xyz * indirectMultiplier;
         Lo += radiance * Albedo;
+        vec4 reflection = ConeTraceReflection(FragPos, N, V, Roughness);
+        //Lo += (1 - Roughness) * reflection.xyz * reflection.a * 0.5;
     }
 
     //float averageAO = (AO + SSAO) / 2;
@@ -367,6 +379,14 @@ float ShadowCalculationDir(vec4 fragPosLightSpace, vec3 normal, vec3 lightDir) {
 
 }
 
+float GetSlopeScaledBias(vec3 Normal, vec3 LightDir)
+{
+    float cosAlpha = clamp(dot(Normal, LightDir), 0.0, 1.0);
+    float sinAlpha = sqrt(1.0 - cosAlpha * cosAlpha);
+    float tanAlpha = sinAlpha / cosAlpha;
+    return tanAlpha;
+}
+
 float ShadowCalculationDirCascades(vec4 fragPosWorldSpace, vec3 normal, vec3 lightDir) {
     // select cascade layer
     vec4 fragPosViewSpace = view * fragPosWorldSpace;
@@ -399,17 +419,21 @@ float ShadowCalculationDirCascades(vec4 fragPosWorldSpace, vec3 normal, vec3 lig
         return 0.0;
     }
     // calculate bias (based on depth map resolution and slope)
-    float bias = max(0.005 * (1.0 - dot(normal, lightDir)), dirLight.shadowBias);
+    //float bias = dirLight.shadowBias * GetSlopeScaledBias(normal, lightDir);
+    float bias = max(0.005 * (1.0 - clamp(dot(normal, lightDir), 0.0, 1.0)), dirLight.shadowBias);
+    //float bias = dirLight.shadowBias * (1.0 - clamp(dot(normal, lightDir), 0.0, 1.0));
     if (layer == cascadeCount)
     {
-        bias *= 1 / (farPlane * 0.5f);
+        bias *= 1 / max(farPlane * inverseCascadeFactor, 1.0f);
     }
     else
     {
-        bias *= 1 / (cascadePlaneDistances[layer] * 0.5f);
+        bias *= 1 / max(cascadePlaneDistances[layer] * inverseCascadeFactor, 1.0f);
     }
 
     // PCF
+    //float depth = texture(shadowMap, vec3(projCoords.xy, layer)).r;
+    //float shadow = (currentDepth - bias) > depth ? 1.0 : 0.0;
     float shadow = 0.0;
     vec2 texelSize = 1.0 / vec2(textureSize(shadowMap, 0));
     for(int x = -1; x <= 1; ++x)

@@ -134,6 +134,8 @@ namespace Walker {
 		m_Shader->SetInt("numCones", m_NumCones);
 		m_Shader->SetFloat("mipModifier", m_MipModifier);
 
+		m_Shader->SetFloat("inverseCascadeFactor", m_InverseCascadeFactor);
+
 		BindInputs();
 
 		// Set lighting
@@ -174,6 +176,7 @@ namespace Walker {
 
 		ImGui::Begin("Shadow Bias Testing");
 		ImGui::SliderFloat("Bias", &m_ShadowBiasTest, 0.0f, 0.2f);
+		ImGui::SliderFloat("Inverse Cascade Factor", &m_InverseCascadeFactor, 0.0f, 0.2f);
 		ImGui::End();
 	}
 

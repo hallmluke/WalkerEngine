@@ -420,7 +420,7 @@ namespace Walker {
 	void DirectionalLight::SetShadowCascadeLevels(float cameraFarPlane)
 	{
 		// TODO: Dynamic number of cascades
-		m_ShadowCascadeLevels = std::vector<float> { cameraFarPlane / 50.0f, cameraFarPlane / 25.0f, cameraFarPlane / 20.0f, cameraFarPlane / 5.0f };
+		m_ShadowCascadeLevels = std::vector<float> { cameraFarPlane / 50.0f, cameraFarPlane / 25.0f, cameraFarPlane / 10.0f, cameraFarPlane / 3.0f };
 	}
 
 
