@@ -2,6 +2,8 @@
 #include "DeferredPBRLightingPass.h"
 #include "Renderer/RenderCommand.h"
 
+#include <imgui.h>
+
 namespace Walker {
 
 	DeferredPBRLightingPass::DeferredPBRLightingPass(uint32_t width, uint32_t height)
@@ -39,9 +41,9 @@ namespace Walker {
 		m_Framebuffer->BindColorAttachment(outputSlot, inputSlot);
 	}
 
-	void DeferredPBRLightingPass::Draw() const
+	void DeferredPBRLightingPass::BindOutputImage(uint32_t outputSlot, uint32_t inputSlot) const
 	{
-
+		m_Framebuffer->BindColorAttachmentImage(outputSlot, inputSlot);
 	}
 
 	RenderPassInput DeferredPBRLightingPass::GetInput(std::string name) const
@@ -107,7 +109,32 @@ namespace Walker {
 			m_Shader->SetInt(input.Name, input.Slot);
 		}
 
+		std::vector<glm::vec3> positions;
+		std::vector<glm::vec3> scales;
+		auto probes = scene.GetGIProbes(positions, scales);
+
+		for (size_t i = 0; i < probes.size(); i++) {
+			// TODO: This only supports binding one GI Probe
+			// should either support multiple or pick best probe to use
+			auto probe = probes[i];
+			probe->VoxelTex->Bind(4);
+
+			m_Shader->SetVec3("GIPosition", positions[i]);
+			m_Shader->SetVec3("GIScale", scales[i]);
+			m_Shader->SetInt("GISubdiv", probe->Subdiv);
+
+		}
+
 		m_Shader->SetVec3("camPos", scene.GetCamera()->GetPosition());
+		m_Shader->SetBool("useVoxelConetrace", m_UseVoxelConetrace);
+		m_Shader->SetFloat("aperture", m_Aperture);
+		m_Shader->SetFloat("maxDistance", m_MaxDistance);
+		m_Shader->SetFloat("stepSize", m_StepSize); 
+		m_Shader->SetFloat("indirectMultiplier", m_IndirectMultiplier);
+		m_Shader->SetInt("numCones", m_NumCones);
+		m_Shader->SetFloat("mipModifier", m_MipModifier);
+
+		m_Shader->SetFloat("inverseCascadeFactor", m_InverseCascadeFactor);
 
 		BindInputs();
 
@@ -133,6 +160,26 @@ namespace Walker {
 		m_Framebuffer->Resize(width, height);
 	}
 
+	void DeferredPBRLightingPass::OnImGuiRender()
+	{
+		ImGui::Begin("Voxel Cone Tracing Settings");
+
+		ImGui::Checkbox("Use VCT", &m_UseVoxelConetrace);
+		ImGui::SliderFloat("Aperture", &m_Aperture, 0.0f, 5.0f);
+		ImGui::SliderFloat("Max Distance", &m_MaxDistance, 0.0f, 200.0f);
+		ImGui::SliderFloat("Step Size", &m_StepSize, 0.01f, 3.0f);
+		ImGui::SliderFloat("Indirect Multiplier", &m_IndirectMultiplier, 0.01f, 10.0f);
+		ImGui::SliderInt("Cones", &m_NumCones, 1, 16);
+		ImGui::SliderFloat("Mip Modifier", &m_MipModifier, 0.0f, 5.0f);
+
+		ImGui::End();
+
+		ImGui::Begin("Shadow Bias Testing");
+		ImGui::SliderFloat("Bias", &m_ShadowBiasTest, 0.0f, 0.2f);
+		ImGui::SliderFloat("Inverse Cascade Factor", &m_InverseCascadeFactor, 0.0f, 0.2f);
+		ImGui::End();
+	}
+
 	void DeferredPBRLightingPass::SetDirectionalLightShaderUniforms(Scene& scene) const
 	{
 		std::shared_ptr<DirectionalLight> light = scene.GetDirectionalLight();
@@ -142,6 +189,7 @@ namespace Walker {
 		m_Shader->SetVec3("dirLight.ambient", glm::vec3(light->GetAmbientIntensity()));
 		m_Shader->SetVec3("dirLight.diffuse", glm::vec3(light->GetDiffuseIntensity()));
 		m_Shader->SetVec3("dirLight.specular", glm::vec3(light->GetSpecularIntensity()));
+		m_Shader->SetFloat("dirLight.shadowBias", m_ShadowBiasTest);
 
 		std::vector<float> cascadeDistances = light->GetShadowCascadeLevels();
 		m_Shader->SetMat4("view", scene.GetCamera()->GetViewMatrix());
@@ -151,8 +199,8 @@ namespace Walker {
 		{
 			m_Shader->SetFloat("cascadePlaneDistances[" + std::to_string(i) + "]", cascadeDistances[i]);
 		}
-		light->BindShadowMap(5);
-		m_Shader->SetInt("shadowMap", 5);
+		light->BindShadowMap(6);
+		m_Shader->SetInt("shadowMap", 6);
 	}
 
 	void DeferredPBRLightingPass::SetPointLightShaderUniforms(Scene& scene) const
@@ -165,7 +213,7 @@ namespace Walker {
 
 		for (int i = 0; i < maxLights; i++) {
 			std::string lightPrefix = "lights[" + std::to_string(i) + "]";
-			int pointLightStartSlot = 6;
+			int pointLightStartSlot = 7;
 			if (i < maxedLights) {
 				auto light = lights[i];
 				auto position = positions[i];

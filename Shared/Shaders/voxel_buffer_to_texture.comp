@@ -1,0 +1,74 @@
+#version 450
+layout(local_size_x = 8, local_size_y = 8, local_size_z = 8) in;
+layout(rgba16f, binding = 1) uniform image3D voxelTex;
+
+struct VoxelType
+{
+    uint color;
+    uint normal;
+};
+
+layout (std140, binding = 1) buffer VoxelBuffer {
+    VoxelType voxels[];
+};
+
+
+// Decode 32 bit uint into HDR color with 1 bit alpha
+vec4 DecodeColor(in uint colorMask)
+{
+	float hdr;
+	vec4 color;
+
+	hdr = (colorMask >> 24u) & 0x0000007f;
+	color.r = (colorMask >> 16u) & 0x000000ff;
+	color.g = (colorMask >> 8u) & 0x000000ff;
+	color.b = colorMask & 0x000000ff;
+
+	hdr /= 127.0f;
+	color.rgb /= 255.0f;
+
+	color.rgb *= hdr * 10.0f;
+
+	color.a = (colorMask >> 31u) & 0x00000001;
+
+	return color;
+}
+
+
+// Decode specified mask into a float3 normal (normalized).
+vec3 DecodeNormal(in uint normalMask)
+{
+	ivec3 iNormal;
+	iNormal.x = int((normalMask >> 18) & 0x000000ff);
+	iNormal.y = int((normalMask >> 9) & 0x000000ff);
+	iNormal.z = int(normalMask & 0x000000ff);
+	ivec3 iNormalSigns;
+	iNormalSigns.x = int((normalMask >> 25) & 0x00000002);
+	iNormalSigns.y = int((normalMask >> 16) & 0x00000002);
+	iNormalSigns.z = int((normalMask >> 7) & 0x00000002);
+	iNormalSigns = 1 - iNormalSigns;
+	vec3 normal = vec3(iNormal) / 255.0f;
+	normal *= iNormalSigns;
+	return normal;
+}
+
+/**
+ * Provides a flattend version of gl_GlobalInvocationID
+ */
+uint getGlobalInvocationIndex() {
+    uvec3 globalSize = gl_NumWorkGroups * gl_WorkGroupSize;
+    return gl_GlobalInvocationID.z * globalSize.x * globalSize.y + 
+                                 gl_GlobalInvocationID.y * globalSize.x + 
+                                 gl_GlobalInvocationID.x;
+}
+
+void main() {
+
+	const uint globalInvocationIndex = getGlobalInvocationIndex();
+    VoxelType voxel = voxels[globalInvocationIndex];
+
+	vec4 color = DecodeColor(voxel.color);
+
+	imageStore(voxelTex, ivec3(gl_GlobalInvocationID), color);
+
+}

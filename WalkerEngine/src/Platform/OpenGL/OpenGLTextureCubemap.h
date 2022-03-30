@@ -22,6 +22,7 @@ namespace Walker {
 		virtual void BindImage(uint32_t slot, TextureAccess access) const override;
 
 		virtual bool IsLoaded() const override { return m_IsLoaded; }
+		virtual void GenerateMipMaps() override;
 
 		virtual bool operator==(const Texture& other) const override
 		{

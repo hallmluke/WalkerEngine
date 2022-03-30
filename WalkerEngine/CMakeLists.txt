@@ -10,6 +10,7 @@ include_directories(src/)
 include_directories(vendor/)
 include_directories(vendor/entt/include)
 add_compile_definitions(W_PLATFORM_WINDOWS)
+set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DW_DEBUG")
 
 set( GLFW_BUILD_DOCS OFF CACHE BOOL "GLFW lib only")
 set( GLFW_INSTALL OFF CACHE BOOL "GLFW lib only")
@@ -49,17 +50,18 @@ add_subdirectory(vendor/stb)
 set_property(TARGET stb PROPERTY FOLDER External)
 
 set(YAML_BUILD_SHARED_LIBS OFF CACHE BOOL "Use static lib for yaml-cpp")
+set(YAML_CPP_BUILD_TESTS OFF CACHE BOOL "Do not build tests")
 add_subdirectory(vendor/yaml-cpp)
 set_property(TARGET yaml-cpp PROPERTY FOLDER External)
 set_property(TARGET format PROPERTY FOLDER External)
 set_property(TARGET parse PROPERTY FOLDER External)
 set_property(TARGET read PROPERTY FOLDER External)
-set_property(TARGET run-tests PROPERTY FOLDER External)
+#set_property(TARGET run-tests PROPERTY FOLDER External)
 set_property(TARGET sandbox PROPERTY FOLDER External)
 
 target_include_directories(${PROJECT_NAME} PUBLIC vendor/GLFW3 vendor/spdlog vendor/Assimp vendor/GLM vendor/ImGui vendor/entt/include vendor/glad/include vendor/stb/include vendor/yaml-cpp/include)
 
 target_link_libraries(${PROJECT_NAME} PUBLIC glfw spdlog assimp ImGui Glad stb yaml-cpp)
 
-#TODO: Precompiled headers
+#TODO: Precompiled headers 
 #target_precompile_headers(WalkerEngine PRIVATE "$<$<COMPILE_LANGUAGE:CXX>:${CMAKE_CURRENT_SOURCE_DIR}/src/walkerpch.h>")

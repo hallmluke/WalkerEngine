@@ -10,6 +10,9 @@ uniform sampler2D texture_diffuse1;
 
 void main()
 {
+    if(texture(texture_diffuse1, TexCoords).a < 0.5) {
+        discard;
+    }
     //if(diffuse_tex) {
     //    if(texture(texture_diffuse1, TexCoords).a < 0.05) {
     //        discard;

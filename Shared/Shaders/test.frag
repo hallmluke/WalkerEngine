@@ -23,7 +23,11 @@ uniform bool metallicRoughness_tex;
 uniform sampler2D texture_metallicRoughness1;
 
 void main()
-{    
+{   
+
+        if(texture(texture_diffuse1, TexCoords).a < 0.5) {
+            discard;
+        }
     //FragColor = vec4(texture(texture_diffuse1, TexCoords).xyz, 1);
     gPosition = vec4(FragPos, 1.0);
     gAlbedo = vec4(texture(texture_diffuse1, TexCoords).xyz, 1);
