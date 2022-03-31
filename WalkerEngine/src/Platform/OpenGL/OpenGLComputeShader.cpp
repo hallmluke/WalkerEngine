@@ -69,7 +69,8 @@ namespace Walker {
     void OpenGLComputeShader::Barrier()
     {
         // TODO: Support multiple barrier bit types
-        glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
+        //glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT & GL_TEXTURE_FETCH_BARRIER_BIT);
+        glMemoryBarrier(GL_ALL_BARRIER_BITS);
     }
 
     void OpenGLComputeShader::SetBool(const std::string& name, bool value)

@@ -73,10 +73,6 @@ namespace Walker {
 	{
 	}
 
-	void SSAOPass::Draw() const
-	{
-	}
-
 	/*void SSAOPass::BindFramebuffer(bool clearBuffer)
 	{
 		glBindFramebuffer(GL_FRAMEBUFFER, ssaoFBO);

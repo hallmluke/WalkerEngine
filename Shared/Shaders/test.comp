@@ -6,8 +6,8 @@ uniform vec3 color;
 
 void main() {
 
-	//vec4 pixel = vec4(0.0, 1.0, 0.0, 1.0);
-	vec4 pixel = vec4(color, 1.0);
+	vec4 pixel = vec4(0.0, 1.0, 0.0, 1.0);
+	//vec4 pixel = vec4(color, 1.0);
 
 	ivec2 pixel_coords = ivec2(gl_GlobalInvocationID.xy);
 

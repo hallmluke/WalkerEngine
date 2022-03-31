@@ -5,6 +5,10 @@
 #include "Events/MouseEvent.h"
 #include "Events/KeyboardEvent.h"
 
+#if defined(W_DEBUG)
+#include "Renderer/Renderer.h"
+#endif
+
 #include <stb_image.h>
 
 namespace Walker {
@@ -46,7 +50,7 @@ namespace Walker {
 		}
 
 		{
-#if defined(HZ_DEBUG)
+#if defined(W_DEBUG)
 			if (Renderer::GetAPI() == RendererAPI::API::OpenGL)
 				glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GLFW_TRUE);
 #endif

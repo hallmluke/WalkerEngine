@@ -16,6 +16,7 @@ uniform sampler2D gPosition;
 uniform sampler2D gNormal;
 uniform sampler2D gAlbedo;
 uniform sampler2D gMetRoughAO;
+uniform sampler3D VoxelTex;
 //uniform sampler2D ssaoColor;
 
 uniform vec3 camPos;
@@ -28,9 +29,11 @@ struct DirLight {
     vec3 diffuse;
     vec3 specular;
 
+    float shadowBias;
+
     mat4 lightSpaceMatrix;
     sampler2D shadowMap;
-    float shadowBias;
+    
 };
 
 struct PointLight {
@@ -70,11 +73,116 @@ vec3 fresnelSchlick(float cosTheta, vec3 F0);
 
 uniform int debugPass;
 uniform bool useAmbientOcclusion;
+uniform bool useVoxelConetrace;
+uniform float aperture;
+uniform float maxDistance;
+uniform float stepSize;
+uniform float indirectMultiplier;
+uniform int numCones;
+uniform float mipModifier;
+
+uniform vec3 GIPosition;
+uniform vec3 GIScale;
+uniform int GISubdiv;
+
+uniform float inverseCascadeFactor;
 
 vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir, vec3 albedo, float roughness, float metallic, vec3 F0, vec4 fragPosWorldSpace);
 float ShadowCalculationDir(vec4 fragPosLightSpace, vec3 normal, vec3 lightDir);
 float ShadowCalculationDirCascades(vec4 fragPosWorldSpace, vec3 normal, vec3 lightDir);
 float ShadowCalculationPoint(PointLight light, vec3 fragPos);
+
+
+//ivec3 scaleAndBias(vec3 position) { return ivec3((position + vec3(64))); }
+ivec3 scaleAndBias(vec3 position) { return ivec3((position - GIPosition + GIScale / 2) * GISubdiv / GIScale); }
+
+const vec3 CONES[] = 
+{
+	vec3(0.57735, 0.57735, 0.57735),
+	vec3(0.57735, -0.57735, -0.57735),
+	vec3(-0.57735, 0.57735, -0.57735),
+	vec3(-0.57735, -0.57735, 0.57735),
+	vec3(-0.903007, -0.182696, -0.388844),
+	vec3(-0.903007, 0.182696, 0.388844),
+	vec3(0.903007, -0.182696, 0.388844),
+	vec3(0.903007, 0.182696, -0.388844),
+	vec3(-0.388844, -0.903007, -0.182696),
+	vec3(0.388844, -0.903007, 0.182696),
+	vec3(0.388844, 0.903007, -0.182696),
+	vec3(-0.388844, 0.903007, 0.182696),
+	vec3(-0.182696, -0.388844, -0.903007),
+	vec3(0.182696, 0.388844, -0.903007),
+	vec3(-0.182696, 0.388844, 0.903007),
+	vec3(0.182696, -0.388844, 0.903007)
+};
+
+vec4 ConeTrace(vec3 position, vec3 normal, vec3 coneDirection, float coneAperture)
+{
+    vec3 color = vec3(0.0);
+    float alpha = 0.0;
+
+    bool belowHorizon = dot(normal, coneDirection) < 0;
+    coneDirection = belowHorizon ? -coneDirection : coneDirection;
+
+    vec3 startPos = position + normal + coneDirection;
+    float dist = 0.0;
+
+    //const float maxDistance = 100.0f;
+
+    while(dist < maxDistance && alpha < 1) {
+
+        float diameter = max(1.0f, 2 * coneAperture * dist);
+        float mip = log2( diameter * GISubdiv / GIScale.x * mipModifier); 
+
+        vec3 worldPosition = startPos + coneDirection * dist;
+
+        ivec3 voxelPosition = scaleAndBias(worldPosition);
+
+        //vec3 voxelTexPosition = vec3(voxelPosition) / 128;
+        vec3 voxelTexPosition = vec3(voxelPosition) / GISubdiv;
+
+        if(mip >= 5) {
+            break;
+        }
+
+        vec4 sampled = textureLod(VoxelTex, voxelTexPosition, mip);
+
+        float a = 1 - alpha;
+        color += a * sampled.rgb;
+        alpha += a * sampled.a;
+
+        dist += diameter * 2.0 * stepSize;
+    }
+
+    return vec4(color, 1.0);
+
+}
+
+vec4 ConeTraceRadiance(vec3 position, vec3 normal)
+{
+    vec4 radiance = vec4(0.0);
+    //const float aperture = tan(PI * 0.5 * 0.33);
+
+    for (uint cone = 0; cone < numCones; ++cone) // quality is between 1 and 16 cones
+	{
+		vec3 coneDirection = normalize(CONES[cone] + normal);
+
+		radiance += ConeTrace(position, normal, coneDirection, aperture);
+	}
+
+	radiance /= numCones;
+	radiance.a = clamp(radiance.a, 0.0, 1.0);
+
+	return max(vec4(0.0), radiance);
+}
+
+vec4 ConeTraceReflection(vec3 position, vec3 normal, vec3 view, float roughness)
+{
+    const float coneAperture = tan(roughness * PI * 0.05);
+    vec3 coneDirection = reflect(-view, normal);
+    vec4 reflection = ConeTrace(position, normal, coneDirection, coneAperture);
+    return vec4(max(vec3(0.0), reflection.rgb), clamp(reflection.a, 0.0, 1.0));
+}
 
 void main()
 {
@@ -127,6 +235,9 @@ void main()
         //float attenuation = 1.0 / (distance * distance);
         float attenuation = 1.0 / (lights[i].constant + lights[i].linear * distance + lights[i].quadratic * (distance * distance));
         vec3 radiance = lights[i].diffuse * attenuation;
+        float shadow = ShadowCalculationPoint(lights[i], FragPos);
+        radiance = ( 1 - shadow ) * radiance;
+
 
         // cook-torrance brdf
         float NDF = DistributionGGX(N, H, Roughness);
@@ -140,27 +251,40 @@ void main()
         vec3 specular = numerator / max(denominator, 0.001);
         // add to outgoing radiance Lo
         float NdotL = max(dot(N, L), 0.0);
-        float shadow = ShadowCalculationPoint(lights[i], FragPos);
+        
         //float shadow = 0;
-        vec3 final = (1 - shadow) * (kD * Albedo / PI + specular) * radiance * NdotL;
-        Lo += final;
+        vec3 final = (kD * Albedo / PI + specular) * radiance * NdotL;
+        //Lo += final;
     }
 
     Lo += CalcDirLight(dirLight, N, V, Albedo, Roughness, Metallic, F0, vec4(FragPos, 1.0));
 
-    //float averageAO = (AO + SSAO) / 2;
-    vec3 ambient = vec3(0.03) * Albedo;
-    if(useAmbientOcclusion) {
-        //ambient = ambient * SSAO;
+    
+    if(useVoxelConetrace) {
+        vec3 radiance = ConeTraceRadiance(FragPos, N).xyz * indirectMultiplier;
+        Lo += radiance * Albedo;
+        vec4 reflection = ConeTraceReflection(FragPos, N, V, Roughness);
+        //Lo += (1 - Roughness) * reflection.xyz * reflection.a * 0.5;
     }
+
+    //float averageAO = (AO + SSAO) / 2;
+    vec3 ambient = vec3(0.00) * Albedo;
+    //ambient = vec3(0.0);
+    //if(useAmbientOcclusion) {
+        //ambient = ambient * SSAO;
+    //}
     //vec3 ambient = vec3(0.03) * Albedo * averageAO;
     vec3 color = ambient + Lo;
 
-    color = color / (color + vec3(1.0)); // Tone map (HDR)
-    color = pow(color, vec3(1.0/2.2)); // Gamma correct
-    color = clamp(color, 0.0, 1.0);
+    //color = color / (color + vec3(1.0)); // Tone map (HDR)
+    //color = pow(color, vec3(1.0/2.2)); // Gamma correct
+    //color = clamp(color, 0.0, 1.0);
     FragColor = vec4(color, 1.0);
+    //if(useVoxelConetrace) {
+    //    FragColor = ConeTraceRadiance(FragPos, N);
+    //}
     gColor = FragColor;
+
     //}
 }
 
@@ -255,6 +379,14 @@ float ShadowCalculationDir(vec4 fragPosLightSpace, vec3 normal, vec3 lightDir) {
 
 }
 
+float GetSlopeScaledBias(vec3 Normal, vec3 LightDir)
+{
+    float cosAlpha = clamp(dot(Normal, LightDir), 0.0, 1.0);
+    float sinAlpha = sqrt(1.0 - cosAlpha * cosAlpha);
+    float tanAlpha = sinAlpha / cosAlpha;
+    return tanAlpha;
+}
+
 float ShadowCalculationDirCascades(vec4 fragPosWorldSpace, vec3 normal, vec3 lightDir) {
     // select cascade layer
     vec4 fragPosViewSpace = view * fragPosWorldSpace;
@@ -287,17 +419,21 @@ float ShadowCalculationDirCascades(vec4 fragPosWorldSpace, vec3 normal, vec3 lig
         return 0.0;
     }
     // calculate bias (based on depth map resolution and slope)
-    float bias = max(0.005 * (1.0 - dot(normal, lightDir)), 0.005);
+    //float bias = dirLight.shadowBias * GetSlopeScaledBias(normal, lightDir);
+    float bias = max(0.005 * (1.0 - clamp(dot(normal, lightDir), 0.0, 1.0)), dirLight.shadowBias);
+    //float bias = dirLight.shadowBias * (1.0 - clamp(dot(normal, lightDir), 0.0, 1.0));
     if (layer == cascadeCount)
     {
-        bias *= 1 / (farPlane * 0.5f);
+        bias *= 1 / max(farPlane * inverseCascadeFactor, 1.0f);
     }
     else
     {
-        bias *= 1 / (cascadePlaneDistances[layer] * 0.5f);
+        bias *= 1 / max(cascadePlaneDistances[layer] * inverseCascadeFactor, 1.0f);
     }
 
     // PCF
+    //float depth = texture(shadowMap, vec3(projCoords.xy, layer)).r;
+    //float shadow = (currentDepth - bias) > depth ? 1.0 : 0.0;
     float shadow = 0.0;
     vec2 texelSize = 1.0 / vec2(textureSize(shadowMap, 0));
     for(int x = -1; x <= 1; ++x)

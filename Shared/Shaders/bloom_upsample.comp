@@ -1,0 +1,41 @@
+#version 450
+layout(local_size_x = 32, local_size_y = 32) in;
+layout(rgba16f, binding = 0) uniform image2D img_input;
+layout(rgba16f, binding = 1) uniform image2D img_output;
+
+uniform sampler2D input_sampler;
+
+vec2 offsets[9] = { vec2(-1, 1), vec2(0, 1 ), vec2(1, 1), vec2(-1, 0), vec2(0, 0), vec2(1, 0), vec2(-1, -1), vec2(0, -1), vec2(1, -1) }; 
+float weights[9] = float[]( 0.0625, 0.125, 0.0625, 0.125, 0.25, 0.125, 0.0625, 0.125, 0.0625);
+uniform float radius = 1;
+
+void main() {
+
+	vec4 pixel = vec4(0.0, 0.0, 0.0, 1.0);
+
+	ivec2 pixel_coords = ivec2(gl_GlobalInvocationID.xy);
+
+	ivec2 input_coords = (pixel_coords * imageSize(img_input)) / imageSize(img_output);
+	vec2 input_sampler_coords = pixel_coords;
+	input_sampler_coords /= vec2(imageSize(img_output));
+
+	vec4 output_pixel = imageLoad(img_output, pixel_coords);
+
+	ivec2 clampMin = ivec2(0);
+	ivec2 clampMax = ivec2(imageSize(img_input)) - 1;
+
+	for (int i=0; i<9; i++) {
+		//pixel += imageLoad(img_input, clamp(ivec2(input_coords + offsets[i] * radius), clampMin, clampMax)) * weights[i];
+		//pixel += imageLoad(img_input, clamp(ivec2(input_coords - offsets[i] * radius), clampMin, clampMax)) * weights[i];
+		pixel += texture(input_sampler, input_sampler_coords + ((offsets[i] * radius) / textureSize(input_sampler, 0).xy)) * weights[i];
+	}
+
+	pixel += output_pixel;
+	
+	bool invalid = isnan(pixel.x) || isnan(pixel.y) || isnan(pixel.z);
+		
+	if(!invalid) {
+		imageStore(img_output, pixel_coords, pixel);
+		//imageStore(img_output, pixel_coords, texture(input_sampler, input_sampler_coords + ((offsets[1] / textureSize(input_sampler, 0).xy) * radius)));
+	}
+}

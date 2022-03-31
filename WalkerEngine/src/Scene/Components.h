@@ -72,4 +72,5 @@ namespace Walker {
 		}
 		PointLightComponent(std::shared_ptr<PointLight> pointLight) : PointLightPtr(pointLight) {}
 	};
+
 }

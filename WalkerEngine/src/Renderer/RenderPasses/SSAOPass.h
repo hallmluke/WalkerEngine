@@ -18,7 +18,6 @@ namespace Walker {
 		void InitNoiseTexture();
 		//void BindFramebuffer(bool clearBuffer = true);
 		virtual void BindInputs() const override;
-		virtual void Draw() const override;
 		virtual std::vector<RenderPassInput> GetInputs() const override { return m_Inputs; };
 		//void BindTextures();
 

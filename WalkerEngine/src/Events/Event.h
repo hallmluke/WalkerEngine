@@ -2,7 +2,7 @@
 
 #include <string>
 
-#include "Core/Core.h"
+#include "Core/Core.h" 
 
 namespace Walker {
 

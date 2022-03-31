@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <memory>
 
 namespace Walker {
 
@@ -10,6 +11,7 @@ namespace Walker {
 
 		// Color
 		RGBA8,
+		RGBA16,
 		RGBA16F,
 		RGBA32F,
 		RED_INTEGER,
@@ -64,11 +66,12 @@ namespace Walker {
 			TextureFilterType magFilter, TextureFilterType minFilter)
 			: Width(width), Height(height), TextureFormat(format), Type(type), WrapS(wrapS), WrapT(wrapT), MagFilter(magFilter), MinFilter(minFilter) {}
 
-		uint32_t Width = 0, Height = 0;
+		uint32_t Width = 0, Height = 0, Depth = 0;
 		TextureFormat TextureFormat = TextureFormat::None;
 		TextureType Type = TextureType::None;
 		TextureWrapType WrapS = TextureWrapType::None;
 		TextureWrapType WrapT = TextureWrapType::None;
+		TextureWrapType WrapR = TextureWrapType::None;
 		TextureFilterType MagFilter = TextureFilterType::None;
 		TextureFilterType MinFilter = TextureFilterType::None;
 	};
@@ -88,6 +91,7 @@ namespace Walker {
 		virtual void BindImage(uint32_t slot = 0, TextureAccess access = TextureAccess::READ_WRITE) const = 0;
 
 		virtual bool IsLoaded() const = 0;
+		virtual void GenerateMipMaps() = 0;
 
 		virtual bool operator==(const Texture& other) const = 0;
 	};
@@ -104,6 +108,15 @@ namespace Walker {
 	{
 	public:
 		static std::shared_ptr<TextureCubeMap> Create(const std::string& dir);
+	};
+
+	class Texture3D : public Texture
+	{
+	public:
+		virtual uint32_t GetDepth() const = 0;
+		static std::shared_ptr<Texture3D> Create(uint32_t width, uint32_t height, uint32_t depth);
+		static std::shared_ptr<Texture3D> Create(const std::string& path);
+		static std::shared_ptr<Texture3D> Create(const TextureSpecification& spec);
 	};
 
 }
