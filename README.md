@@ -46,4 +46,27 @@ Walker Engine is a real-time rendering engine. It is written in C++ and currentl
 
 ## Showcase
 
-Insert pretty pictures
+### Deferred PBR G-Buffer
+Normals
+
+<img src="Resources/Screenshots/normal.jpg" alt="Normal G-Buffer" width="400"/>
+
+Albedo
+
+<img src="Resources/Screenshots/albedo.jpg" alt="Albedo G-Buffer" width="400">
+
+Metallic/Roughness
+
+<img src="Resources/Screenshots/metallicroughness.jpg" alt="Met/Rough G-Buffer" width="400">
+
+Final Composited Image w/ Post-Processing (Bloom, Tonemapping, etc.)
+
+<img src="Resources/Screenshots/composited.jpg" alt="Composited Image" width="400">
+
+### Voxel Cone Tracing
+
+Most of the lighting in these two shots is indirect lighting computed via Voxel Cone Tracing. The only light in this scene is the overhead directional light.
+
+<img src="Resources/Screenshots/vctbalcony.png" alt="Balcony" width="400">
+
+<img src="Resources/Screenshots/vctcurtains.png" alt="Curtains" width="400">
