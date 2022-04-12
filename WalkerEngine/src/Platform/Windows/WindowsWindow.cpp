@@ -5,10 +5,9 @@
 #include "Events/MouseEvent.h"
 #include "Events/KeyboardEvent.h"
 
-#if defined(W_DEBUG)
 #include "Renderer/Renderer.h"
-#endif
 
+#include <vulkan/vulkan.h>
 #include <stb_image.h>
 
 namespace Walker {
@@ -50,10 +49,12 @@ namespace Walker {
 		}
 
 		{
-#if defined(W_DEBUG)
-			if (Renderer::GetAPI() == RendererAPI::API::OpenGL)
+			if (Renderer::GetAPI() == RendererAPI::API::OpenGL) {
 				glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GLFW_TRUE);
-#endif
+			}
+			else if (Renderer::GetAPI() == RendererAPI::API::Vulkan) {
+				glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
+			}
 			m_Window = glfwCreateWindow((int)props.Width, (int)props.Height, m_Data.Title.c_str(), nullptr, nullptr);
 			++s_GLFWWindowCount;
 		}

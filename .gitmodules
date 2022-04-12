@@ -17,3 +17,6 @@
 [submodule "WalkerEngine/vendor/yaml-cpp"]
 	path = WalkerEngine/vendor/yaml-cpp
 	url = git@github.com:jbeder/yaml-cpp.git
+[submodule "WalkerEngine/vendor/VulkanMemoryAllocator"]
+	path = WalkerEngine/vendor/VulkanMemoryAllocator
+	url = git@github.com:GPUOpen-LibrariesAndSDKs/VulkanMemoryAllocator.git
