@@ -43,6 +43,8 @@ add_subdirectory(vendor/GLM)
 add_subdirectory(vendor/glad)
 set_property(TARGET Glad PROPERTY FOLDER External)
 
+find_package(Vulkan REQUIRED)
+
 add_subdirectory(vendor/ImGui)
 set_property(TARGET ImGui PROPERTY FOLDER External)
 
@@ -56,14 +58,15 @@ set_property(TARGET yaml-cpp PROPERTY FOLDER External)
 set_property(TARGET format PROPERTY FOLDER External)
 set_property(TARGET parse PROPERTY FOLDER External)
 set_property(TARGET read PROPERTY FOLDER External)
-#set_property(TARGET run-tests PROPERTY FOLDER External)
+set_property(TARGET run-tests PROPERTY FOLDER External)
 set_property(TARGET sandbox PROPERTY FOLDER External)
 
-find_package(Vulkan REQUIRED)
+add_subdirectory(vendor/VulkanMemoryAllocator)
+set_property(TARGET VulkanMemoryAllocator PROPERTY FOLDER External)
 
-target_include_directories(${PROJECT_NAME} PUBLIC vendor/GLFW3 vendor/spdlog vendor/Assimp vendor/GLM vendor/ImGui vendor/entt/include vendor/glad/include vendor/stb/include vendor/yaml-cpp/include)
+target_include_directories(${PROJECT_NAME} PUBLIC vendor/GLFW3 vendor/spdlog vendor/Assimp vendor/GLM vendor/ImGui vendor/entt/include vendor/glad/include vendor/stb/include vendor/yaml-cpp/include vendor/VulkanMemoryAllocator/include)
 
-target_link_libraries(${PROJECT_NAME} PUBLIC glfw spdlog assimp ImGui Glad stb yaml-cpp Vulkan::Vulkan)
+target_link_libraries(${PROJECT_NAME} PUBLIC glfw spdlog assimp ImGui Glad stb yaml-cpp Vulkan::Vulkan VulkanMemoryAllocator)
 
 #TODO: Precompiled headers 
 #target_precompile_headers(WalkerEngine PRIVATE "$<$<COMPILE_LANGUAGE:CXX>:${CMAKE_CURRENT_SOURCE_DIR}/src/walkerpch.h>")

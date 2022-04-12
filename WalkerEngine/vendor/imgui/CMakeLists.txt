@@ -13,11 +13,13 @@ add_library(ImGui "imconfig.h"
 "backends/imgui_impl_glfw.h"
 "backends/imgui_impl_glfw.cpp"
 "backends/imgui_impl_opengl3.cpp"
-"backends/imgui_impl_opengl3.h")
+"backends/imgui_impl_opengl3.h"
+"backends/imgui_impl_vulkan.cpp"
+"backends/imgui_impl_vulkan.h")
 set_property(TARGET ImGui PROPERTY CXX_STANDARD 20)
 
 include_directories(/)
 
 target_include_directories(ImGui PUBLIC ../vendor/GLFW3 ../vendor/glad/include)
 
-target_link_libraries(ImGui PUBLIC glfw Glad)
+target_link_libraries(ImGui PUBLIC glfw Glad Vulkan::Vulkan)

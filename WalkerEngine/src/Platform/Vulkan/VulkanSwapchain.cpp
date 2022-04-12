@@ -10,6 +10,7 @@ namespace Walker {
 	{
         CreateSwapChain(physicalDevice, device, surface);
         CreateImageViews(device);
+        CreateRenderPass(device, physicalDevice);
 	}
 
 	void VulkanSwapchain::CreateSwapChain(VkPhysicalDevice physicalDevice, VkDevice device, VkSurfaceKHR surface)
@@ -115,6 +116,43 @@ namespace Walker {
         m_SwapChainImageViews.resize(m_SwapChainImages.size());
         for (uint32_t i = 0; i < m_SwapChainImages.size(); i++) {
             m_SwapChainImageViews[i] = VulkanImageUtils::CreateImageView(device, m_SwapChainImages[i], m_SwapChainImageFormat, VK_IMAGE_ASPECT_COLOR_BIT, 1);
+        }
+    }
+	void VulkanSwapchain::CreateRenderPass(VkDevice device, VkPhysicalDevice physicalDevice)
+	{
+        m_RenderPass = std::make_unique<VulkanRenderPass>(device, m_SwapChainImageFormat, FindDepthFormat(physicalDevice));
+	}
+
+    VkFormat VulkanSwapchain::FindDepthFormat(VkPhysicalDevice physicalDevice)
+    {
+        return VulkanPhysicalDeviceUtils::FindSupportedFormat(physicalDevice, 
+            { VK_FORMAT_D32_SFLOAT, VK_FORMAT_D32_SFLOAT_S8_UINT, VK_FORMAT_D24_UNORM_S8_UINT },
+            VK_IMAGE_TILING_OPTIMAL,
+            VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT
+        );
+    }
+    void VulkanSwapchain::CreateFramebuffers(VkDevice device)
+    {
+        m_SwapChainFramebuffers.resize(m_SwapChainImageViews.size());
+        for (size_t i = 0; i < m_SwapChainImageViews.size(); i++) {
+            std::array<VkImageView, 3> attachments = {
+                colorImageView,
+                depthImageView,
+                m_SwapChainImageViews[i]
+            };
+
+            VkFramebufferCreateInfo framebufferInfo{};
+            framebufferInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
+            framebufferInfo.renderPass = m_RenderPass->GetRenderPass();
+            framebufferInfo.attachmentCount = static_cast<uint32_t>(attachments.size());
+            framebufferInfo.pAttachments = attachments.data();
+            framebufferInfo.width = m_SwapChainExtent.width;
+            framebufferInfo.height = m_SwapChainExtent.height;
+            framebufferInfo.layers = 1;
+
+            if (vkCreateFramebuffer(device, &framebufferInfo, nullptr, &m_SwapChainFramebuffers[i]) != VK_SUCCESS) {
+                throw std::runtime_error("failed to create framebuffer!");
+            }
         }
     }
 }

@@ -22,6 +22,9 @@ ImGuiManager::ImGuiManager(GLFWwindow* window)
     ImGui_ImplGlfw_InitForOpenGL(window, true);
     const char* glsl_version = "#version 130";
     ImGui_ImplOpenGL3_Init(glsl_version);
+
+    //ImGui_ImplGlfw_InitForVulkan(window, true);
+    //ImGui_ImplVulkan_Init()
 }
 
 ImGuiManager::~ImGuiManager()

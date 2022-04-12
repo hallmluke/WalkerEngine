@@ -5,6 +5,8 @@
 #include <GLFW/glfw3.h>
 #include <optional>
 
+#include "VulkanRenderPass.h"
+
 namespace Walker {
 
 	class VulkanSwapchain
@@ -20,12 +22,18 @@ namespace Walker {
 		VkExtent2D m_SwapChainExtent;
 		std::vector<VkImageView> m_SwapChainImageViews;
 
+		std::unique_ptr<VulkanRenderPass> m_RenderPass;
+		std::vector<VkFramebuffer> m_SwapChainFramebuffers;
+
 
 		void CreateSwapChain(VkPhysicalDevice physicalDevice, VkDevice device, VkSurfaceKHR surface);
 		VkSurfaceFormatKHR ChooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& availableFormats);
 		VkPresentModeKHR ChooseSwapPresentMode(const std::vector<VkPresentModeKHR>& availablePresentModes);
 		VkExtent2D ChooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilities);
 		void CreateImageViews(VkDevice device);
+		void CreateRenderPass(VkDevice device, VkPhysicalDevice physicalDevice);
+		VkFormat FindDepthFormat(VkPhysicalDevice physicalDevice);
+		void CreateFramebuffers(VkDevice device);
 	};
 
 }

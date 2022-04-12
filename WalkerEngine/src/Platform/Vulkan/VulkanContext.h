@@ -8,8 +8,6 @@ struct GLFWwindow;
 
 namespace Walker {
 
-	
-
 	class VulkanContext : public GraphicsContext
 	{
 	public:
