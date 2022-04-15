@@ -14,6 +14,8 @@ const bool enableValidationLayers = false;
 
 namespace Walker {
 
+    VulkanContext* VulkanContext::s_Instance = nullptr;
+
     static VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity, VkDebugUtilsMessageTypeFlagsEXT messageType, const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData, void* pUserData) {
 
         switch (messageSeverity) {
@@ -37,6 +39,7 @@ namespace Walker {
 	VulkanContext::VulkanContext(GLFWwindow* windowHandle)
 		: m_WindowHandle(windowHandle)
 	{
+        s_Instance = this;
 	}
 
 	void VulkanContext::Init()
@@ -231,6 +234,33 @@ namespace Walker {
 
         vkGetDeviceQueue(m_Device, indices.graphicsFamily.value(), 0, &m_GraphicsQueue);
         vkGetDeviceQueue(m_Device, indices.presentFamily.value(), 0, &m_PresentQueue);
+    }
+
+	void VulkanContext::CreateAllocator()
+	{
+        VmaAllocatorCreateInfo allocatorCreateInfo = {};
+        allocatorCreateInfo.vulkanApiVersion = VK_API_VERSION_1_3;
+        allocatorCreateInfo.physicalDevice = m_PhysicalDevice;
+        allocatorCreateInfo.device = m_Device;
+        allocatorCreateInfo.instance = m_Instance;
+        
+        if (vmaCreateAllocator(&allocatorCreateInfo, &m_Allocator) != VK_SUCCESS) {
+            throw std::runtime_error("failed to create allocator!");
+        }
+	}
+
+    void VulkanContext::CreateCommandPool()
+    {
+        QueueFamilyIndices queueFamilyIndices = VulkanPhysicalDeviceUtils::FindQueueFamilies(m_PhysicalDevice, m_Surface);
+
+        VkCommandPoolCreateInfo poolInfo{};
+        poolInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
+        poolInfo.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
+        poolInfo.queueFamilyIndex = queueFamilyIndices.graphicsFamily.value();
+
+        if (vkCreateCommandPool(m_Device, &poolInfo, nullptr, &m_CommandPool) != VK_SUCCESS) {
+            throw std::runtime_error("failed to create command pool!");
+        }
     }
 
 }

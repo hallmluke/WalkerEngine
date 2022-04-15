@@ -2,6 +2,7 @@
 
 #include "Renderer/GraphicsContext.h"
 #include <vulkan/vulkan.h>
+#include <vk_mem_alloc.h>
 #include <GLFW/glfw3.h>
 #include <optional>
 
@@ -25,6 +26,14 @@ namespace Walker {
 		std::unique_ptr<VulkanRenderPass> m_RenderPass;
 		std::vector<VkFramebuffer> m_SwapChainFramebuffers;
 
+		VkImage m_ColorImage;
+		VmaAllocation m_ColorAllocation;
+		VkImageView m_ColorImageView;
+
+		VkImage m_DepthImage;
+		VmaAllocation m_DepthAllocation;
+		VkImageView m_DepthImageView;
+
 
 		void CreateSwapChain(VkPhysicalDevice physicalDevice, VkDevice device, VkSurfaceKHR surface);
 		VkSurfaceFormatKHR ChooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& availableFormats);
@@ -33,6 +42,8 @@ namespace Walker {
 		void CreateImageViews(VkDevice device);
 		void CreateRenderPass(VkDevice device, VkPhysicalDevice physicalDevice);
 		VkFormat FindDepthFormat(VkPhysicalDevice physicalDevice);
+		void CreateColorResources(VkDevice device);
+		void CreateDepthResources(VkDevice device, VkPhysicalDevice physicalDevice);
 		void CreateFramebuffers(VkDevice device);
 	};
 
