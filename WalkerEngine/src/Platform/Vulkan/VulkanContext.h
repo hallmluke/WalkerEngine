@@ -24,12 +24,16 @@ namespace Walker {
 		}
 
 		static VkDevice GetDevice() { return Get().m_Device; }
+		static VkPhysicalDevice GetPhysicalDevice() { return Get().m_PhysicalDevice; }
 		static VmaAllocator GetAllocator() { return Get().m_Allocator; }
 		static VkQueue GetGraphicsQueue() { return Get().m_GraphicsQueue; }
 		static VkCommandPool GetCommandPool() { return Get().m_CommandPool; }
+		static const uint32_t s_FramesInFlight = 2;
+		static uint32_t s_CurrentFrame;
 
 	private:
 		static VulkanContext* s_Instance;
+		
 		GLFWwindow* m_WindowHandle;
 		VkInstance m_Instance;
 		VkDebugUtilsMessengerEXT m_DebugMessenger;
@@ -40,6 +44,10 @@ namespace Walker {
 		VkQueue m_GraphicsQueue;
 		VkQueue m_PresentQueue;
 		VkCommandPool m_CommandPool;
+		std::vector<VkCommandBuffer> m_CommandBuffers;
+		std::vector<VkSemaphore> m_ImageAvailableSemaphores;
+		std::vector<VkSemaphore> m_RenderFinishedSemaphores;
+		std::vector<VkFence> m_InFlightFences;
 
 		void CreateInstance();
 		bool CheckValidationLayerSupport();
@@ -52,6 +60,8 @@ namespace Walker {
 		void CreateLogicalDevice();
 		void CreateAllocator();
 		void CreateCommandPool();
+		void CreateCommandBuffers();
+		void CreateSyncObjects();
 
 		const std::vector<const char*> validationLayers = {
 			"VK_LAYER_KHRONOS_validation"

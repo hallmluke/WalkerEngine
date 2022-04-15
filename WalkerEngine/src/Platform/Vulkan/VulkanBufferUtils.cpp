@@ -32,6 +32,16 @@ namespace Walker {
 
         vkBindBufferMemory(device, buffer, bufferMemory, 0);*/
 	}
+    void VulkanBufferUtils::CopyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size)
+    {
+        VkCommandBuffer commandBuffer = CreateAndBeginCommandBuffer();
+
+        VkBufferCopy copyRegion{};
+        copyRegion.size = size;
+        vkCmdCopyBuffer(commandBuffer, srcBuffer, dstBuffer, 1, &copyRegion);
+
+        EndCommandBufferAndSubmitToGraphicsQueue(commandBuffer);
+    }
     VkCommandBuffer VulkanBufferUtils::CreateAndBeginCommandBuffer()
     {
         VkCommandBufferAllocateInfo allocInfo{};

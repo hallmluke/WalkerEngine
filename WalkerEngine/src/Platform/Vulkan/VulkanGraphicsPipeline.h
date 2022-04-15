@@ -2,6 +2,9 @@
 #include <vulkan/vulkan.h>
 #include <GLM/glm.hpp>
 
+#include "VulkanBuffer.h"
+#include "VulkanTexture2D.h"
+
 namespace Walker {
 
     // TODO: This definitely doesn't belong here, should be dynamic vertex buffer impl
@@ -51,6 +54,8 @@ namespace Walker {
 
 	private:
 		VkDescriptorSetLayout m_DescriptorSetLayout;
+        VkDescriptorPool m_DescriptorPool;
+        std::vector<VkDescriptorSet> m_DescriptorSets;
 		VkPipelineLayout m_PipelineLayout;
 		VkPipeline m_GraphicsPipeline;
 
@@ -58,5 +63,8 @@ namespace Walker {
 		void CreateGraphicsPipeline(VkDevice device, VkRenderPass renderPass, uint32_t width, uint32_t height);
 		static std::vector<char> ReadFile(const std::string& filename);
 		VkShaderModule CreateShaderModule(VkDevice device, const std::vector<char>& code);
+        void CreateDescriptorPool();
+        void CreateDescriptorSets();
+        void UpdateDescriptorSets(VulkanUniformBuffer uniformBuffer, VulkanTexture2D texture); // TODO: This obv needs to be not hard-coded
 	};
 }

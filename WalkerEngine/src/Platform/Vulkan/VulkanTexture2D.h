@@ -27,6 +27,8 @@ namespace Walker {
 		virtual bool IsLoaded() const override { return m_IsLoaded; }
 		virtual void GenerateMipMaps() override;
 
+		VkDescriptorImageInfo GetDescriptorInfo() const { return m_DescriptorInfo; }
+
 		virtual bool operator==(const Texture& other) const override
 		{
 			return m_RendererID == ((VulkanTexture2D&)other).m_RendererID;
@@ -42,6 +44,11 @@ namespace Walker {
 		VmaAllocationInfo m_AllocationInfo;
 		VkImageView m_ImageView;
 		VkSampler m_Sampler;
+		VkDescriptorImageInfo m_DescriptorInfo;
+
+	private:
+		void CreateImageView();
+		void CreateSampler();
 	};
 
 }

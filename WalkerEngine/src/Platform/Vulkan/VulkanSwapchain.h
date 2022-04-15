@@ -7,6 +7,7 @@
 #include <optional>
 
 #include "VulkanRenderPass.h"
+#include "VulkanGraphicsPipeline.h"
 
 namespace Walker {
 
@@ -24,6 +25,7 @@ namespace Walker {
 		std::vector<VkImageView> m_SwapChainImageViews;
 
 		std::unique_ptr<VulkanRenderPass> m_RenderPass;
+		std::unique_ptr<VulkanGraphicsPipeline> m_GraphicsPipeline;
 		std::vector<VkFramebuffer> m_SwapChainFramebuffers;
 
 		VkImage m_ColorImage;
@@ -41,6 +43,7 @@ namespace Walker {
 		VkExtent2D ChooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilities);
 		void CreateImageViews(VkDevice device);
 		void CreateRenderPass(VkDevice device, VkPhysicalDevice physicalDevice);
+		void CreateGraphicsPipeline(VkDevice device);
 		VkFormat FindDepthFormat(VkPhysicalDevice physicalDevice);
 		void CreateColorResources(VkDevice device);
 		void CreateDepthResources(VkDevice device, VkPhysicalDevice physicalDevice);

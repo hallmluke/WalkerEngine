@@ -40,6 +40,7 @@ namespace Walker {
 		: m_WindowHandle(windowHandle)
 	{
         s_Instance = this;
+        s_CurrentFrame = 0;
 	}
 
 	void VulkanContext::Init()
@@ -260,6 +261,44 @@ namespace Walker {
 
         if (vkCreateCommandPool(m_Device, &poolInfo, nullptr, &m_CommandPool) != VK_SUCCESS) {
             throw std::runtime_error("failed to create command pool!");
+        }
+    }
+
+    void VulkanContext::CreateCommandBuffers()
+    {
+        m_CommandBuffers.resize(s_FramesInFlight);
+
+        VkCommandBufferAllocateInfo allocInfo{};
+        allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
+        allocInfo.commandPool = m_CommandPool;
+        allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
+        allocInfo.commandBufferCount = (uint32_t) m_CommandBuffers.size();
+
+        if (vkAllocateCommandBuffers(m_Device, &allocInfo, m_CommandBuffers.data()) != VK_SUCCESS) {
+            throw std::runtime_error("failed to allocate command buffers!");
+        }
+    }
+
+    void VulkanContext::CreateSyncObjects()
+    {
+        m_ImageAvailableSemaphores.resize(s_FramesInFlight);
+        m_RenderFinishedSemaphores.resize(s_FramesInFlight);
+        m_InFlightFences.resize(s_FramesInFlight);
+
+        VkSemaphoreCreateInfo semaphoreInfo{};
+        semaphoreInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
+
+        VkFenceCreateInfo fenceInfo{};
+        fenceInfo.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
+        fenceInfo.flags = VK_FENCE_CREATE_SIGNALED_BIT;
+
+        for (size_t i = 0; i < s_FramesInFlight; i++) {
+            if (vkCreateSemaphore(m_Device, &semaphoreInfo, nullptr, &m_ImageAvailableSemaphores[i]) != VK_SUCCESS ||
+                vkCreateSemaphore(m_Device, &semaphoreInfo, nullptr, &m_RenderFinishedSemaphores[i]) != VK_SUCCESS ||
+                vkCreateFence(m_Device, &fenceInfo, nullptr, &m_InFlightFences[i]) != VK_SUCCESS) {
+
+                throw std::runtime_error("failed to create semaphores!");
+            }
         }
     }
 

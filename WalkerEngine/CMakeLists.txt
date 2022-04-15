@@ -58,7 +58,7 @@ set_property(TARGET yaml-cpp PROPERTY FOLDER External)
 set_property(TARGET format PROPERTY FOLDER External)
 set_property(TARGET parse PROPERTY FOLDER External)
 set_property(TARGET read PROPERTY FOLDER External)
-set_property(TARGET run-tests PROPERTY FOLDER External)
+#set_property(TARGET run-tests PROPERTY FOLDER External)
 set_property(TARGET sandbox PROPERTY FOLDER External)
 
 add_subdirectory(vendor/VulkanMemoryAllocator)

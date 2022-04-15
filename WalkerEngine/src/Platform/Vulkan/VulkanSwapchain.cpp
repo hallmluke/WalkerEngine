@@ -11,6 +11,7 @@ namespace Walker {
         CreateSwapChain(physicalDevice, device, surface);
         CreateImageViews(device);
         CreateRenderPass(device, physicalDevice);
+        CreateGraphicsPipeline(device);
 	}
 
 	void VulkanSwapchain::CreateSwapChain(VkPhysicalDevice physicalDevice, VkDevice device, VkSurfaceKHR surface)
@@ -122,6 +123,11 @@ namespace Walker {
 	{
         m_RenderPass = std::make_unique<VulkanRenderPass>(device, m_SwapChainImageFormat, FindDepthFormat(physicalDevice));
 	}
+
+    void VulkanSwapchain::CreateGraphicsPipeline(VkDevice device)
+    {
+        m_GraphicsPipeline = std::make_unique<VulkanGraphicsPipeline>(device, m_RenderPass, m_SwapChainExtent.width, m_SwapChainExtent.height);
+    }
 
     VkFormat VulkanSwapchain::FindDepthFormat(VkPhysicalDevice physicalDevice)
     {
