@@ -4,6 +4,8 @@
 #include "VulkanPhysicalDeviceUtils.h"
 #include <GLFW/glfw3.h>
 #include <set>
+//#define VMA_IMPLEMENTATION
+//#include <vk_mem_alloc.h>
 
 #ifdef W_DEBUG
 const bool enableValidationLayers = true;
@@ -15,6 +17,8 @@ const bool enableValidationLayers = false;
 namespace Walker {
 
     VulkanContext* VulkanContext::s_Instance = nullptr;
+    uint32_t VulkanContext::s_CurrentFrame = 0;
+
 
     static VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity, VkDebugUtilsMessageTypeFlagsEXT messageType, const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData, void* pUserData) {
 
@@ -48,6 +52,12 @@ namespace Walker {
         CreateInstance();
         SetupDebugMessenger();
         CreateSurface();
+        PickPhysicalDevice();
+        CreateLogicalDevice();
+        CreateAllocator();
+        CreateCommandPool();
+        CreateCommandBuffers();
+        CreateSyncObjects();
 	}
 
 	void VulkanContext::SwapBuffers()
@@ -66,7 +76,7 @@ namespace Walker {
         appInfo.applicationVersion = VK_MAKE_VERSION(1, 0, 0);
         appInfo.pEngineName = "No Engine";
         appInfo.engineVersion = VK_MAKE_VERSION(1, 0, 0);
-        appInfo.apiVersion = VK_API_VERSION_1_0;
+        appInfo.apiVersion = VK_API_VERSION_1_3;
 
         VkInstanceCreateInfo createInfo{};
         createInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
@@ -239,11 +249,18 @@ namespace Walker {
 
 	void VulkanContext::CreateAllocator()
 	{
+        /*VmaVulkanFunctions vulkanFunctions = {};
+        vulkanFunctions.vkGetInstanceProcAddr = &vkGetInstanceProcAddr;
+        vulkanFunctions.vkGetDeviceProcAddr = &vkGetDeviceProcAddr;
+        vulkanFunctions.vkGetBufferMemoryRequirements2KHR = &vkGetBufferMemoryRequirements2;*/
+
         VmaAllocatorCreateInfo allocatorCreateInfo = {};
         allocatorCreateInfo.vulkanApiVersion = VK_API_VERSION_1_3;
         allocatorCreateInfo.physicalDevice = m_PhysicalDevice;
         allocatorCreateInfo.device = m_Device;
         allocatorCreateInfo.instance = m_Instance;
+        allocatorCreateInfo.flags |= VMA_ALLOCATOR_CREATE_KHR_DEDICATED_ALLOCATION_BIT;
+        //allocatorCreateInfo.pVulkanFunctions = &vulkanFunctions;
         
         if (vmaCreateAllocator(&allocatorCreateInfo, &m_Allocator) != VK_SUCCESS) {
             throw std::runtime_error("failed to create allocator!");

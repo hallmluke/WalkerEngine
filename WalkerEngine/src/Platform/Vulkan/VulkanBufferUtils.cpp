@@ -12,6 +12,9 @@ namespace Walker {
 
         VmaAllocationCreateInfo allocCreateInfo = {};
         allocCreateInfo.usage = VMA_MEMORY_USAGE_AUTO;
+        if (properties & VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT) {
+            allocCreateInfo.flags = VMA_ALLOCATION_CREATE_HOST_ACCESS_SEQUENTIAL_WRITE_BIT;
+        }
         allocCreateInfo.requiredFlags = properties;
         vmaCreateBuffer(VulkanContext::GetAllocator(), &bufferInfo, &allocCreateInfo, &buffer, &bufferAllocation, &allocInfo);
         /*if (vkCreateBuffer(device, &bufferInfo, nullptr, &buffer) != VK_SUCCESS) {

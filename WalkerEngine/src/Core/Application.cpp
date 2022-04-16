@@ -64,10 +64,6 @@ namespace Walker {
 	void Application::Run()
 	{
 		ImGuiManager imguiManager((GLFWwindow*)m_Window->GetNativeWindow());
-		//RenderGraph renderGraph(m_Window->GetWidth(), m_Window->GetHeight());
-		//Skybox skybox("Skybox/default");
-		//Scene scene;
-		//Model sponzaPBR("SponzaPBR", "Models/SponzaPBR/Sponza.gltf", &scene);
 
 		while (m_Running) {
 

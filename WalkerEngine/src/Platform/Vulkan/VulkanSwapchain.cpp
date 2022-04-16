@@ -126,7 +126,7 @@ namespace Walker {
 
     void VulkanSwapchain::CreateGraphicsPipeline(VkDevice device)
     {
-        m_GraphicsPipeline = std::make_unique<VulkanGraphicsPipeline>(device, m_RenderPass, m_SwapChainExtent.width, m_SwapChainExtent.height);
+        m_GraphicsPipeline = std::make_unique<VulkanGraphicsPipeline>(device, m_RenderPass->GetRenderPass(), m_SwapChainExtent.width, m_SwapChainExtent.height);
     }
 
     VkFormat VulkanSwapchain::FindDepthFormat(VkPhysicalDevice physicalDevice)

@@ -4,6 +4,7 @@
 #include "Renderer/Renderer.h"
 
 #include "Platform/OpenGL/OpenGLBuffer.h"
+#include "Platform/Vulkan/VulkanBuffer.h"
 
 namespace Walker {
 
@@ -13,7 +14,8 @@ namespace Walker {
 		switch (Renderer::GetAPI())
 		{
 		case RendererAPI::API::None:    /*W_CORE_ASSERT(false, "RendererAPI::None is currently not supported!"); */ return nullptr;
-		case RendererAPI::API::OpenGL:  return std::make_shared<OpenGLVertexBuffer>(size);;
+		case RendererAPI::API::OpenGL:  return std::make_shared<OpenGLVertexBuffer>(size);
+		case RendererAPI::API::Vulkan:  return std::make_shared<VulkanVertexBuffer>(size);
 		}
 
 		//W_CORE_ASSERT(false, "Unknown RendererAPI!");
@@ -26,7 +28,8 @@ namespace Walker {
 		switch (Renderer::GetAPI())
 		{
 		case RendererAPI::API::None:    /*W_CORE_ASSERT(false, "RendererAPI::None is currently not supported!");*/ return nullptr;
-		case RendererAPI::API::OpenGL:  return std::make_shared<OpenGLVertexBuffer>(vertices, size);;
+		case RendererAPI::API::OpenGL:  return std::make_shared<OpenGLVertexBuffer>(vertices, size);
+		case RendererAPI::API::Vulkan:  return std::make_shared<VulkanVertexBuffer>(vertices, size);
 		}
 
 		//W_CORE_ASSERT(false, "Unknown RendererAPI!");
@@ -39,6 +42,7 @@ namespace Walker {
 		{
 		case RendererAPI::API::None:    /*W_CORE_ASSERT(false, "RendererAPI::None is currently not supported!");*/ return nullptr;
 		case RendererAPI::API::OpenGL:  return std::make_shared<OpenGLIndexBuffer>(indices, size);
+		case RendererAPI::API::Vulkan:  return std::make_shared<VulkanIndexBuffer>(indices, size);
 		}
 
 		//W_CORE_ASSERT(false, "Unknown RendererAPI!");

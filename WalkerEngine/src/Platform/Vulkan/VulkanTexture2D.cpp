@@ -38,8 +38,9 @@ namespace Walker {
 		vkMapMemory(device, stagingBufferMemory, 0, imageSize, 0, &data);
 		memcpy(data, pixels, static_cast<size_t>(imageSize));
 		vkUnmapMemory(device, stagingBufferMemory);*/
-
-		memcpy(stagingAllocationInfo.pMappedData, pixels, static_cast<size_t>(imageSize));
+		void* data;
+		vmaMapMemory(VulkanContext::GetAllocator(), stagingAllocation, &data);
+		memcpy(data, pixels, static_cast<size_t>(imageSize));
 		vmaUnmapMemory(VulkanContext::GetAllocator(), stagingAllocation);
 
 		stbi_image_free(pixels);

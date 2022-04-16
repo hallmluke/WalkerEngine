@@ -20,7 +20,9 @@ namespace Walker {
 
 		//void* data;
 		//vkMapMemory(device, stagingBufferMemory, 0, bufferSize, 0, &data);
-		memcpy(stagingAllocationInfo.pMappedData, vertices, (size_t)bufferSize);
+		void* data;
+		vmaMapMemory(VulkanContext::GetAllocator(), stagingAllocation, &data);
+		memcpy(data, vertices, (size_t)bufferSize);
 		//vkUnmapMemory(device, stagingBufferMemory);
 		vmaUnmapMemory(VulkanContext::GetAllocator(), stagingAllocation);
 
@@ -73,7 +75,9 @@ namespace Walker {
 
 		//void* data;
 		//vkMapMemory(device, stagingBufferMemory, 0, bufferSize, 0, &data);
-		memcpy(stagingAllocationInfo.pMappedData, indices, (size_t)bufferSize);
+		void* data;
+		vmaMapMemory(VulkanContext::GetAllocator(), stagingAllocation, &data);
+		memcpy(data, indices, (size_t)bufferSize);
 		//vkUnmapMemory(device, stagingBufferMemory);
 		vmaUnmapMemory(VulkanContext::GetAllocator(), stagingAllocation);
 

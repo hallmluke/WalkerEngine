@@ -36,10 +36,10 @@ namespace Walker {
             { ShaderDataType::Float3, "a_Bitangent" }
         };
         m_VertexBuffer->SetLayout(layout);
-        m_VertexArray->AddVertexBuffer(m_VertexBuffer);
+        //m_VertexArray->AddVertexBuffer(m_VertexBuffer);
 
         m_IndexBuffer = IndexBuffer::Create(m_Indices.data(), m_Indices.size());
-        m_VertexArray->SetIndexBuffer(m_IndexBuffer);
+        //m_VertexArray->SetIndexBuffer(m_IndexBuffer);
         
 	}
 }

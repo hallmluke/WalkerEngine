@@ -4,8 +4,10 @@ add_executable(Sandbox ${SRCFILES})
 set_property(TARGET Sandbox PROPERTY CXX_STANDARD 20)
 add_compile_definitions(W_PLATFORM_WINDOWS)
 
+find_package(Vulkan REQUIRED)
+
 include_directories(${CMAKE_SOURCE_DIR}/WalkerEngine/src/)
-target_link_libraries(Sandbox WalkerEngine)
+target_link_libraries(Sandbox WalkerEngine Vulkan::Vulkan VulkanMemoryAllocator)
 
 # TODO: Remove second commands. Currently done so Visual Studio can find assets
 add_custom_command(TARGET Sandbox POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/Shared/Shaders/ $<TARGET_FILE_DIR:Sandbox>/Shaders/)

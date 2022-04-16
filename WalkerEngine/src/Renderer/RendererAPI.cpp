@@ -2,6 +2,7 @@
 #include "Renderer/RendererAPI.h"
 
 #include "Platform/OpenGL/OpenGLRendererAPI.h"
+#include "Platform/Vulkan/VulkanRendererAPI.h"
 
 namespace Walker {
 
@@ -13,6 +14,7 @@ namespace Walker {
 		{
 		case RendererAPI::API::None:    /*W_CORE_ASSERT(false, "RendererAPI::None is currently not supported!");*/ return nullptr;
 		case RendererAPI::API::OpenGL:  return std::make_unique<OpenGLRendererAPI>();
+		case RendererAPI::API::Vulkan:  return std::make_unique<VulkanRendererAPI>();
 		}
 
 		//W_CORE_ASSERT(false, "Unknown RendererAPI!");
