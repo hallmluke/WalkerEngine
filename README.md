@@ -67,6 +67,15 @@ Final Composited Image w/ Post-Processing (Bloom, Tonemapping, etc.)
 
 Most of the lighting in these two shots is indirect lighting computed via Voxel Cone Tracing. The only light in this scene is the overhead directional light.
 
+Screenshots:
+
+
 <img src="Resources/Screenshots/vctbalcony.png" alt="Balcony" width="400">
 
 <img src="Resources/Screenshots/vctcurtains.png" alt="Curtains" width="400">
+
+
+Video:
+
+
+<iframe width="400" height="225" src="https://www.youtube.com/embed/s5Irf37hLLA" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
