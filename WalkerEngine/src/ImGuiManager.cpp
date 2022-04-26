@@ -9,7 +9,7 @@ ImGuiManager::ImGuiManager(GLFWwindow* window)
     ImGui::CreateContext();
     ImGuiIO& io = ImGui::GetIO(); (void)io;
 
-    // Setup Dear ImGui style
+    // Setup Dear ImGui style 
     ImGui::StyleColorsDark();
     io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
     io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
@@ -30,9 +30,9 @@ ImGuiManager::ImGuiManager(GLFWwindow* window)
 ImGuiManager::~ImGuiManager()
 {
     // Cleanup
-    ImGui_ImplOpenGL3_Shutdown();
+    /*ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplGlfw_Shutdown();
-    ImGui::DestroyContext();
+    ImGui::DestroyContext();*/
 }
 
 void ImGuiManager::BeginFrame()

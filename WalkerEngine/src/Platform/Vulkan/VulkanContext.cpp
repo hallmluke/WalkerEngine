@@ -58,6 +58,7 @@ namespace Walker {
         CreateCommandPool();
         CreateCommandBuffers();
         CreateSyncObjects();
+        m_Swapchain = std::make_unique<VulkanSwapchain>(m_PhysicalDevice, m_Device, m_Surface, m_WindowHandle);
 	}
 
 	void VulkanContext::SwapBuffers()

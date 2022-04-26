@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Renderer/GraphicsContext.h"
+#include "VulkanSwapchain.h"
 #include <vulkan/vulkan.h>
 #include <vk_mem_alloc.h>
 #include <optional>
@@ -48,6 +49,7 @@ namespace Walker {
 		std::vector<VkSemaphore> m_ImageAvailableSemaphores;
 		std::vector<VkSemaphore> m_RenderFinishedSemaphores;
 		std::vector<VkFence> m_InFlightFences;
+		std::unique_ptr<VulkanSwapchain> m_Swapchain;
 
 		void CreateInstance();
 		bool CheckValidationLayerSupport();

@@ -42,8 +42,8 @@ namespace Walker {
 
 	void VulkanGraphicsPipeline::CreateGraphicsPipeline(VkDevice device, VkRenderPass renderPass, uint32_t width, uint32_t height)
 	{
-        auto vertShaderCode = ReadFile("shaders/vert.spv");
-        auto fragShaderCode = ReadFile("shaders/frag.spv");
+        auto vertShaderCode = ReadFile("Shaders/shader.vert.spv");
+        auto fragShaderCode = ReadFile("Shaders/shader.frag.spv");
 
         VkShaderModule vertShaderModule = CreateShaderModule(device, vertShaderCode);
         VkShaderModule fragShaderModule = CreateShaderModule(device, fragShaderCode);
@@ -204,6 +204,7 @@ namespace Walker {
         std::ifstream file(filename, std::ios::ate | std::ios::binary);
 
         if (!file.is_open()) {
+            W_CORE_ERROR("Failed to open: {0}", filename);
             throw std::runtime_error("failed to open file!");
         }
 

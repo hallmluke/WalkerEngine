@@ -1,6 +1,7 @@
 #pragma once
 #include <vulkan/vulkan.h>
 #include <GLM/glm.hpp>
+#include <array>
 
 #include "VulkanBuffer.h"
 #include "VulkanTexture2D.h"
