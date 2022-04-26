@@ -52,16 +52,17 @@ namespace Walker {
 				//{ "DeferredPBRLightingPass", "gColor", "DepthOfFieldPass", "u_InFocusColor" },
 				//{ "BoxBlurPass", "gColor", "DepthOfFieldPass", "u_OutOfFocusColor" } 
 			});*/
-		/*RenderGraphSpecification spec(
+		RenderGraphSpecification spec(
 			{
 				{ RenderPassType::ShadowMapPass, "ShadowMapPass"},
-				{ RenderPassType::Voxelization, "VoxelizationPass "}
+				{ RenderPassType::Voxelization, "VoxelizationPass "},
+				{ RenderPassType::VoxelVisualization, "VoxelVisualization"}
 			},
 			{
 
-			});*/
+			});
 
-		RenderGraphSpecification spec(
+		/*RenderGraphSpecification spec(
 			{
 				{ RenderPassType::ShadowMapPass, "ShadowMapPass"},
 				{ RenderPassType::Voxelization, "VoxelizationPass"},
@@ -80,7 +81,7 @@ namespace Walker {
 				{ "DeferredPBRLightingPass", "gColor", "TonemapCompute", "img_input"},
 				{ "BloomCompute", "img_output", "TonemapCompute", "bloom_input"}
 			}
-			);
+			);*/
 
 		m_RenderGraph = std::make_shared<RenderGraph>(spec, 1600, 900);
 		/*TextureSpecification spec;
@@ -132,7 +133,7 @@ namespace Walker {
 
 		m_ActiveScene->OnUpdate(ts);
 		m_RenderGraph->DrawScene(*m_ActiveScene);
-		RenderCommand::BindDefaultFramebuffer();
+		/*RenderCommand::BindDefaultFramebuffer();
 
 		RenderCommand::Clear();
 		m_DebugShader->Bind();
@@ -141,7 +142,7 @@ namespace Walker {
 		//m_RenderGraph->GetRenderPass("DeferredPBRLightingPass")->BindOutput(0, 0);
 		
 		m_DebugShader->SetInt("u_Input", 0);
-		m_Quad.Draw();
+		m_Quad.Draw();*/
 
 	}
 	void SandboxLayer::OnImGuiRender()

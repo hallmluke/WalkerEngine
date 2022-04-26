@@ -142,6 +142,26 @@ namespace Walker {
 		m_VertexArray->AddVertexBuffer(m_VertexBuffer);
 	}
 
+	Volume::Volume()
+	{
+		m_VertexArray = VertexArray::Create();
+		std::vector<float> vertices = Cube::GetUnindexedVertices();
+		m_VertexBuffer = VertexBuffer::Create(vertices.data(), vertices.size() * sizeof(float));
+
+		BufferLayout layout = {
+			{ ShaderDataType::Float3, "a_Position"},
+			{ ShaderDataType::Float2, "a_TexCoords" }
+		};
+
+		m_VertexBuffer->SetLayout(layout);
+		m_VertexArray->AddVertexBuffer(m_VertexBuffer);
+	}
+
+	void Volume::SetTexture(std::shared_ptr<Texture3D> tex)
+	{
+		m_VolumeTex = tex;
+	}
+
 	void Volume::Draw(std::shared_ptr<Shader> shader, glm::mat4 view, glm::mat4 projection, glm::vec3 viewPos)
 	{
 		m_VolumeTex->Bind();

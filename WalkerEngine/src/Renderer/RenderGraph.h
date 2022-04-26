@@ -14,7 +14,8 @@ namespace Walker {
 		EditorPass,
 		BloomCompute,
 		TonemapCompute,
-		Voxelization
+		Voxelization,
+		VoxelVisualization
 	};
 
 	struct RenderPassSpec {

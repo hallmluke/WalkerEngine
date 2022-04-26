@@ -10,6 +10,7 @@
 #include "Renderer/RenderPasses/BloomComputePass.h"
 #include "Renderer/RenderPasses/TonemapComputePass.h"
 #include "Renderer/RenderPasses/VoxelizationPass.h"
+#include "Renderer/RenderPasses/VoxelVisualizationPass.h"
 
 namespace Walker {
 
@@ -25,6 +26,7 @@ namespace Walker {
 			case RenderPassType::BloomCompute: return std::make_shared<BloomComputePass>(viewportWidth, viewportHeight);
 			case RenderPassType::TonemapCompute: return std::make_shared<TonemapComputePass>(viewportWidth, viewportHeight);
 			case RenderPassType::Voxelization: return std::make_shared<VoxelizationPass>();
+			case RenderPassType::VoxelVisualization: return std::make_shared<VoxelVisualizationPass>();
 			}
 
 			return nullptr;

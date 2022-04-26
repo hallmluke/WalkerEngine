@@ -12,6 +12,8 @@ namespace Walker {
 	class Volume {
 	public:
 		Volume(std::shared_ptr<Texture3D> tex);
+		Volume();
+		void SetTexture(std::shared_ptr<Texture3D> tex);
 		void Draw(std::shared_ptr<Shader> shader, glm::mat4 view, glm::mat4 projection, glm::vec3 viewPos);
 
 	private:

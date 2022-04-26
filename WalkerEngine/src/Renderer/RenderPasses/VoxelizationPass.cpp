@@ -72,8 +72,10 @@ namespace Walker {
 					spec.Width = probe->Subdiv;
 					spec.Height = probe->Subdiv;
 					spec.Depth = probe->Subdiv;
-					spec.MagFilter = TextureFilterType::LINEAR;
-					spec.MinFilter = TextureFilterType::LINEAR_MIPMAP_LINEAR;
+					//spec.MagFilter = TextureFilterType::LINEAR;
+					//spec.MinFilter = TextureFilterType::LINEAR_MIPMAP_LINEAR;
+					spec.MagFilter = TextureFilterType::NEAREST;
+					spec.MinFilter = TextureFilterType::NEAREST;
 					spec.Type = TextureType::FLOAT;
 					spec.TextureFormat = TextureFormat::RGBA16;
 					spec.WrapS = TextureWrapType::CLAMP_EDGE;
