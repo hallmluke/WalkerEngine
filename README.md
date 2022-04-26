@@ -77,5 +77,4 @@ Screenshots:
 
 Video:
 
-
-<iframe width="400" height="225" src="https://www.youtube.com/embed/s5Irf37hLLA" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+https://www.youtube.com/watch?v=s5Irf37hLLA
